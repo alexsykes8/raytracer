@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/s2337768.dir/main.cpp.o CMakeFiles/s2337768.dir/image.cpp.o -o s2337768
