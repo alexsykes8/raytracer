@@ -2,8 +2,8 @@
 // Created by alex on 08/10/2025.
 //
 
-#ifndef S2337768_IMAGE_H
-#define S2337768_IMAGE_H
+#ifndef B216602_IMAGE_H
+#define B216602_IMAGE_H
 
 
 #include <string>
@@ -18,13 +18,13 @@ struct Pixel {
 /**
  * A class to handle reading, writing, and modifying binary PPM (P6) image files.
  */
-class PPMImage {
+class Image {
 public:
     // a. Constructor that takes a filename to read from.
-    explicit PPMImage(const std::string& filename);
+    explicit Image(const std::string& filename);
 
     // Constructor to create a blank image of a given size.
-    PPMImage(int width, int height);
+    Image(int width, int height);
 
     // c. Method that writes the image to a specified file.
     void write(const std::string& filename) const;
@@ -48,4 +48,4 @@ private:
     std::vector<unsigned char> m_pixel_data;
 };
 
-#endif //S2337768_IMAGE_H
+#endif //B216602_IMAGE_H
