@@ -7,11 +7,11 @@
 
 
 
-#include <cmath> // For std::sqrt
+#include <cmath>
 #include <iostream>
 
 /**
- * @brief Represents a 3D vector or point (X, Y, Z).
+ * @brief Represents a 3D vector or point (X, Y, Z). Also contains some operations for use in vector calculations.
  */
 class Vector3 {
 public:
@@ -23,7 +23,12 @@ public:
     // Parameterized constructor
     Vector3(double x_in, double y_in, double z_in) : x(x_in), y(y_in), z(z_in) {}
 
-    // --- Vector Operations ---
+    // --- Vector Operations, for use later ---
+
+    // Unary subtraction
+    Vector3 operator-() const {
+        return Vector3(-x, -y, -z);
+    }
 
     // Vector subtraction
     Vector3 operator-(const Vector3& other) const {
@@ -59,7 +64,7 @@ public:
         return std::sqrt(x * x + y * y + z * z);
     }
 
-    // Returns a normalized (unit length) version of the vector
+    // normalized (unit length) version of the vector
     Vector3 normalize() const {
         double len = length();
         if (len > 1e-6) { // Avoid division by zero

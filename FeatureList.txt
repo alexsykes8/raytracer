@@ -1,1 +1,8 @@
 
+Module 1:
+    Blender exporter
+    Camera space transformations
+    Image read and write
+Module 2:
+    Ray intersection
+    Acceleration hierarchy (BVH)

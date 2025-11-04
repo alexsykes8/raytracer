@@ -5,30 +5,26 @@
 #ifndef B216602_RAY_H
 #define B216602_RAY_H
 
-#include "vector3.h" // Includes your custom Vector3 class
+#include "vector3.h"
 
 /**
  * @brief Represents a ray in 3D space: R(t) = origin + t * direction.
- * The direction vector (D) MUST be normalized (unit length).
+ * The direction vector (D) is normalized for use in later calculations.
  */
 struct Ray {
-    // O: The starting point of the ray (the camera's location in world space).
+    // The starting point of the ray (the camera's location in world space).
     Vector3 origin;
 
-    // D: The unit vector defining the direction of the ray.
+    // The unit vector defining the direction of the ray.
     Vector3 direction;
 
-    // Constructor to easily create a Ray object
+    // Constructor to create a Ray object
     Ray(const Vector3& o, const Vector3& d) : origin(o), direction(d) {}
 
     // Default constructor
     Ray() : origin(Vector3()), direction(Vector3()) {}
 
-    /**
-     * Calculates a point on the ray at distance t.
-     * t is the distance parameter (t > 0 means the point is in front of the origin).
-     * returns the 3D point R(t).
-     */
+    //Returns a 3D point on the ray at distance t.
     Vector3 point_at_parameter(double t) const {
         return origin + (t * direction);
     }

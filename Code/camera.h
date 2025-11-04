@@ -17,19 +17,26 @@
  */
 class Camera {
 public:
-    // Constructor: Reads the scene file and stores camera information.
-    explicit Camera(const std::string& scene_filepath);
-
-    // b. Method: Converts normalized pixel coordinates (px, py) to a ray in world coordinates.
-    // px and py are typically normalized from 0 to 1 across the image plane.
+    // Reads the scene file and stores camera information.
+    Camera(
+            Vector3 location,
+            Vector3 gaze_direction_hint,
+            Vector3 up_vector_hint,
+            double focal_length,
+            double sensor_width,
+            double sensor_height,
+            int resolution_x,
+            int resolution_y
+        );
+    // Converts normalized pixel coordinates (px, py) to a ray in world coordinates.
     Ray generateRay(float px, float py) const;
 
-    // Getters for resolution (used by the main rendering loop)
+    // Getters for resolution
     int getResolutionX() const { return m_resolution_x; }
     int getResolutionY() const { return m_resolution_y; }
 
 private:
-    // --- Camera Parameters read from file ---
+    // Camera Parameters read from file
     Vector3 m_location;
     Vector3 m_gaze_direction_hint; // World space direction the camera is looking
     Vector3 m_up_vector_hint;      // World space vector for 'up' hint
@@ -39,14 +46,10 @@ private:
     int m_resolution_x;
     int m_resolution_y;
 
-    // --- Camera Basis Vectors (Calculated and stored internally for efficiency) ---
-    // These vectors form the orthonormal basis for the camera's local space in world coordinates.
+    // Camera Basis Vectors, the orthonormal basis for the camera's local space in world coordinates.
     Vector3 m_camera_u; // The calculated 'Right' vector
     Vector3 m_camera_v; // The calculated 'True Up' vector
     Vector3 m_camera_w; // The calculated 'Gaze/Forward' vector (normalized)
-
-    // Helper method to parse the scene file
-    void readSceneFile(const std::string& filepath);
 
     // Helper method to compute the orthonormal basis from the hints
     void computeCameraBasis();

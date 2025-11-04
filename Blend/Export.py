@@ -1,8 +1,28 @@
-
 import bpy
 import mathutils
 import os
 from math import pi
+
+def get_primitive_type(obj):
+    mesh = obj.data
+
+    # --- Plane Check ---
+    # A default plane has: 4 vertices, 4 edges, 1 face
+    if len(mesh.vertices) == 4 and len(mesh.edges) == 4 and len(mesh.polygons) == 1:
+        return "PLANE"
+
+    # --- Cube Check ---
+    # A default cube has: 8 vertices, 12 edges, 6 faces
+    if len(mesh.vertices) == 8 and len(mesh.edges) == 12 and len(mesh.polygons) == 6:
+        # Additional check: all faces are quads (4 vertices per face)
+        is_quad_cube = all(poly.loop_total == 4 for poly in mesh.polygons)
+        if is_quad_cube:
+            return "CUBE"
+
+
+    # --- Assume if not a cube or plane then it is a sphere
+    return "SPHERE"
+
 
 def format_vector(vec):
     """
@@ -78,40 +98,44 @@ def export_scene_data(filepath):
                     # Provides the X, Y, Z coordinates
                     f.write(f"  location {format_vector(obj.location)}\n")
                     # In Blender, 'energy' is the power in Watts.
-                    f.write(f"  intensity {light_data.energy:.6f}\n")
+                    energy = light_data.energy
+                    colour = light_data.color
+                    # the final intensity is the energy multiplied by the colour
+                    f.write(f"  intensity {colour[0] * energy:.6f} {colour[1] * energy:.6f} {colour[2] * energy:.6f}\n")
                     f.write("END_POINT_LIGHT\n\n")
 
                 # --- EXPORT MESHES ---
                 elif obj.type == 'MESH':
-                    obj_name_lower = obj.name.lower()
+                    object_type = get_primitive_type(obj)
 
-                    # --- EXPORT SPHERE ---
-                    # Assumes the object name contains "sphere"
-                    if 'sphere' in obj_name_lower:
+                    # --- EXPORT SPHERE (NOW HANDLES NON-UNIFORM SCALE) ---
+                    if object_type == "SPHERE":
                         f.write("SPHERE\n")
-                        # Provides the X, Y, Z coordinates
-                        f.write(f"  location {format_vector(obj.location)}\n")
-                        # Assumes uniform scaling for radius. This retrieves the X scale.
-                        f.write(f"  radius {obj.scale.x:.6f}\n")
+                        # Use 'translation' for consistency with CUBE
+                        f.write(f"  translation {format_vector(obj.location)}\n")
+                        # Export rotation in Euler angles (XYZ order in radians)
+                        rotation_euler = format_vector(obj.rotation_euler)
+                        f.write(f"  rotation_euler_radians {rotation_euler}\n")
+                        f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n")
+                        # Export non-uniform scaling (X, Y, Z)
+                        f.write(f"  scale {format_vector(obj.scale)}\n")
                         f.write("END_SPHERE\n\n")
 
                     # --- EXPORT CUBE ---
-                    # Assumes the object name contains "cube"
-                    elif 'cube' in obj_name_lower:
+                    elif object_type == "CUBE":
                         f.write("CUBE\n")
                         # Provides the X, Y, Z coordinates
                         f.write(f"  translation {format_vector(obj.location)}\n")
                         # Export rotation in Euler angles (XYZ order in radians)
                         rotation_euler = format_vector(obj.rotation_euler)
                         f.write(f"  rotation_euler_radians {rotation_euler}\n")
-                        f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n")
+                        f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n") # used for visual testing
                         # Assumes uniform scaling, as requested for 1D scale.
-                        f.write(f"  scale {obj.scale.x:.6f}\n")
+                        f.write(f"  scale {format_vector(obj.scale)}\n")
                         f.write("END_CUBE\n\n")
 
                     # --- EXPORT PLANE ---
-                    # Assumes the object name contains "plane"
-                    elif 'plane' in obj_name_lower:
+                    elif object_type == "PLANE":
                         # Ensure the object has vertices
                         if obj.data.vertices:
                             f.write("PLANE\n")

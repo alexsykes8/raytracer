@@ -18,7 +18,7 @@ Image::Image(int width, int height) : m_width(width), m_height(height), m_max_co
 
 // Reads the PPM file data.
 void Image::read(const std::string& filename) {
-    std::ifstream file(filename, std::ios::binary); // Use binary mode initially, but handle ASCII reading internally
+    std::ifstream file(filename, std::ios::binary);
     if (!file) {
         throw std::runtime_error("Cannot open file: " + filename);
     }
@@ -26,7 +26,6 @@ void Image::read(const std::string& filename) {
     std::string magic_number;
 
     // reads the first piece of information from the image file and stores it
-    // >> is a stream extraction operator that skips between tokens separated by white space
     file >> magic_number;
 
     if (magic_number != "P6" && magic_number != "P3") {
@@ -42,7 +41,7 @@ void Image::read(const std::string& filename) {
     if (file && peek_char == '#') {
         std::string comment;
         std::getline(file, comment);
-        // After reading the comment line, skip any leading whitespace again
+        // skip whitespace
         peek_char = file.peek();
         while (file && (peek_char == '\n' || peek_char == '\r' || peek_char == ' ' || peek_char == '\t')) {
             file.get();
@@ -67,11 +66,9 @@ void Image::read(const std::string& filename) {
 
     if (magic_number == "P6") {
         // --- P6 (Binary) Reading ---
-        // reads the raw image content and stores it in the m_pixel_data vector
         file.read(reinterpret_cast<char*>(m_pixel_data.data()), m_pixel_data.size());
 
         if (!file) {
-            // Check if we hit EOF unexpectedly or had a read error
             if (file.eof()) {
                 throw std::runtime_error("Error reading pixel data from file: " + filename + ". File ended unexpectedly.");
             } else {
@@ -85,14 +82,13 @@ void Image::read(const std::string& filename) {
             if (!(file >> color_value)) {
                 throw std::runtime_error("Error reading pixel data from P3 file: " + filename + ". Expected more color values.");
             }
-            // Clamp the value just in case, and cast to unsigned char
+            // clamp the colour value just in case
             if (color_value < 0 || color_value > 255) {
-                 // Optionally, you might throw an error or clamp to 0/255
             }
             m_pixel_data[i] = static_cast<unsigned char>(color_value);
         }
 
-        // Final check to see if reading failed for any other reason
+        // final check for failure
         if (!file.eof() && file.fail() && !file.bad()) {
             throw std::runtime_error("Unexpected error during P3 pixel reading: " + filename);
         }

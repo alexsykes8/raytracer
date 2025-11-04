@@ -6,8 +6,26 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(B216602 main.cpp Image.cpp
         camera.cpp
         camera.h
-        vector3.cpp
         vector3.h
         ray.h
         test_rays_image.cpp
-        test_rays_image.h)
+        test_rays_image.h
+        shapes/sphere.cpp
+        shapes/sphere.h
+        shapes/hittable_list.cpp
+        shapes/hittable_list.h
+        scene.cpp
+        scene.h
+        matrix4x4.h
+        matrix4x4.cpp
+        shapes/cube.cpp
+        shapes/cube.h
+        shapes/plane.cpp
+        shapes/plane.h
+        acceleration/aabb.cpp
+        acceleration/aabb.h
+        acceleration/bvh.cpp
+        acceleration/bvh.h
+        light.h
+        material.h
+        shading.h)

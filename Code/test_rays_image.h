@@ -16,10 +16,7 @@ struct Test_Pixel {
     unsigned char r, g, b;
 };
 
-/**
- * @brief A simple class to represent and manipulate an image.
- * Provides functionality to create, set pixels, and write to a PPM file.
- */
+
 class Test_Image {
 public:
     // Constructor to create a blank image of a given size.

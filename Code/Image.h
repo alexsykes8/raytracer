@@ -20,16 +20,16 @@ struct Pixel {
  */
 class Image {
 public:
-    // a. Constructor that takes a filename to read from.
+    // take a file name to read from
     explicit Image(const std::string& filename);
 
-    // Constructor to create a blank image of a given size.
+    // create a blank image of a given size.
     Image(int width, int height);
 
-    // c. Method that writes the image to a specified file.
+    // write the image to a specified file.
     void write(const std::string& filename) const;
 
-    // b. Members (methods) to read & modify pixel values.
+    // Getters used to read & modify pixel values.
     Pixel getPixel(int x, int y) const;
     void setPixel(int x, int y, const Pixel& p);
 
@@ -38,7 +38,7 @@ public:
     int getHeight() const { return m_height; }
 
 private:
-    // Helper method to read the PPM file, called by the constructor.
+    // Helper method to read the PPM file
     void read(const std::string& filename);
 
     int m_width;
