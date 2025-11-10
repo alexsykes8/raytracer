@@ -62,7 +62,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                     Vector3 random_offset = random_in_unit_sphere_tracer() * roughness;
                     Vector3 glossy_dir = (perfect_reflect_dir + random_offset).normalize();
                     if (glossy_dir.dot(rec.normal) > 0) {
-                        Ray reflect_ray(rec.point, glossy_dir);
+                        Ray reflect_ray(rec.point, glossy_dir, r.time);
                         reflected_colour = reflected_colour + ray_colour(reflect_ray, scene, world, depth - 1);
                     }
                 }
@@ -84,7 +84,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                     double cos_t = sqrt(1.0 - sin_t_squared);
                     Vector3 refract_dir = (eta_ratio * V_in) + (eta_ratio * cos_i - cos_t) * N_outward;
 
-                    Ray refract_ray(rec.point, refract_dir.normalize());
+                    Ray refract_ray(rec.point, refract_dir.normalize(), r.time);
                     refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
                 }
             }
@@ -99,7 +99,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                 Vector3 V = (r.origin - rec.point).normalize();
                 Vector3 reflect_dir = reflect(-V, rec.normal).normalize();
 
-                Ray reflect_ray(rec.point, reflect_dir);
+                Ray reflect_ray(rec.point, reflect_dir, r.time);
 
                 reflected_colour = ray_colour(reflect_ray, scene, world, depth - 1);
             }
@@ -119,7 +119,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                     double cos_t = sqrt(1.0 - sin_t_squared);
                     Vector3 refract_dir = (eta_ratio * V_in) + (eta_ratio * cos_i - cos_t) * N_outward;
 
-                    Ray refract_ray(rec.point, refract_dir.normalize());
+                    Ray refract_ray(rec.point, refract_dir.normalize(), r.time);
                     refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
                 }
             }
