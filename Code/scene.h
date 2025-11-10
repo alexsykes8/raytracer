@@ -11,7 +11,7 @@
 class Scene {
 public:
     // load scene from file
-    explicit Scene(const std::string& scene_filepath, bool build_bvh = true, double exposure = 1.0, bool enable_shadows = false);
+    explicit Scene(const std::string& scene_filepath, bool build_bvh = true, double exposure = 1.0, bool enable_shadows = false, int glossy_samples = 0);
 
     // access the loaded camera
     const Camera& getCamera() const { return *m_camera; }
@@ -21,6 +21,7 @@ public:
     const std::vector<PointLight>& getLights() const { return m_lights; }
     double getExposure() const {return m_exposure; }
     bool shadows_enabled() const {return m_shadows_enabled; }
+    int get_glossy_samples() const { return m_glossy_samples;}
 
 
 private:
@@ -31,6 +32,7 @@ private:
     std::vector<PointLight> m_lights; // lights
     double m_exposure = 1.0;
     bool m_shadows_enabled;
+    int m_glossy_samples;
 };
 
 #endif //B216602_SCENE_H

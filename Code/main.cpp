@@ -8,6 +8,11 @@
 #include "tracer.h"
 #include <stdexcept>
 
+// This will only include the non-standard c library if its compiled with OpenMP. This is a post-spec feature
+// to improve runtime by using parallel threads.
+#ifdef _OPENMP
+    #include <omp.h>
+#endif
 
 
 
@@ -19,6 +24,8 @@ int main(int argc, char* argv[]) {
     int samples_per_pixel = 1;
     double exposure = 1.0;
     bool enable_shadows = false;
+    int glossy_samples = 0;
+    bool enable_parallel = false;
 
     for (int i = 1; i<argc; ++i) {
         std::string arg = argv[i];
@@ -62,12 +69,33 @@ int main(int argc, char* argv[]) {
             std::cout << "Shadows enabled" << std::endl;
         }
 
+        else if (arg == "--glossy") {
+            if (i + 1 < argc) {
+                try {
+                    glossy_samples = std::stoi(argv[i + 1]);
+                    i++;
+                    std::cout << "Glossy reflections enabled: " << glossy_samples << " samples." << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "Error: Invalid value for --glossy flag. Must be an integer." << std::endl;
+                    return 1;
+                }
+            } else {
+                std::cerr << "Error: --glossy flag requires a number of samples (e.g., --glossy 16)." << std::endl;
+                return 1;
+            }
+        }
+
+        else if (arg == "--parallel") {
+            enable_parallel = true;
+            std::cout << "Parallel rendering enabled" << std::endl;
+        }
+
     }
     try {
         std::cout << "Loading scene..." << std::endl;
         const std::string scene_file = "../ASCII/scene.txt";
 
-        Scene scene(scene_file, use_bvh, exposure, enable_shadows);
+        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples);
 
         const Camera& camera = scene.getCamera();
         const HittableList& world = scene.getWorld();
@@ -81,9 +109,30 @@ int main(int argc, char* argv[]) {
         std::cout << "Rendering scene (" << width << "x" << height << ") with "
                   << SAMPLES_PER_PIXEL << " samples per pixel..." << std::endl;
 
+        int num_threads = 1;
+        #ifdef _OPENMP
+                if (!enable_parallel) {
+                    omp_set_num_threads(1);
+                }
+                num_threads = omp_get_max_threads();
+        #else
+                if (enable_parallel) {
+                    std::cout << "Warning: --parallel flag ignored. Program was not compiled with OpenMP." << std::endl;
+                }
+        #endif
+
+        std::cout << "Starting render with " << num_threads << " thread(s)..." << std::endl;
+        #ifdef _OPENMP
+        #pragma omp parallel for
+        #endif
+
         for (int y = 0; y < height; ++y) {
             if (y % (height / 20) == 0) {
-                std::cout << "Scanlines remaining: " << (height - y) << std::endl;
+                #ifdef _OPENMP
+                                std::cout << "Scanlines remaining: " << (height - y) << " (Thread " << omp_get_thread_num() << ")" << std::endl;
+                #else
+                                std::cout << "Scanlines remaining: " << (height - y) << std::endl;
+                #endif
             }
             for (int x = 0; x < width; ++x) {
                 Vector3 pixel_color_vec(0, 0, 0);

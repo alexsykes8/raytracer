@@ -20,7 +20,8 @@ static void read_vector(std::stringstream& ss, Vector3& vec) {
     }
 }
 
-Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows) : m_exposure(exposure) , m_shadows_enabled(enable_shadows) {
+Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples)
+            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples) {
     // m_camera is initially null
     parseSceneFile(scene_filepath);
 
@@ -63,6 +64,8 @@ void Scene::parseSceneFile(const std::string& filepath) {
     Vector3 cam_location, cam_gaze, cam_up;
     double cam_focal = 0.0, cam_sensor_w = 0.0, cam_sensor_h = 0.0;
     int cam_res_x = 0, cam_res_y = 0;
+    double cam_f_stop = 99999.0;
+    double cam_focal_distance = 10.0;
 
     // Temporary storage for shape values.
     Vector3 translation, rotation, scale_vec;
@@ -76,6 +79,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
 
     // Temporary storage for material properties.
     Material temp_mat;
+
 
     while (std::getline(file, line)) {
         std::cout << "Processing line: " << line << std::endl;
@@ -128,7 +132,8 @@ void Scene::parseSceneFile(const std::string& filepath) {
             m_camera = std::make_unique<Camera>(
                 cam_location, cam_gaze, cam_up,
                 cam_focal, cam_sensor_w, cam_sensor_h,
-                cam_res_x, cam_res_y
+                cam_res_x, cam_res_y,
+                cam_f_stop, cam_focal_distance
             );
             current_block_type = "NONE";
             continue;
@@ -233,6 +238,8 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "focal_length") { ss >> cam_focal; }
             else if (token == "sensor_size") { ss >> cam_sensor_w >> cam_sensor_h; }
             else if (token == "resolution") { ss >> cam_res_x >> cam_res_y; }
+            else if (token == "f_stop") { ss >> cam_f_stop; }
+            else if (token == "focal_distance") { ss >> cam_focal_distance; }
         }
         else if (current_block_type == "POINT_LIGHT") {
             if (token == "location") {read_vector(ss, light_pos); }

@@ -8,8 +8,9 @@
 
 #include <string>
 #include <stdexcept>
-#include "vector3.h" // Assuming Vector3.h contains the Vector3 class and Ray struct
-#include "ray.h"     // Included via Vector3.h in the provided Vector3.h file.
+#include "vector3.h"
+#include "ray.h"
+#include <cmath>
 
 /**
  * @brief Implements the pin-hole camera model and generates viewing rays.
@@ -26,10 +27,12 @@ public:
             double sensor_width,
             double sensor_height,
             int resolution_x,
-            int resolution_y
+            int resolution_y,
+            double f_stop,
+            double focal_distance
         );
     // Converts normalized pixel coordinates (px, py) to a ray in world coordinates.
-    Ray generateRay(float px, float py) const;
+    Ray generateRay(float px, float py, double time = 0.0) const;
 
     // Getters for resolution
     int getResolutionX() const { return m_resolution_x; }
@@ -45,6 +48,9 @@ private:
     double m_sensor_height;
     int m_resolution_x;
     int m_resolution_y;
+
+    double m_aperture_radius;
+    double m_focal_distance;
 
     // Camera Basis Vectors, the orthonormal basis for the camera's local space in world coordinates.
     Vector3 m_camera_u; // The calculated 'Right' vector

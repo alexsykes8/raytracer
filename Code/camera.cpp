@@ -7,6 +7,17 @@
 #include <sstream>
 #include <iostream>
 #include "vector3.h"
+#include <cstdlib>
+
+inline Vector3 random_in_unit_disk() {
+    while (true) {
+        auto p = Vector3 ( (rand() / (RAND_MAX + 1.0)) * 2.0 - 1.0,
+                            (rand() / (RAND_MAX + 1.0)) * 2.0 - 1.0,
+                            0.0);
+        if (p.dot(p) < 1.0)
+            return p;
+    }
+}
 
 
 Camera::Camera(
@@ -17,7 +28,9 @@ Camera::Camera(
     double sensor_width,
     double sensor_height,
     int resolution_x,
-    int resolution_y
+    int resolution_y,
+    double f_stop,
+    double focal_distance
 ) : m_location(location),
       m_gaze_direction_hint(gaze_direction_hint),
       m_up_vector_hint(up_vector_hint),
@@ -25,9 +38,18 @@ Camera::Camera(
       m_sensor_width(sensor_width),
       m_sensor_height(sensor_height),
       m_resolution_x(resolution_x),
-      m_resolution_y(resolution_y)
+      m_resolution_y(resolution_y),
+      m_focal_distance(focal_distance)
 {
-    // After storing parameters, compute the basis vectors.
+    // compute aperture
+    double focal_length_metres = m_focal_length / 1000.0;
+    if (f_stop > 0) {
+        m_aperture_radius = focal_length_metres / (2.0 * f_stop);
+    }
+    else {
+        m_aperture_radius = 0.0;
+    }
+    // Compute the basis vectors.
     computeCameraBasis();
 }
 
@@ -53,7 +75,7 @@ void Camera::computeCameraBasis() {
 
 // Convert pixel coordinates to a ray in world coordinates.
 
-Ray Camera::generateRay(float px, float py) const {
+Ray Camera::generateRay(float px, float py, double time) const {
 
     // Map pixel coordinates (px, py) to the image plane
 
@@ -75,32 +97,22 @@ Ray Camera::generateRay(float px, float py) const {
     double u_coord = (0.5 - px) * m_sensor_width;
     double v_coord = (py - 0.5) * m_sensor_height;
 
-    // Calculate the Ray Direction in World Space
+    Vector3 pinhole_dir = (m_focal_length * m_camera_w) +
+                          (u_coord * m_camera_u) +
+                          (v_coord * m_camera_v);
+    pinhole_dir = pinhole_dir.normalize();
 
-    // The center of the image plane is defined by the focal length along the W (gaze) vector.
-    // The point on the image plane (P) is found by moving from the center of the sensor by
-    // u_coord along U and v_coord along V.
+    if (m_aperture_radius <= 0.0) {
+        return Ray(m_location, pinhole_dir, time);
+    }
 
-    // The image plane point in World Coordinates is P_world = (FocalLength * W) + (u_coord * U) + (v_coord * V)
+    Vector3 focal_point = m_location + pinhole_dir * m_focal_distance;
 
-    Vector3 image_plane_point =
-        (m_focal_length * m_camera_w) +
-        (u_coord * m_camera_u) +
-        (v_coord * m_camera_v);
+    Vector3 random_disk_pt = random_in_unit_disk() * m_aperture_radius;
+    Vector3 lens_offset = m_camera_u * random_disk_pt.x + m_camera_v * random_disk_pt.y;
+    Vector3 ray_origin = m_location + lens_offset;
 
-    // The ray direction is the vector from the camera's origin (m_location) to the point on the image plane.
-    // Since the ray direction is calculated relative to the camera origin (P_world - m_location),
-    // and since m_location is added to all components to get P_world, the ray direction is the image_plane_point vector itself.
-    // Ray_Direction = (P_world - Origin) / |P_world - Origin|
+    Vector3 new_dir = (focal_point - ray_origin).normalize();
 
-    // Since the camera is at the origin of its local coordinate system, the vector from the origin to
-    // the point on the image plane *is* the direction vector.
-    Vector3 ray_direction = image_plane_point.normalize();
-
-    // Construct the Ray
-    Ray r;
-    r.origin = m_location;
-    r.direction = ray_direction; // Already normalized
-
-    return r;
+    return Ray(ray_origin, new_dir, time);
 }

@@ -130,6 +130,13 @@ def export_scene_data(filepath):
                     f.write(f"  focal_length {cam_data.lens:.6f}\n")
                     f.write(f"  sensor_size {cam_data.sensor_width:.6f} {cam_data.sensor_height:.6f}\n")
                     f.write(f"  resolution {scene.render.resolution_x} {scene.render.resolution_y}\n")
+
+                    if cam_data.dof.use_dof:
+                        f.write(f"  f_stop {cam_data.dof.aperture_fstop:.6f}\n")
+                        f.write(f"  focal_distance {cam_data.dof.focus_distance:.6f}\n")
+                    else:
+                        f.write(f"  f_stop 99999.0\n")
+                        f.write(f"  focal_distance 10.0\n")
                     f.write("END_CAMERA\n\n")
 
                 # --- EXPORT POINT LIGHT ---

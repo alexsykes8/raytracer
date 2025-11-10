@@ -21,6 +21,8 @@ CAMERA
   focal_length 50.000000
   sensor_size 36.000000 24.000000
   resolution 1920 1080
+  f_stop 6.000000
+  focal_distance 2.000000
 END_CAMERA
 
 PLANE
@@ -42,10 +44,10 @@ SPHERE
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
   scale 0.199892 0.175404 0.086268
-  ambient 0.030000 0.090000 0.100000
-  diffuse 0.371000 0.949000 1.000000
+  ambient 0.030000 0.090000 0.000000
+  diffuse 0.371000 0.949000 0.000000
   specular 0.800000 0.800000 0.800000
-  shininess 152.000000
+  shininess 70.000000
   reflectivity 0.373000
   transparency 0.000000
   refractive_index 2.828000
@@ -53,6 +55,15 @@ END_SPHERE
 
 CUBE
   translation -0.560527 0.364085 0.074003
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.124362 0.124362 0.265639
+  transparency 1.000000
+  refractive_index 1.520000
+END_CUBE
+
+CUBE
+  translation 1.471166 -0.428209 0.852862
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
   scale 0.124362 0.124362 0.265639

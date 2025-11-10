@@ -18,11 +18,13 @@ struct Ray {
     // The unit vector defining the direction of the ray.
     Vector3 direction;
 
+    double time;
+
     // Constructor to create a Ray object
-    Ray(const Vector3& o, const Vector3& d) : origin(o), direction(d) {}
+    Ray(const Vector3& o, const Vector3& d, double t = 0.0) : origin(o), direction(d), time(t) {}
 
     // Default constructor
-    Ray() : origin(Vector3()), direction(Vector3()) {}
+    Ray() : origin(Vector3()), direction(Vector3()), time(0.0) {}
 
     //Returns a 3D point on the ray at distance t.
     Vector3 point_at_parameter(double t) const {

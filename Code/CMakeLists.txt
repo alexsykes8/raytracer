@@ -30,3 +30,9 @@ add_executable(B216602 main.cpp Image.cpp
         material.h
         shading.h
         tracer.h)
+
+find_package(OpenMP QUIET)
+if(OpenMP_FOUND)
+    message(STATUS "Found OpenMP, enabling parallel build.")
+    target_link_libraries(B216602 PUBLIC OpenMP::OpenMP_CXX)
+endif()
