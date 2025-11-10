@@ -106,12 +106,18 @@ bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec)
     if (max_c - std::abs(object_point.x) < epsilon) {
         // Hit an X-face
         object_normal = Vector3(object_point.x > 0 ? 1 : -1, 0, 0);
+        rec.uv.u = (object_point.z + 1.0) / 2.0;
+        rec.uv.v = (object_point.y + 1.0) / 2.0;
     } else if (max_c - std::abs(object_point.y) < epsilon) {
         // Hit a Y-face
         object_normal = Vector3(0, object_point.y > 0 ? 1 : -1, 0);
+        rec.uv.u = (object_point.x + 1.0) / 2.0;
+        rec.uv.v = (object_point.z + 1.0) / 2.0;
     } else {
         // Hit a Z-face
         object_normal = Vector3(0, 0, object_point.z > 0 ? 1 : -1);
+        rec.uv.u = (object_point.x + 1.0) / 2.0;
+        rec.uv.v = (object_point.y + 1.0) / 2.0;
     }
 
     Vector3 outward_normal = (m_inverse_transpose * object_normal).normalize();

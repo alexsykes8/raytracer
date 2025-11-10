@@ -3,6 +3,47 @@ import mathutils
 import os
 from math import pi
 
+def write_material_properties(f, obj):
+    """
+    Helper function to write custom material properties if they exist.
+    It accesses properties from the object's active material.
+    """
+    
+    if not obj.active_material:
+        return # No material, so no properties to write
+
+    mat = obj.active_material
+
+    if "ambient" in mat:
+        ambient_vec = mathutils.Vector(mat['ambient'])
+        f.write(f"  ambient {format_vector(ambient_vec)}\n")
+
+    if "diffuse" in mat:
+        diffuse_vec = mathutils.Vector(mat['diffuse'])
+        f.write(f"  diffuse {format_vector(diffuse_vec)}\n")
+
+    if "specular" in mat:
+        specular_vec = mathutils.Vector(mat['specular'])
+        f.write(f"  specular {format_vector(specular_vec)}\n")
+
+    if "shininess" in mat:
+        f.write(f"  shininess {mat['shininess']:.6f}\n")
+
+    if "reflectivity" in mat:
+        f.write(f"  reflectivity {mat['reflectivity']:.6f}\n")
+        
+    if "transparency" in mat:
+        f.write(f"  transparency {mat['transparency']:.6f}\n")
+
+    if "refractive_index" in mat:
+        f.write(f"  refractive_index {mat['refractive_index']:.6f}\n")
+
+    if "texture_file" in mat:
+        texture_name = mat['texture_file']
+        if texture_name:
+            cleaned_name = texture_name.replace('//', '').replace('\\', '/')
+            f.write(f"  texture_file {cleaned_name}\n")
+
 def get_primitive_type(obj):
     mesh = obj.data
 
@@ -102,6 +143,10 @@ def export_scene_data(filepath):
                     colour = light_data.color
                     # the final intensity is the energy multiplied by the colour
                     f.write(f"  intensity {colour[0] * energy:.6f} {colour[1] * energy:.6f} {colour[2] * energy:.6f}\n")
+                    radius = 0.0
+                    if "light_radius" in obj:
+                        radius = obj["light_radius"]
+                    f.write(f"  radius {radius:.6f}\n")
                     f.write("END_POINT_LIGHT\n\n")
 
                 # --- EXPORT MESHES ---
@@ -119,6 +164,7 @@ def export_scene_data(filepath):
                         f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n")
                         # Export non-uniform scaling (X, Y, Z)
                         f.write(f"  scale {format_vector(obj.scale)}\n")
+                        write_material_properties(f, obj)
                         f.write("END_SPHERE\n\n")
 
                     # --- EXPORT CUBE ---
@@ -132,6 +178,7 @@ def export_scene_data(filepath):
                         f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n") # used for visual testing
                         # Assumes uniform scaling, as requested for 1D scale.
                         f.write(f"  scale {format_vector(obj.scale)}\n")
+                        write_material_properties(f, obj)
                         f.write("END_CUBE\n\n")
 
                     # --- EXPORT PLANE ---
@@ -143,6 +190,7 @@ def export_scene_data(filepath):
                             for vertex in obj.data.vertices:
                                 world_coord = obj.matrix_world @ vertex.co
                                 f.write(f"  corner {format_vector(world_coord)}\n")
+                            write_material_properties(f, obj)
                             f.write("END_PLANE\n\n")
 
         print(f"Scene successfully exported to: {filepath}")

@@ -38,7 +38,7 @@ private:
     bool rayTriangleIntersect(
         const Ray& ray, double t_min, double t_max,
         const Vector3& v0, const Vector3& edge1, const Vector3& edge2,
-        double& out_t
+        double& out_t, double& out_u, double& out_v
     ) const;
 };
 #endif //B216602_PLANE_H

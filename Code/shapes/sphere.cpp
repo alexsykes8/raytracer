@@ -4,6 +4,7 @@
 
 #include "sphere.h"
 #include <limits>
+#include <cmath>
 
 // Helper function to update min/max bounds based on a point
 static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
@@ -93,5 +94,17 @@ bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& re
     rec.set_face_normal(ray, outward_normal);
 
     rec.mat = m_material;
+
+    Vector3 p = object_normal.normalize();
+    #ifndef M_PI
+    #define M_PI 3.14159265358979323846
+    #endif
+
+    double theta = asin(p.y);
+    double phi = atan2(-p.z, p.x) + M_PI;
+
+    rec.uv.u = phi / (2.0 * M_PI);
+    rec.uv.v = (theta + M_PI / 2.0) / M_PI;
+
     return true;
 }

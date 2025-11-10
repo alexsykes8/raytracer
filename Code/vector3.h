@@ -40,6 +40,11 @@ public:
         return Vector3(x * t, y * t, z * t);
     }
 
+    // Scalar division
+    Vector3 operator/(double t) const {
+        return Vector3(x / t, y / t, z / t);
+    }
+
     // Vector addition
     Vector3 operator+(const Vector3& other) const {
         return Vector3(x + other.x, y + other.y, z + other.z);

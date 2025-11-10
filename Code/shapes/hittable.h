@@ -9,12 +9,16 @@
 #include "../ray.h"
 #include "../acceleration/aabb.h"
 #include "../material.h"
+#include "../vector2.h"
 
 struct HitRecord {
     double t; // Distance from ray origin to intersection point
     Vector3 point; // 3D coord of the intersection point
     Vector3 normal; // Normal vector at the intersection point
     Material mat;
+
+    Vector2 uv; // Texture coordinates
+
     bool front_face;
 
     inline void set_face_normal(const Ray& ray, const Vector3& outward_normal) {

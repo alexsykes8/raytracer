@@ -62,7 +62,7 @@ Plane::Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vect
 bool Plane::rayTriangleIntersect(
     const Ray& ray, double t_min, double t_max,
     const Vector3& v0, const Vector3& edge1, const Vector3& edge2,
-    double& out_t
+    double& out_t, double& out_u, double& out_v
 ) const {
     Vector3 h = ray.direction.cross(edge2);
     double a = edge1.dot(h);
@@ -87,6 +87,8 @@ bool Plane::rayTriangleIntersect(
     out_t = f * edge2.dot(q);
 
     if (out_t > t_min && out_t < t_max) {
+        out_u = u;
+        out_v = v;
         return true;
     }
 
@@ -96,25 +98,36 @@ bool Plane::rayTriangleIntersect(
 
 bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
 
-    double t1, t2;
+    double t1, u1, v1;
+    double t2, u2, v2;
 
     // Check intersection with the first triangle
-    bool hit1 = rayTriangleIntersect(ray, t_min, t_max, m_t1_v0, m_t1_edge1, m_t1_edge2, t1);
+    bool hit1 = rayTriangleIntersect(ray, t_min, t_max, m_t1_v0, m_t1_edge1, m_t1_edge2, t1, u1, v1);
 
     // Check intersection with the second triangle
-    bool hit2 = rayTriangleIntersect(ray, t_min, t_max, m_t2_v0, m_t2_edge1, m_t2_edge2, t2);
+    bool hit2 = rayTriangleIntersect(ray, t_min, t_max, m_t2_v0, m_t2_edge1, m_t2_edge2, t2, u2, v2);
 
     if (!hit1 && !hit2) {
         return false; // Missed both
     }
 
     double t_hit;
+    bool hit_triangle_1;
+
     if (hit1 && hit2) {
-        t_hit = std::min(t1, t2); // Hit both, take the closer one
-    } else if (hit1) {
-        t_hit = t1; // Hit only triangle 1
+        if (t1 < t2) {  // hit triangle 1 first
+            t_hit = t1;
+            hit_triangle_1 = true;
+        } else {
+            t_hit = t2;     // hit triangle 2 first
+            hit_triangle_1 = false;
+        }
+    } else if (hit1) {  // hit just triangle 1
+        t_hit = t1;
+        hit_triangle_1 = true;
     } else {
-        t_hit = t2; // Hit only triangle 2
+        t_hit = t2;     // hit just triangle 2
+        hit_triangle_1 = false;
     }
 
     // Valid hit
@@ -125,5 +138,13 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
     rec.set_face_normal(ray, m_normal);
 
     rec.mat = m_material;
+
+    if (hit_triangle_1) {
+        rec.uv.u = u1;
+        rec.uv.v = v1;
+    } else {
+        rec.uv.u = 1.0 - v2;
+        rec.uv.v = u2 + v2;
+    }
     return true;
 }

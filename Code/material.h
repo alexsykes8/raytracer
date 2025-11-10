@@ -6,15 +6,30 @@
 #define B216602_MATERIAL_H
 
 #include "vector3.h"
+#include <string>
+#include <memory>
+
+
+class Image;
 
 // defines the Blinn-Phong material properties
 struct Material {
-    Vector3 ambient;
-    Vector3 diffuse;
-    Vector3 specular;
-    double shininess;
+    Vector3 ambient;    // each component range is [0,1]. This is the colour when hit by global ambient light. It should be about 10% of diffuse.
+    Vector3 diffuse;    // each component range is [0,1]. This is the colour when hit by light. (base colour)
+    Vector3 specular;   // each component range is [0,1]
+    double shininess;   // component range is [0,inf]
+    // if specular is black [0,0,0] then you will not see any shininess.
 
-    Material() : ambient(0.1, 0.1, 0.1), diffuse(0.7, 0.7, 0.7), specular(1.0, 1.0, 1.0), shininess(32.0) {}
+    double reflectivity = 0.0;  // 0.0 is not reflective 1.0 is reflective
+    double transparency = 0.0;  // 0.0 is opaque 1.0 is transparent
+    // reflectivity and transparency cannot add to more than 1
+
+    double refractive_index = 1.0;  // 1.0 is no refraction, 1.33 is water, 1.52 is glass, 2.42 is a diamond
+
+    std::string texture_filename;
+    std::shared_ptr<Image> texture;
+
+    Material() : ambient(0.1, 0.1, 0.1), diffuse(0.7, 0.7, 0.7), specular(1.0, 1.0, 1.0), shininess(32.0), texture(nullptr) {}
 };
 
 #endif //B216602_MATERIAL_H

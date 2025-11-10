@@ -10,6 +10,7 @@
 #include <vector>
 #include "acceleration/bvh.h"
 #include "material.h"
+#include "Image.h"
 
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.
@@ -19,7 +20,7 @@ static void read_vector(std::stringstream& ss, Vector3& vec) {
     }
 }
 
-Scene::Scene(const std::string& scene_filepath, bool build_bvh) {
+Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows) : m_exposure(exposure) , m_shadows_enabled(enable_shadows) {
     // m_camera is initially null
     parseSceneFile(scene_filepath);
 
@@ -71,6 +72,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
 
     // Temporary storage for the lights.
     Vector3 light_pos, light_intensity;
+    double light_radius = 0.0;
 
     // Temporary storage for material properties.
     Material temp_mat;
@@ -90,6 +92,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             current_block_type = "POINT_LIGHT";
             light_pos = Vector3(0,0,0);
             light_intensity = Vector3(1,1,1);
+            light_radius = 0.0;
             continue;
         }
 
@@ -132,12 +135,22 @@ void Scene::parseSceneFile(const std::string& filepath) {
         }
 
         if (token == "END_POINT_LIGHT") {
-            m_lights.push_back(PointLight(light_pos, light_intensity));
+            m_lights.push_back(PointLight(light_pos, light_intensity, light_radius));
             current_block_type = "None";
             continue;
         }
 
         if (token == "END_SPHERE") {
+            if (!temp_mat.texture_filename.empty()) {
+                std::string texture_path = "../" + temp_mat.texture_filename;
+                try {
+                    temp_mat.texture = std::make_shared<Image>(texture_path);
+                    std::cout << "  Successfully loaded texture: " << texture_path << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "  Error loading texture: " << e.what() << std::endl;
+                    temp_mat.texture = nullptr;
+                }
+            }
             // Build Transformation Matrices
             Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
             Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
@@ -157,6 +170,16 @@ void Scene::parseSceneFile(const std::string& filepath) {
             continue;
         }
         if (token == "END_CUBE") {
+            if (!temp_mat.texture_filename.empty()) {
+                std::string texture_path = "../" + temp_mat.texture_filename;
+                try {
+                    temp_mat.texture = std::make_shared<Image>(texture_path);
+                    std::cout << "  Successfully loaded texture: " << texture_path << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "  Error loading texture: " << e.what() << std::endl;
+                    temp_mat.texture = nullptr;
+                }
+            }
             // Build transforms for Cube
             Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
             Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
@@ -178,6 +201,16 @@ void Scene::parseSceneFile(const std::string& filepath) {
         }
 
         if (token == "END_PLANE") {
+            if (!temp_mat.texture_filename.empty()) {
+                std::string texture_path = "../" + temp_mat.texture_filename;
+                try {
+                    temp_mat.texture = std::make_shared<Image>(texture_path);
+                    std::cout << "  Successfully loaded texture: " << texture_path << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "  Warning: Could not load texture '" << texture_path << "'. " << e.what() << std::endl;
+                    temp_mat.texture = nullptr;
+                }
+            }
             if (temp_corners.size() == 4) {
                 // Add the plane object to the world.
                 m_world.add(std::make_shared<Plane>(
@@ -203,7 +236,12 @@ void Scene::parseSceneFile(const std::string& filepath) {
         }
         else if (current_block_type == "POINT_LIGHT") {
             if (token == "location") {read_vector(ss, light_pos); }
-            else if (token == "intensity") { read_vector(ss, light_intensity); }
+            else if (token == "intensity") {
+                read_vector(ss, light_intensity);
+            }
+            else if (token == "radius") {
+                ss >> light_radius;
+            }
         }
         else if (current_block_type == "SPHERE") {
             if (token == "translation") { read_vector(ss, translation); }
@@ -213,6 +251,13 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
             else if (token == "specular") { read_vector(ss, temp_mat.specular); }
             else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
+            else if (token == "texture_file") {
+                ss >> temp_mat.texture_filename;
+                std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
+            }
         }
         else if (current_block_type == "CUBE") {
             if (token == "translation") { read_vector(ss, translation); }
@@ -222,6 +267,13 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
             else if (token == "specular") { read_vector(ss, temp_mat.specular); }
             else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
+            else if (token == "texture_file") {
+                ss >> temp_mat.texture_filename;
+                std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
+            }
         }
         else if (current_block_type == "PLANE") {
             if (token == "corner") {
@@ -233,6 +285,13 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
             else if (token == "specular") { read_vector(ss, temp_mat.specular); }
             else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
+            else if (token == "texture_file") {
+                ss >> temp_mat.texture_filename;
+                std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
+            }
         }
     }
 }

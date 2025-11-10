@@ -7,54 +7,164 @@
 #include "ray.h"
 #include "Image.h"
 #include "shapes/hittable.h"
+#include "shapes/hittable_list.h"
 #include "vector3.h"
 
 #include <cmath>
 #include <algorithm>
+#include <cstdlib>
 
 #ifndef B216602_SHADING_H
 #define B216602_SHADING_H
+
+inline double random_double () {
+    return rand() / (RAND_MAX + 1.0);
+}
+
+inline Vector3 random_in_unit_sphere() {
+    while (true) {
+        auto p = Vector3(random_double() * 2 - 1, random_double() * 2 - 1, random_double() * 2 - 1);
+        if (p.dot(p) < 1.0)
+            return p;
+    }
+}
+
+inline Vector3 random_point_on_light(const PointLight& light) {
+    if (light.radius == 0.0) {
+        return light.position;
+    }
+    return light.position + random_in_unit_sphere().normalize() * light.radius;
+}
 
 inline Vector3 component_wise_multiply(const Vector3& a, const Vector3& b) {
     return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
-inline Pixel blinn_phong_shade(const HitRecord& rec, const Scene& scene, const Ray& view_ray) {
-    const Vector3 P = rec.point;                          // Intersection point
-    const Vector3 N = rec.normal.normalize();         // Surface normal
-    const Vector3 V = (view_ray.origin - P).normalize(); // View vector
+inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, const HittableList& world) {
 
     const Material& mat = rec.mat;
 
-    // Ambient Component
-    Vector3 global_ambient_light(0.2, 0.2, 0.2);
-    Vector3 final_color_vec = component_wise_multiply(mat.ambient, global_ambient_light);
+    Vector3 diffuse_colour;
+    if (mat.texture) {
+        // Get the (u,v) coordinates from the hit record for the texture
+        double u = rec.uv.u;
+        double v = rec.uv.v;
 
-    // Loop over all lights for Diffuse and Specular
-    for (const auto& light : scene.getLights()) {
-        Vector3 L = (light.position - P).normalize(); // Light vector
-        Vector3 H = (L + V).normalize();              // Halfway vector
+        // Get the texture dimensions
+        int tex_width = mat.texture->getWidth();
+        int tex_height = mat.texture->getHeight();
 
-        // Diffuse Component
-        double L_dot_N = std::max(0.0, L.dot(N));
-        Vector3 diffuse = component_wise_multiply(mat.diffuse, light.intensity) * L_dot_N;
+        // Convert (u,v) [0,1] to pixel (x,y) coordinates
+        int x = static_cast<int>(u * (tex_width - 1));
+        int y = static_cast<int>((1.0 - v) * (tex_height - 1));
 
-        // Specular Component
-        double H_dot_N = std::max(0.0, H.dot(N));
-        Vector3 specular = component_wise_multiply(mat.specular, light.intensity) * std::pow(H_dot_N, mat.shininess);
+        // Clamp values
+        x = std::min(std::max(x, 0), tex_width - 1);
+        y = std::min(std::max(y, 0), tex_height - 1);
 
-        // Add this light's contribution
-        final_color_vec = final_color_vec + diffuse + specular;
+        // Get the pixel from the texture
+        Pixel tex_pixel = mat.texture->getPixel(x, y);
+
+        // Convert the Pixel (0-255) back to a Vector3 (0-1)
+        diffuse_colour = Vector3(tex_pixel.r / 255.0,
+                                tex_pixel.g / 255.0,
+                                tex_pixel.b / 255.0);
+    } else {
+        // No texture, just use the material's diffuse color
+        diffuse_colour = mat.diffuse;
     }
 
-    // Convert final vector to Pixel
-    // Clamp color values to [0, 1] before scaling to [0, 255]
-    auto clamp = [](double val) { return std::max(0.0, std::min(1.0, val)); };
+    // Ambient Component
+    Vector3 global_ambient_light(0.2, 0.2, 0.2);
+    Vector3 final_colour_vec = component_wise_multiply(mat.ambient, global_ambient_light);
 
-    unsigned char r = static_cast<unsigned char>(clamp(final_color_vec.x) * 255.0);
-    unsigned char g = static_cast<unsigned char>(clamp(final_color_vec.y) * 255.0);
-    unsigned char b = static_cast<unsigned char>(clamp(final_color_vec.z) * 255.0);
+    const Vector3 P = rec.point;
+    const Vector3 N = rec.normal.normalize();
+    double exposure = scene.getExposure();
 
-    return {r, g, b};
+    const int SHADOW_SAMPLES = 16;
+
+    for (const auto& light : scene.getLights()) {
+        double shadow_factor = 1.0;
+
+        if (scene.shadows_enabled()) {
+            shadow_factor = 0.0;
+            for (int i = 0; i < SHADOW_SAMPLES; i++) {
+                Vector3 point_on_light = random_point_on_light(light);
+                Vector3 shadow_ray_dir = point_on_light - P;
+                double dist_to_light = shadow_ray_dir.length();
+                shadow_ray_dir = shadow_ray_dir.normalize();
+                Ray shadow_ray(P, shadow_ray_dir);
+                HitRecord shadow_rec;
+                if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
+                    shadow_factor += 1.0;
+                }
+            }
+            shadow_factor /= SHADOW_SAMPLES;
+        }
+        if (shadow_factor > 0) {
+            Vector3 L_raw = light.position - P;
+            double distance_squared = L_raw.dot(L_raw);
+            double falloff = 1.0 / distance_squared;
+            Vector3 L = L_raw.normalize(); // Normalized light vector
+            Vector3 light_intensity_at_point = light.intensity * falloff * exposure;
+            double L_dot_N = std::max(0.0, L.dot(N));
+            Vector3 diffuse = component_wise_multiply(diffuse_colour, light_intensity_at_point) * L_dot_N * shadow_factor;
+            final_colour_vec = final_colour_vec + diffuse;
+        }
+    }
+
+    return final_colour_vec;
+}
+inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, const HittableList& world, const Ray& view_ray) {
+    const Vector3 P = rec.point;
+    const Vector3 N = rec.normal.normalize();
+    const Vector3 V = (view_ray.origin - P).normalize();
+    const Material& mat = rec.mat;
+    double exposure = scene.getExposure();
+
+    Vector3 specular_colour(0, 0, 0);
+    const int SHADOW_SAMPLES = 16;
+
+    for (const auto& light : scene.getLights()) {
+
+        double shadow_factor = 1.0;
+
+        if (scene.shadows_enabled()) {
+            shadow_factor = 0.0;
+            for (int i = 0; i < SHADOW_SAMPLES; ++i) {
+
+                Vector3 point_on_light = random_point_on_light(light);
+                Vector3 shadow_ray_dir = point_on_light - P;
+                double dist_to_light = shadow_ray_dir.length();
+                shadow_ray_dir = shadow_ray_dir.normalize();
+
+                Ray shadow_ray(P, shadow_ray_dir);
+                HitRecord shadow_rec;
+
+                if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
+                    shadow_factor += 1.0;
+                }
+            }
+            shadow_factor /= SHADOW_SAMPLES;
+        }
+
+        if (shadow_factor > 0) {
+            Vector3 L_raw = light.position - P;
+            double distance_squared = L_raw.dot(L_raw);
+            double falloff = 1.0 / distance_squared;
+            Vector3 L = L_raw.normalize();
+            Vector3 H = (L + V).normalize();
+
+            Vector3 light_intensity_at_point = light.intensity * falloff * exposure;
+
+            double H_dot_N = std::max(0.0, H.dot(N));
+            Vector3 specular = component_wise_multiply(mat.specular, light_intensity_at_point) * std::pow(H_dot_N, mat.shininess) * shadow_factor;
+
+            specular_colour = specular_colour + specular;
+        }
+    }
+
+    return specular_colour;
 }
 #endif //B216602_SHADING_H

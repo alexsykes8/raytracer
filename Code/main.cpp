@@ -5,33 +5,69 @@
 #include <string>
 #include <vector>
 #include "material.h"
-#include "shading.h"
+#include "tracer.h"
+#include <stdexcept>
 
-
-Pixel color_from_normal(const Vector3& normal) {
-    unsigned char r = static_cast<unsigned char>((normal.x + 1.0) * 0.5 * 255);
-    unsigned char g = static_cast<unsigned char>((normal.y + 1.0) * 0.5 * 255);
-    unsigned char b = static_cast<unsigned char>((normal.z + 1.0) * 0.5 * 255);
-    return {r, g, b};
-}
 
 
 
 int main(int argc, char* argv[]) {
+    // random number for antialiasing
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     bool use_bvh = true;
+    int samples_per_pixel = 1;
+    double exposure = 1.0;
+    bool enable_shadows = false;
 
     for (int i = 1; i<argc; ++i) {
-        if (std::string(argv[i]) == "--no-bvh") {
+        std::string arg = argv[i];
+        if (arg == "--no-bvh") {
             use_bvh = false;
             std::cout << "BVH disabled" << std::endl;
             break;
         }
+        if (arg == "--aa") {
+            if (i + 1 < argc) {
+                try {
+                    samples_per_pixel = std::stoi(argv[i + 1]);
+                    i++;
+                    std::cout << "Antialiasing enabled: " << samples_per_pixel << " samples/pixel." << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "Error: Invalid value for --aa flag. Must be an integer." << std::endl;
+                    return 1;
+                }
+            } else {
+                std::cerr << "Error: --aa flag requires a number of samples (e.g., --aa 16)." << std::endl;
+                return 1;
+            }
+        }
+        else if (arg == "--exposure") {
+            if (i + 1 < argc) {
+                try {
+                    exposure = std::stod(argv[i + 1]);
+                    i++;
+                    std::cout << "Exposure set to: " << exposure << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "Error: Invalid value for --exposure flag." << std::endl;
+                    return 1;
+                }
+            } else {
+                std::cerr << "Error: --exposure flag requires a value (e.g., --exposure 0.5)." << std::endl;
+                return 1;
+            }
+        }
+        else if (arg == "--shadows") {
+            enable_shadows = true;
+            std::cout << "Shadows enabled" << std::endl;
+        }
+
     }
     try {
         std::cout << "Loading scene..." << std::endl;
         const std::string scene_file = "../ASCII/scene.txt";
 
-        Scene scene(scene_file, use_bvh);
+        Scene scene(scene_file, use_bvh, exposure, enable_shadows);
 
         const Camera& camera = scene.getCamera();
         const HittableList& world = scene.getWorld();
@@ -39,27 +75,35 @@ int main(int argc, char* argv[]) {
         const int width = camera.getResolutionX();
         const int height = camera.getResolutionY();
         Image image(width, height);
-        Pixel background_color = {135, 206, 235};
 
-        std::cout << "Rendering scene (" << width << "x" << height << ")..." << std::endl;
+        const int SAMPLES_PER_PIXEL = samples_per_pixel;
+
+        std::cout << "Rendering scene (" << width << "x" << height << ") with "
+                  << SAMPLES_PER_PIXEL << " samples per pixel..." << std::endl;
 
         for (int y = 0; y < height; ++y) {
-            if (y % (height / 10) == 0) {
+            if (y % (height / 20) == 0) {
                 std::cout << "Scanlines remaining: " << (height - y) << std::endl;
             }
             for (int x = 0; x < width; ++x) {
-                float px = (static_cast<float>(x) + 0.5f) / width;
-                float py = (static_cast<float>(y) + 0.5f) / height;
+                Vector3 pixel_color_vec(0, 0, 0);
 
-                Ray ray = camera.generateRay(px, py);
-                HitRecord rec;
+                for (int s = 0; s < SAMPLES_PER_PIXEL; ++s) {
 
-                if (world.intersect(ray, 0.001, 100000.0, rec)) {
-                    Pixel final_color = blinn_phong_shade(rec, scene, ray);
-                    image.setPixel(x, y, final_color);
-                } else {
-                    image.setPixel(x, y, background_color);
+                    float random_u = static_cast<float>(rand()) / (RAND_MAX + 1.0f);
+                    float random_v = static_cast<float>(rand()) / (RAND_MAX + 1.0f);
+
+                    float px = (static_cast<float>(x) + random_u) / width;
+                    float py = (static_cast<float>(y) + random_v) / height;
+
+                    Ray ray = camera.generateRay(px, py);
+
+                    pixel_color_vec = pixel_color_vec + ray_colour(ray, scene, world, MAX_RECURSION_DEPTH);
                 }
+                Vector3 averaged_color_vec = pixel_color_vec * (1.0 / SAMPLES_PER_PIXEL);
+                Pixel final_color = final_colour_to_pixel(averaged_color_vec);
+                image.setPixel(x, y, final_color);
+
             }
         }
 
