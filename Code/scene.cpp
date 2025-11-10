@@ -20,8 +20,8 @@ static void read_vector(std::stringstream& ss, Vector3& vec) {
     }
 }
 
-Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples)
-            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples) {
+Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time)
+            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time) {
     // m_camera is initially null
     parseSceneFile(scene_filepath);
 
@@ -80,6 +80,9 @@ void Scene::parseSceneFile(const std::string& filepath) {
     // Temporary storage for material properties.
     Material temp_mat;
 
+    // Temporary storage for object velocity.
+    Vector3 temp_velocity(0,0,0);
+
 
     while (std::getline(file, line)) {
         std::cout << "Processing line: " << line << std::endl;
@@ -106,6 +109,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             rotation = Vector3(0, 0, 0);
             scale_vec = Vector3(1, 1, 1); // Default scale is (1,1,1)
             temp_mat = Material();
+            temp_velocity = Vector3(0,0,0);
             continue;
         }
         if (token == "CUBE") {
@@ -114,6 +118,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             rotation = Vector3(0, 0, 0);
             scale_vec = Vector3(1, 1, 1); // Default scale is (1,1,1)
             temp_mat = Material();
+            temp_velocity = Vector3(0,0,0);
             continue;
         }
 
@@ -122,6 +127,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             // discards corner data from previous planes. The corners are set lower down at the else if (current_block_type == "PLANE")
             temp_corners.clear();
             temp_mat = Material();
+            temp_velocity = Vector3(0,0,0);
             continue;
         }
 
@@ -170,7 +176,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 inv_transform = transform.inverse();
 
             // Add the completed shape
-            m_world.add(std::make_shared<Sphere>(transform, inv_transform, temp_mat));
+            m_world.add(std::make_shared<Sphere>(transform, inv_transform, temp_mat, temp_velocity));
             current_block_type = "NONE";
             continue;
         }
@@ -199,8 +205,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 inv_transform = transform.inverse();
 
             // Add the object to the world.
-            m_world.add(std::make_shared<Cube>(transform, inv_transform, temp_mat));
-
+            m_world.add(std::make_shared<Cube>(transform, inv_transform, temp_mat, temp_velocity));
             current_block_type = "NONE";
             continue;
         }
@@ -218,8 +223,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             }
             if (temp_corners.size() == 4) {
                 // Add the plane object to the world.
-                m_world.add(std::make_shared<Plane>(
-                    temp_corners[0], temp_corners[1], temp_corners[2], temp_corners[3], temp_mat));
+                m_world.add(std::make_shared<Plane>(temp_corners[0], temp_corners[1], temp_corners[2], temp_corners[3], temp_mat, temp_velocity));
             } else {
                 // Error if the plane does not have corners.
                 std::cerr << "Warning: Plane block ended with " << temp_corners.size() << " corners, expected 4." << std::endl;
@@ -265,6 +269,10 @@ void Scene::parseSceneFile(const std::string& filepath) {
                 ss >> temp_mat.texture_filename;
                 std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
             }
+            else if (token == "velocity") {
+                read_vector(ss, temp_velocity);
+            }
+
         }
         else if (current_block_type == "CUBE") {
             if (token == "translation") { read_vector(ss, translation); }
@@ -280,6 +288,9 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "texture_file") {
                 ss >> temp_mat.texture_filename;
                 std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
+            }
+            else if (token == "velocity") {
+                read_vector(ss, temp_velocity);
             }
         }
         else if (current_block_type == "PLANE") {
@@ -298,6 +309,9 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "texture_file") {
                 ss >> temp_mat.texture_filename;
                 std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
+            }
+            else if (token == "velocity") {
+                read_vector(ss, temp_velocity);
             }
         }
     }

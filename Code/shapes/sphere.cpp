@@ -44,10 +44,12 @@ bool Sphere::getBoundingBox(AABB& output_box) const {
 }
 
 bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
+    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
 
     // Transform the ray into object space
-    Vector3 object_origin = m_inverse_transform * ray.origin;
+    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0;
     Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
+    Ray object_ray(object_origin, object_direction, ray.time);
 
     // testing against a unit sphere at (0,0,0)
     // R(t) = object_origin + t * object_direction
@@ -85,7 +87,6 @@ bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& re
     // Use the original ray to find the world-space hit point
     rec.point = ray.point_at_parameter(rec.t);
 
-    Ray object_ray(object_origin, object_direction);
     Vector3 object_point = object_ray.point_at_parameter(rec.t);
     Vector3 object_normal = object_point - Vector3(0,0,0); // Normal of unit sphere is just the point
     Vector3 outward_normal = (m_inverse_transpose * object_normal).normalize();

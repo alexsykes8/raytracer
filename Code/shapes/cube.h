@@ -10,11 +10,12 @@
 class Cube : public Shape {
 public:
     // Constructor is identical to Sphere's
-    Cube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat)
+    Cube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat,  const Vector3& velocity)
         : m_transform(transform),
           m_inverse_transform(inv_transform),
           m_inverse_transpose(inv_transform.transpose()), // Initialize the inverse-transpose
-          m_material(mat)
+          m_material(mat),
+          m_velocity(velocity)
     {}
 
     virtual bool intersect(
@@ -31,6 +32,7 @@ private:
     Matrix4x4 m_inverse_transform;
     Matrix4x4 m_inverse_transpose;
     Material m_material;
+    Vector3 m_velocity;
 };
 
 #endif //B216602_CUBE_H

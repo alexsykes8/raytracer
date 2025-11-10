@@ -42,7 +42,7 @@ bool Plane::getBoundingBox(AABB& output_box) const {
 // Epsilon for floating point comparisons
 const double EPSILON = 1e-6;
 
-Plane::Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat) : m_material(mat)
+Plane::Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity) : m_material(mat), m_velocity(velocity)
 {
     // Triangle 1 is (c0, c1, c2)
     m_t1_v0 = c0;
@@ -97,15 +97,16 @@ bool Plane::rayTriangleIntersect(
 
 
 bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
+    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
+    Ray ray_at_t0(ray_origin_at_t0, ray.direction, ray.time);
 
     double t1, u1, v1;
     double t2, u2, v2;
 
     // Check intersection with the first triangle
-    bool hit1 = rayTriangleIntersect(ray, t_min, t_max, m_t1_v0, m_t1_edge1, m_t1_edge2, t1, u1, v1);
-
+    bool hit1 = rayTriangleIntersect(ray_at_t0, t_min, t_max, m_t1_v0, m_t1_edge1, m_t1_edge2, t1, u1, v1);
     // Check intersection with the second triangle
-    bool hit2 = rayTriangleIntersect(ray, t_min, t_max, m_t2_v0, m_t2_edge1, m_t2_edge2, t2, u2, v2);
+    bool hit2 = rayTriangleIntersect(ray_at_t0, t_min, t_max, m_t2_v0, m_t2_edge1, m_t2_edge2, t2, u2, v2);
 
     if (!hit1 && !hit2) {
         return false; // Missed both

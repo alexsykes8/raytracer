@@ -39,11 +39,12 @@ bool Cube::getBoundingBox(AABB& output_box) const {
 }
 
 bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
-    
+    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
     // Transform the ray into object space
-    Vector3 object_origin = m_inverse_transform * ray.origin;
+    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0; // Use modified origin from time
     Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
-    Ray object_ray(object_origin, object_direction);
+    Ray object_ray(object_origin, object_direction, ray.time);
+
 
     // Perform the Ray-AABB (Slab) intersection test
     // AABB is from P_min = (-1.0, -1.0, -1.0) to P_max = (1.0, 1.0, 1.0)

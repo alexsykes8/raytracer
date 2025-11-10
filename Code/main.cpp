@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
     bool enable_shadows = false;
     int glossy_samples = 0;
     bool enable_parallel = false;
+    double shutter_time = 0.0;
 
     for (int i = 1; i<argc; ++i) {
         std::string arg = argv[i];
@@ -90,12 +91,29 @@ int main(int argc, char* argv[]) {
             std::cout << "Parallel rendering enabled" << std::endl;
         }
 
+        else if (arg == "--motion-blur") {
+            if (i + 1 < argc) {
+                try {
+                    // takes a double via stod
+                    shutter_time = std::stod(argv[i + 1]);
+                    i++;
+                    std::cout << "Motion blur enabled. Shutter time: " << shutter_time << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "Error: Invalid value for --motion-blur flag." << std::endl;
+                    return 1;
+                }
+            } else {
+                std::cerr << "Error: --motion-blur requires a time value (e.g., --motion-blur 1.0)." << std::endl;
+                return 1;
+            }
+        }
+
     }
     try {
         std::cout << "Loading scene..." << std::endl;
         const std::string scene_file = "../ASCII/scene.txt";
 
-        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples);
+        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time);
 
         const Camera& camera = scene.getCamera();
         const HittableList& world = scene.getWorld();
@@ -145,7 +163,9 @@ int main(int argc, char* argv[]) {
                     float px = (static_cast<float>(x) + random_u) / width;
                     float py = (static_cast<float>(y) + random_v) / height;
 
-                    Ray ray = camera.generateRay(px, py);
+                    double ray_time = random_double() * scene.get_shutter_time();
+
+                    Ray ray = camera.generateRay(px, py, ray_time);
 
                     pixel_color_vec = pixel_color_vec + ray_colour(ray, scene, world, MAX_RECURSION_DEPTH);
                 }

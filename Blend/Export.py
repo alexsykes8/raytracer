@@ -44,6 +44,11 @@ def write_material_properties(f, obj):
             cleaned_name = texture_name.replace('//', '').replace('\\', '/')
             f.write(f"  texture_file {cleaned_name}\n")
 
+    if "velocity" in mat:
+        velocity_vec = mathutils.Vector(mat['velocity'])
+        f.write(f"  velocity {format_vector(velocity_vec)}\n")
+
+
 def get_primitive_type(obj):
     mesh = obj.data
 

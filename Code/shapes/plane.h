@@ -9,7 +9,7 @@
 
 class Plane : public Shape {
 public:
-    Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat);
+    Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity);
 
     virtual bool intersect(
         const Ray& ray,
@@ -34,6 +34,8 @@ private:
     Vector3 m_t2_v0, m_t2_edge1, m_t2_edge2;
 
     Material m_material;
+
+    Vector3 m_velocity;
 
     bool rayTriangleIntersect(
         const Ray& ray, double t_min, double t_max,
