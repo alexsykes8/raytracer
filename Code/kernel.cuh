@@ -338,55 +338,58 @@ __device__ Vector3 ray_colour(
     const Cube* d_cubes, int num_cubes,
     const Plane* d_planes, int num_planes
 ) {
+    // the accumulated light energy
     Vector3 final_colour(0, 0, 0);
+    // the colour of the ray's light energy, beginning at full white and multiplied by the reflectivity/transparency of each surface it hits.
     Vector3 ray_attenuation(1, 1, 1);
 
 
     for (int depth = 0; depth < MAX_RECURSION_DEPTH; ++depth) {
         HitRecord rec;
 
+        // a ray is cast into the scene. If it misses all objects, the background colour is added.
         if (!intersect_world(ray, EPSILON, DBL_MAX, rec, d_spheres, num_spheres, d_cubes, num_cubes, d_planes, num_planes)) {
             final_colour = final_colour + component_wise_multiply(ray_attenuation, Vector3(0.5, 0.7, 1.0)); // Background
             break;
         }
 
+        // calculate the ambient, diffuse and specular components. There is no soft shadows, just hard shadows.
         Vector3 local_colour = blinn_phong_shade(rec, ray, exposure, enable_shadows,
                                                  d_lights, num_lights,
                                                  d_spheres, num_spheres, d_cubes, num_cubes, d_planes, num_planes);
 
-
-        bool is_transparent = rec.mat.transparency > 0.0 && rec.mat.refractive_index > 0.0;
-        bool has_reflection = rec.mat.reflectivity > 0;
-
+        // calculates the percentage of light energy that is NOT reflected or transmitted. This contributes to the local colour.
         double non_recursive_weight = 1.0;
 
-        if (is_transparent) {
+        if (rec.mat.transparency > 0.0) {
             non_recursive_weight = 1.0 - rec.mat.transparency;
         }
-        else if (has_reflection) {
+        else if (rec.mat.reflectivity > 0) {
             non_recursive_weight = 1.0 - rec.mat.reflectivity;
         }
 
+        // the local colour is scaled by ray attenuation (how much light the ray carries at this point) and the non_recursive weight.
         final_colour = final_colour + component_wise_multiply(ray_attenuation, local_colour) * non_recursive_weight;
 
-
-        if (is_transparent) {
+        // if the object is transparent, it is necessary to determine the ray's path for the next iteration.
+        if (rec.mat.transparency > 0.0) {
             Vector3 next_dir;
-            Vector3 N = rec.normal.normalize();
+            Vector3 N = rec.normal.normalize(); // N_hit
             Vector3 V_in = ray.direction.normalize();
 
-            double mat_eta = rec.mat.refractive_index;
-            double air_eta = 1.0;
-            double n1, n2;
-            Vector3 N_refract = N;
+            bool entering = V_in.dot(N) < 0;
 
-            if (depth % 2 == 0) {
-                n1 = air_eta;
-                n2 = mat_eta;
+            double n1, n2;
+            Vector3 N_refract;
+
+            if (!entering) {
+                N_refract = N;
+                n1 = 1.0;
+                n2 = rec.mat.refractive_index;
             } else {
-                n1 = mat_eta;
-                n2 = air_eta;
                 N_refract = -N;
+                n1 = rec.mat.refractive_index;
+                n2 = 1.0;
             }
 
             if (refract(V_in, N_refract, n1 / n2, next_dir)) {
@@ -398,7 +401,7 @@ __device__ Vector3 ray_colour(
 
             ray = Ray(rec.point + N * EPSILON, next_dir);
 
-        } else if (has_reflection) {
+        } else if (rec.mat.reflectivity > 0) {
             ray_attenuation = ray_attenuation * rec.mat.reflectivity;
 
             Vector3 V_in = ray.direction.normalize();
@@ -435,8 +438,10 @@ __global__ void render_kernel(
     float u = (static_cast<float>(width - 1 - x) + 0.5f) / width;
     float v = (static_cast<float>(height - 1 - y) + 0.5f) / height;
 
+    // generate a ray for the pixel
     Ray ray = camera.get_ray(u, v);
 
+    // establish the colour of each ray
     Vector3 final_color_vec = ray_colour(ray, exposure, enable_shadows,
                                          d_lights, num_lights,
                                          d_spheres, num_spheres,
