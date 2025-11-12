@@ -35,6 +35,17 @@ inline Vector3 random_in_unit_sphere_tracer() {
     }
 }
 
+inline double refract(double cos_i, double eta_ratio) {
+    double r0 = (1.0 - eta_ratio) / (1.0 + eta_ratio);
+    r0 = r0 * r0;
+
+    double n_val = eta_ratio > 1.0 ? eta_ratio : 1.0 / eta_ratio;
+    double r_n = (n_val - 1.0) / (n_val + 1.0);
+    r0 = r_n * r_n;
+
+    return r0 + (1.0 - r0) * pow((1.0 - cos_i), 5.0);
+}
+
 inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& world, int depth) {
     if (depth <= 0) {
         return Vector3(0, 0, 0); // Return black
