@@ -24,7 +24,8 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
     }
 HitRecord rec;
     if (!world.intersect(r, 0.001, 100000.0, rec)) {
-        return Vector3(0.5, 0.7, 1.0);
+        // background colour
+        return Vector3(0.3, 0.3, 0.3);
     }
 
 
