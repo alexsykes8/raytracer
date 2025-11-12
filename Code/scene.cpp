@@ -162,7 +162,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
                     temp_mat.texture = nullptr;
                 }
             }
-            // Build Transformation Matrices
+            // Build Transformation Matrices.
             Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
             Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
             Matrix4x4 mat_ry = Matrix4x4::createRotationY(rotation.y);
@@ -191,7 +191,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
                     temp_mat.texture = nullptr;
                 }
             }
-            // Build transforms for Cube
+            // Build transforms for Cube. Instead of defining a cube by its corners, define a cube at the origin and then use a transformation matrix to move it.
             Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
             Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
             Matrix4x4 mat_ry = Matrix4x4::createRotationY(rotation.y);
@@ -202,6 +202,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             // Produces the final object-to-world transformation matrix for the cube.
             Matrix4x4 transform = mat_t * mat_rz * mat_ry * mat_rx * mat_s;
             // Calculates the inverse of the transform matrix to convert world space back to local object space.
+            // This is necessary as it is computationally expensive to write an intersection function for a rotated scaled and translated shape, it is easier to move the ray instead of the object which requires the ray to be transformed by the object's inverse matrix.
             Matrix4x4 inv_transform = transform.inverse();
 
             // Add the object to the world.

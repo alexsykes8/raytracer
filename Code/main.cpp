@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
     // random number for antialiasing
     srand(static_cast<unsigned int>(time(nullptr)));
 
+    // turning on and off features
     bool use_bvh = true;
     int samples_per_pixel = 1;
     double exposure = 1.0;
@@ -113,6 +114,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Loading scene..." << std::endl;
         const std::string scene_file = "../../ASCII/scene.txt";
 
+        // initialises a scene. Prepares the objects, materials, and object matrices in preparation for calculations.
         Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time);
 
         const Camera& camera = scene.getCamera();
@@ -122,12 +124,16 @@ int main(int argc, char* argv[]) {
         const int height = camera.getResolutionY();
         Image image(width, height);
 
+        // samples_per_pixel controls how many individual rays are cast into the scene for each individual pizel.
+        // by default it is 1, where only 1 ray determines the colour of the pizel.
         const int SAMPLES_PER_PIXEL = samples_per_pixel;
 
         std::cout << "Rendering scene (" << width << "x" << height << ") with "
                   << SAMPLES_PER_PIXEL << " samples per pixel..." << std::endl;
 
         int num_threads = 1;
+
+        // if possible and if --parallel flag is present, use parallel flags.
         #ifdef _OPENMP
                 if (!enable_parallel) {
                     omp_set_num_threads(1);
@@ -152,9 +158,12 @@ int main(int argc, char* argv[]) {
                                 std::cout << "Scanlines remaining: " << (height - y) << std::endl;
                 #endif
             }
+            // for every pixel in the scene
             for (int x = 0; x < width; ++x) {
+                // initialises the colour of the pixel.
                 Vector3 pixel_color_vec(0, 0, 0);
 
+                // takes one or more pixel per sample, with a tiny bit of noise added so that each ray hits a slightly different area within the pixel.
                 for (int s = 0; s < SAMPLES_PER_PIXEL; ++s) {
 
                     float random_u = static_cast<float>(rand()) / (RAND_MAX + 1.0f);
@@ -165,10 +174,13 @@ int main(int argc, char* argv[]) {
 
                     double ray_time = random_double() * scene.get_shutter_time();
 
+                    // generate a ray for the pixel. Defines the origin, direction and time for that particular pixel.
                     Ray ray = camera.generateRay(px, py, ray_time);
 
+                    // decides the colour of the ray.
                     pixel_color_vec = pixel_color_vec + ray_colour(ray, scene, world, MAX_RECURSION_DEPTH);
                 }
+                // finds the average colour of the samples taken.
                 Vector3 averaged_color_vec = pixel_color_vec * (1.0 / SAMPLES_PER_PIXEL);
                 Pixel final_color = final_colour_to_pixel(averaged_color_vec);
                 image.setPixel(x, y, final_color);
