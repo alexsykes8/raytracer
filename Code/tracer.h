@@ -40,7 +40,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
         return Vector3(0, 0, 0); // Return black
     }
     HitRecord rec;
-    Vector3 background_colour_vec(0.3, 0.3, 0.3);
+    Vector3 background_colour_vec(0.5, 0.7, 1.0);
 
     // if the ray hits an object
     if (world.intersect(r, 0.001, 100000.0, rec)) {
