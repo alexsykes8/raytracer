@@ -42,7 +42,29 @@ HitRecord rec;
 
     Vector3 refracted_colour(0, 0, 0);
     if (rec.mat.transparency > 0) {
+        Vector3 V_in = r.direction.normalize();
+        Vector3 N_hit = rec.normal.normalize();
+        bool entering = V_in.dot(N_hit) < 0;
+        Vector3 N_outward = entering ? N_hit : -N_hit;
+        double n1 = entering ? 1.0 : rec.mat.refractive_index;
+        double n2 = entering ? rec.mat.refractive_index : 1.0;
+        double eta_ratio = n1/n2;
 
+        double cos_i = -V_in.dot(N_outward);
+        double sin_t_squared = eta_ratio * eta_ratio * (1.0 - cos_i * cos_i);
+
+        if (sin_t_squared <= 1.0) {
+            double cos_t = sqrt(1.0 - sin_t_squared);
+            Vector3 refract_dir = (eta_ratio * V_in) + (eta_ratio * cos_i - cos_t) * N_outward;
+
+            Ray refract_ray(rec.point, refract_dir.normalize());
+            refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
+        } else {
+            Vector3 V = r.direction.normalize();
+            Vector3 reflect_dir = reflect(V, rec.normal).normalize();
+            Ray reflect_ray(rec.point, reflect_dir);
+            refracted_colour = ray_colour(reflect_ray, scene, world, depth - 1);
+        }
     }
 
     Vector3 final_colour = (local_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency))

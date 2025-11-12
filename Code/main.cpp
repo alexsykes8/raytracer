@@ -6,14 +6,8 @@
 #include <vector>
 #include "material.h"
 #include "shading.h"
+#include "tracer.h"
 
-
-Pixel color_from_normal(const Vector3& normal) {
-    unsigned char r = static_cast<unsigned char>((normal.x + 1.0) * 0.5 * 255);
-    unsigned char g = static_cast<unsigned char>((normal.y + 1.0) * 0.5 * 255);
-    unsigned char b = static_cast<unsigned char>((normal.z + 1.0) * 0.5 * 255);
-    return {r, g, b};
-}
 
 
 
@@ -60,7 +54,6 @@ int main(int argc, char* argv[]) {
         const int width = camera.getResolutionX();
         const int height = camera.getResolutionY();
         Image image(width, height);
-        Pixel background_color = {135, 206, 235};
 
         std::cout << "Rendering scene (" << width << "x" << height << ")..." << std::endl;
 
@@ -73,14 +66,9 @@ int main(int argc, char* argv[]) {
                 float py = (static_cast<float>(y) + 0.5f) / height;
 
                 Ray ray = camera.generateRay(px, py);
-                HitRecord rec;
-
-                if (world.intersect(ray, 0.001, 100000.0, rec)) {
-                    Pixel final_color = blinn_phong_shade(rec, scene, ray);
-                    image.setPixel(x, y, final_color);
-                } else {
-                    image.setPixel(x, y, background_color);
-                }
+                Vector3 final_color_vec = ray_colour(ray, scene, world, MAX_RECURSION_DEPTH);
+                Pixel final_pixel = final_colour_to_pixel(final_color_vec);
+                image.setPixel(x, y, final_pixel);
             }
         }
 
