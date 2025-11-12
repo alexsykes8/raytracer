@@ -6,6 +6,8 @@
 
 #define MAX_RECURSION_DEPTH 10
 #define EPSILON 0.0001
+#define SMALL_FLOAT 1e-10
+
 
 template<typename T>
 __device__ inline void swap(T& a, T& b) {
@@ -104,11 +106,11 @@ __device__ bool intersect_cube(const Cube& cube, const Ray& ray, double t_min, d
 
     Vector3 obj_normal;
     const double bias = 0.0001;
-    if (abs(obj_point.x - 0.5) < bias) obj_normal = Vector3(1, 0, 0);
-    else if (abs(obj_point.x + 0.5) < bias) obj_normal = Vector3(-1, 0, 0);
-    else if (abs(obj_point.y - 0.5) < bias) obj_normal = Vector3(0, 1, 0);
-    else if (abs(obj_point.y + 0.5) < bias) obj_normal = Vector3(0, -1, 0);
-    else if (abs(obj_point.z - 0.5) < bias) obj_normal = Vector3(0, 0, 1);
+    if (abs(obj_point.x - 1.0) < bias) obj_normal = Vector3(1, 0, 0);
+    else if (abs(obj_point.x + 1.0) < bias) obj_normal = Vector3(-1, 0, 0);
+    else if (abs(obj_point.y - 1.0) < bias) obj_normal = Vector3(0, 1, 0);
+    else if (abs(obj_point.y + 1.0) < bias) obj_normal = Vector3(0, -1, 0);
+    else if (abs(obj_point.z - 1.0) < bias) obj_normal = Vector3(0, 0, 1);
     else obj_normal = Vector3(0, 0, -1);
 
     rec.point = cube.transform.transformPoint(obj_point);
@@ -122,7 +124,96 @@ __device__ bool intersect_cube(const Cube& cube, const Ray& ray, double t_min, d
     return true;
 }
 
-// ... TODO other intersection functions (e.g.intersect_plane)
+__device__ bool ray_triangle_intersect(
+    const Ray& ray, double t_min, double t_max,
+    const Vector3& v0, const Vector3& edge1, const Vector3& edge2, double& out_t)
+{
+    // E1 and E2 are edge1 (v1 - v0) and edge2 (v2 - v0)
+    // Ray direction is R_d
+    // The triangle plane is defined by (v0, v1, v2)
+
+    Vector3 pvec = ray.direction.cross(edge2);
+    double det = edge1.dot(pvec);
+
+    // If det is near zero, ray is parallel to triangle plane.
+    if (abs(det) < SMALL_FLOAT)
+        return false;
+
+    double invDet = 1.0 / det;
+    Vector3 tvec = ray.origin - v0;
+    double u = tvec.dot(pvec) * invDet;
+
+    if (u < 0.0 || u > 1.0)
+        return false;
+
+    Vector3 qvec = tvec.cross(edge1);
+    double v = ray.direction.dot(qvec) * invDet;
+
+    if (v < 0.0 || u + v > 1.0)
+        return false;
+
+    // Calculate t
+    out_t = edge2.dot(qvec) * invDet;
+
+    // Check if t is within the valid range
+    if (out_t > t_min && out_t < t_max) {
+        return true;
+    }
+
+    return false;
+}
+
+__device__ bool intersect_plane(const Plane& plane, const Ray& ray, double t_min, double t_max, HitRecord& rec) {
+    double t1 = DBL_MAX, t2 = DBL_MAX;
+    bool hit1, hit2;
+
+    // Triangle 1: p0, p1, p2
+    Vector3 t1_v0 = plane.p0;
+    Vector3 t1_edge1 = plane.p1 - plane.p0;
+    Vector3 t1_edge2 = plane.p2 - plane.p0;
+
+    // Triangle 2: p2, p3, p0
+    Vector3 t2_v0 = plane.p1;
+    Vector3 t2_edge1 = plane.p3 - plane.p1;
+    Vector3 t2_edge2 = plane.p2 - plane.p1;
+
+    // Check intersection with the first triangle
+    hit1 = ray_triangle_intersect(ray, t_min, t_max, t1_v0, t1_edge1, t1_edge2, t1);
+
+    // If hit, update t_max
+    double current_t_max = hit1 ? t1 : t_max;
+
+    // Check intersection with the second triangle
+    hit2 = ray_triangle_intersect(ray, t_min, current_t_max, t2_v0, t2_edge1, t2_edge2, t2);
+
+    if (!hit1 && !hit2) {
+        return false;
+    }
+
+    // Determine the closest hit (if both hit)
+    double t_hit;
+    if (hit1 && hit2) {
+        t_hit = fmin(t1, t2);
+    } else if (hit1) {
+        t_hit = t1;
+    } else { // hit2 must be true
+        t_hit = t2;
+    }
+
+    // Fill HitRecord
+    rec.t = t_hit;
+    rec.point = ray.point_at_parameter(t_hit);
+    rec.normal = plane.normal; // Normal is consistent across the plane
+    rec.mat = plane.mat;
+
+    // Set the final normal orientation
+    if (ray.direction.dot(rec.normal) > 0.0) {
+        rec.normal = -rec.normal;
+    }
+
+    return true;
+}
+
 
 __device__ bool intersect_world(
     const Ray& ray,
@@ -155,8 +246,14 @@ __device__ bool intersect_world(
         }
     }
 
-    // ... iterate over planes ...
-
+    // Iterate over planes
+    for (int i = 0; i < num_planes; ++i) {
+        if (intersect_plane(d_planes[i], ray, t_min, closest_so_far, temp_rec)) {
+            hit_anything = true;
+            closest_so_far = temp_rec.t;
+            rec = temp_rec;
+        }
+    }
     return hit_anything;
 }
 
