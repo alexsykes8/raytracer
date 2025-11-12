@@ -93,7 +93,7 @@ Ray Camera::generateRay(float px, float py) const {
     // Ray_Direction = (P_world - Origin) / |P_world - Origin|
 
     // Since the camera is at the origin of its local coordinate system, the vector from the origin to
-    // the point on the image plane *is* the direction vector.
+    // the point on the image plane is the direction vector.
     Vector3 ray_direction = image_plane_point.normalize();
 
     // Construct the Ray
