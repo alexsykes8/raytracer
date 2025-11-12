@@ -59,7 +59,7 @@ CUBE
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
   scale 0.124362 0.124362 0.265639
-  transparency 1.000000
+  transparency 0.9
   refractive_index 1.520000
 END_CUBE
 

@@ -20,6 +20,19 @@ __device__ inline Vector3 reflect(const Vector3& V, const Vector3& N) {
     return V - 2 * V.dot(N) * N;
 }
 
+__device__ bool refract(const Vector3& uv, const Vector3& N, double etai_over_etat, Vector3& refracted) {
+    double cos_i = fmin(-uv.dot(N), 1.0);
+
+    double sin_t_squared = etai_over_etat * etai_over_etat * (1.0 - cos_i * cos_i);
+    if (sin_t_squared > 1.0) {
+        return false;
+    }
+
+    double cos_t = sqrt(1.0 - sin_t_squared);
+    refracted = etai_over_etat * (uv + cos_i * N) - cos_t * N;
+    return true;
+}
+
 __device__ inline Vector3 component_wise_multiply(const Vector3& a, const Vector3& b) {
     return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
@@ -342,11 +355,50 @@ __device__ Vector3 ray_colour(
                                                  d_spheres, num_spheres, d_cubes, num_cubes, d_planes, num_planes);
 
 
+        bool is_transparent = rec.mat.transparency > 0.0 && rec.mat.refractive_index > 0.0;
         bool has_reflection = rec.mat.reflectivity > 0;
 
-        final_colour = final_colour + component_wise_multiply(ray_attenuation, local_colour) * (1.0 - rec.mat.reflectivity);
+        double non_recursive_weight = 1.0;
 
-        if (has_reflection) {
+        if (is_transparent) {
+            non_recursive_weight = 1.0 - rec.mat.transparency;
+        }
+        else if (has_reflection) {
+            non_recursive_weight = 1.0 - rec.mat.reflectivity;
+        }
+
+        final_colour = final_colour + component_wise_multiply(ray_attenuation, local_colour) * non_recursive_weight;
+
+
+        if (is_transparent) {
+            Vector3 next_dir;
+            Vector3 N = rec.normal.normalize();
+            Vector3 V_in = ray.direction.normalize();
+
+            double mat_eta = rec.mat.refractive_index;
+            double air_eta = 1.0;
+            double n1, n2;
+            Vector3 N_refract = N;
+
+            if (depth % 2 == 0) {
+                n1 = air_eta;
+                n2 = mat_eta;
+            } else {
+                n1 = mat_eta;
+                n2 = air_eta;
+                N_refract = -N;
+            }
+
+            if (refract(V_in, N_refract, n1 / n2, next_dir)) {
+                ray_attenuation = ray_attenuation * rec.mat.transparency;
+            } else {
+                ray_attenuation = ray_attenuation * rec.mat.transparency;
+                next_dir = reflect(V_in, N_refract);
+            }
+
+            ray = Ray(rec.point + N * EPSILON, next_dir);
+
+        } else if (has_reflection) {
             ray_attenuation = ray_attenuation * rec.mat.reflectivity;
 
             Vector3 V_in = ray.direction.normalize();
