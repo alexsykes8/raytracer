@@ -68,8 +68,8 @@ __device__ bool intersect_cube(const Cube& cube, const Ray& ray, double t_min, d
                    cube.inverse_transform.transformVector(ray.direction));
 
     Vector3 inv_dir = Vector3(1.0 / object_ray.direction.x, 1.0 / object_ray.direction.y, 1.0 / object_ray.direction.z);
-    Vector3 min_bounds(-0.5, -0.5, -0.5);
-    Vector3 max_bounds(0.5, 0.5, 0.5);
+    Vector3 min_bounds(-1.0, -1.0, -1.0);
+    Vector3 max_bounds(1.0, 1.0, 1.0);
 
     double tmin_x = (min_bounds.x - object_ray.origin.x) * inv_dir.x;
     double tmax_x = (max_bounds.x - object_ray.origin.x) * inv_dir.x;
