@@ -26,22 +26,26 @@ inline Pixel blinn_phong_shade(const HitRecord& rec, const Scene& scene, const R
 
     const Material& mat = rec.mat;
 
+    const double exposure = scene.getExposure();
+
     // Ambient Component
     Vector3 global_ambient_light(0.2, 0.2, 0.2);
     Vector3 final_color_vec = component_wise_multiply(mat.ambient, global_ambient_light);
 
     // Loop over all lights for Diffuse and Specular
     for (const auto& light : scene.getLights()) {
+        Vector3 exposed_light_intensity = light.intensity * exposure;
+
         Vector3 L = (light.position - P).normalize(); // Light vector
         Vector3 H = (L + V).normalize();              // Halfway vector
 
         // Diffuse Component
         double L_dot_N = std::max(0.0, L.dot(N));
-        Vector3 diffuse = component_wise_multiply(mat.diffuse, light.intensity) * L_dot_N;
+        Vector3 diffuse = component_wise_multiply(mat.diffuse, exposed_light_intensity) * L_dot_N;
 
         // Specular Component
         double H_dot_N = std::max(0.0, H.dot(N));
-        Vector3 specular = component_wise_multiply(mat.specular, light.intensity) * std::pow(H_dot_N, mat.shininess);
+        Vector3 specular = component_wise_multiply(mat.specular, exposed_light_intensity) * std::pow(H_dot_N, mat.shininess);
 
         // Add this light's contribution
         final_color_vec = final_color_vec + diffuse + specular;

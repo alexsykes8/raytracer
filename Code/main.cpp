@@ -19,19 +19,40 @@ Pixel color_from_normal(const Vector3& normal) {
 
 int main(int argc, char* argv[]) {
     bool use_bvh = true;
+    double exposure = 1.0;
+    bool enable_shadows = false;
 
     for (int i = 1; i<argc; ++i) {
-        if (std::string(argv[i]) == "--no-bvh") {
+        std::string arg = argv[i];
+        if (arg == "--no-bvh") {
             use_bvh = false;
             std::cout << "BVH disabled" << std::endl;
-            break;
+        }
+        else if (arg == "--exposure") {
+            if (i + 1 < argc) {
+                try {
+                    exposure = std::stod(argv[i + 1]);
+                    i++;
+                    std::cout << "Exposure set to: " << exposure << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr << "Error: Invalid value for --exposure flag." << std::endl;
+                    return 1;
+                }
+            } else {
+                std::cerr << "Error: --exposure flag requires a value (e.g., --exposure 0.5)." << std::endl;
+                return 1;
+            }
+        }
+        else if (arg == "--shadows") {
+            enable_shadows = true;
+            std::cout << "Shadows enabled" << std::endl;
         }
     }
     try {
         std::cout << "Loading scene..." << std::endl;
         const std::string scene_file = "../../ASCII/scene.txt";
 
-        Scene scene(scene_file, use_bvh);
+        Scene scene(scene_file, use_bvh, exposure, enable_shadows);
 
         const Camera& camera = scene.getCamera();
         const HittableList& world = scene.getWorld();

@@ -19,8 +19,8 @@ static void read_vector(std::stringstream& ss, Vector3& vec) {
     }
 }
 
-Scene::Scene(const std::string& scene_filepath, bool build_bvh) {
-    // m_camera is initially null
+Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows) : m_exposure(exposure), m_enable_shadows(enable_shadows)
+{
     parseSceneFile(scene_filepath);
 
     if (!m_camera) {
@@ -213,6 +213,9 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
             else if (token == "specular") { read_vector(ss, temp_mat.specular); }
             else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
         }
         else if (current_block_type == "CUBE") {
             if (token == "translation") { read_vector(ss, translation); }
@@ -222,6 +225,9 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
             else if (token == "specular") { read_vector(ss, temp_mat.specular); }
             else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
         }
         else if (current_block_type == "PLANE") {
             if (token == "corner") {
@@ -233,6 +239,9 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
             else if (token == "specular") { read_vector(ss, temp_mat.specular); }
             else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
         }
     }
 }
