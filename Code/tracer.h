@@ -35,7 +35,9 @@ inline Vector3 random_in_unit_sphere_tracer() {
     }
 }
 
-inline double refract(double cos_i, double eta_ratio) {
+
+
+inline double schlick(double cos_i, double eta_ratio) {
     double r0 = (1.0 - eta_ratio) / (1.0 + eta_ratio);
     r0 = r0 * r0;
 
@@ -65,8 +67,8 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                 double roughness = 1.0 / sqrt(rec.mat.shininess);
                 roughness = std::min(roughness, 1.0);
 
-                Vector3 V = (r.origin - rec.point).normalize();
-                Vector3 perfect_reflect_dir = reflect(-V, rec.normal).normalize();
+                Vector3 V = (r.direction).normalize();
+                Vector3 perfect_reflect_dir = reflect(V, rec.normal).normalize();
 
                 const int GLOSSY_SAMPLES = scene.get_glossy_samples();
                 for (int i = 0; i < GLOSSY_SAMPLES; i++) {
@@ -104,14 +106,47 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                     refracted_colour = ray_colour(reflect_ray, scene, world, depth - 1);
                 }
             }
-            final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
+            double reflect_prob = rec.mat.reflectivity;
+            double transmit_prob = rec.mat.transparency;
+
+            if (rec.mat.transparency > 0) {
+                Vector3 V_in = r.direction.normalize();
+                Vector3 N_hit = rec.normal.normalize();
+                bool entering = V_in.dot(N_hit) < 0;
+                Vector3 N_outward = entering ? N_hit : -N_hit;
+                double n1 = entering ? 1.0 : rec.mat.refractive_index;
+                double n2 = entering ? rec.mat.refractive_index : 1.0;
+                double eta_ratio = n1/n2;
+                double cos_i = -V_in.dot(N_outward);
+                double sin_t_squared = eta_ratio * eta_ratio * (1.0 - cos_i * cos_i);
+
+                reflect_prob = schlick(cos_i, eta_ratio);
+
+                if (sin_t_squared > 1.0) {
+                    transmit_prob = 0.0;
+                    reflect_prob = 1.0;
+                } else {
+                    transmit_prob = 1.0 - reflect_prob;
+                }
+            }
+            if (rec.mat.transparency > 0) {
+                final_colour = local_ad_colour * (1.0 - reflect_prob - transmit_prob)
+                            + reflected_colour * reflect_prob
+                            + refracted_colour * transmit_prob;
+            } else {
+-                final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
                             + reflected_colour * rec.mat.reflectivity
                             + refracted_colour * rec.mat.transparency;
+            }
         }
         else {
             Vector3 specular_colour = calculate_specular(rec, scene, world, r);
+            double reflect_prob = rec.mat.reflectivity;
+            double transmit_prob = rec.mat.transparency;
+
+
             // calculate reflected colour
-            if (rec.mat.reflectivity > 0) {
+            if (rec.mat.reflectivity > 0 || rec.mat.transparency > 0) {
                 Vector3 V = (r.origin - rec.point).normalize();
                 Vector3 reflect_dir = reflect(-V, rec.normal).normalize();
 
@@ -131,23 +166,34 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                 double cos_i = -V_in.dot(N_outward);
                 double sin_t_squared = eta_ratio * eta_ratio * (1.0 - cos_i * cos_i);
 
+                reflect_prob = schlick(cos_i, eta_ratio);
+
                 if (sin_t_squared <= 1.0) {
                     double cos_t = sqrt(1.0 - sin_t_squared);
                     Vector3 refract_dir = (eta_ratio * V_in) + (eta_ratio * cos_i - cos_t) * N_outward;
 
                     Ray refract_ray(rec.point, refract_dir.normalize(), r.time);
                     refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
+                    transmit_prob = 1.0 - reflect_prob;
                 } else {
-                    Vector3 V = r.direction.normalize();
-                    Vector3 reflect_dir = reflect(V, rec.normal).normalize();
-                    Ray reflect_ray(rec.point, reflect_dir, r.time);
-                    refracted_colour = ray_colour(reflect_ray, scene, world, depth - 1);
+                    refracted_colour = Vector3(0, 0, 0);
+                    transmit_prob = 0.0;
+                    reflect_prob = 1.0;
                 }
             }
-            final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
-                                    + reflected_colour * rec.mat.reflectivity
-                                    + refracted_colour * rec.mat.transparency
-                                    + specular_colour; // manually added specular_colour in, artistic choice
+
+            if (rec.mat.transparency > 0) {
+                final_colour = local_ad_colour * (1.0 - reflect_prob - transmit_prob)
+                                                + reflected_colour * reflect_prob
+                                                + refracted_colour * transmit_prob
+                                                + specular_colour;
+            } else {
+                final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
+                                + reflected_colour * rec.mat.reflectivity
+                                + refracted_colour * rec.mat.transparency
+                                + specular_colour; // manually added specular_colour in, artistic choice
+            }
+
         }
         return final_colour;
     } else {
