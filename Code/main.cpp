@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     }
     try {
         std::cout << "Loading scene..." << std::endl;
-        const std::string scene_file = "../ASCII/scene.txt";
+        const std::string scene_file = "../../ASCII/scene.txt";
 
         Scene scene(scene_file, use_bvh);
 
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        const std::string output_file = "../Output/scene_test.ppm";
+        const std::string output_file = "../../Output/scene_test.ppm";
         image.write(output_file);
         std::cout << "Render complete! Image saved to '" << output_file << "'." << std::endl;
 
