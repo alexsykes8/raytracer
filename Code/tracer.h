@@ -16,7 +16,7 @@
 #include <cstdlib>
 
 // prevents infinite recursion
-const int MAX_RECURSION_DEPTH = 5;
+const int MAX_RECURSION_DEPTH = 10;
 
 // calculates the reflected ray direction
 inline Vector3 reflect(const Vector3& V, const Vector3& N) {
@@ -86,6 +86,11 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
 
                     Ray refract_ray(rec.point, refract_dir.normalize(), r.time);
                     refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
+                } else {
+                    Vector3 V = r.direction.normalize();
+                    Vector3 reflect_dir = reflect(V, rec.normal).normalize();
+                    Ray reflect_ray(rec.point, reflect_dir, r.time);
+                    refracted_colour = ray_colour(reflect_ray, scene, world, depth - 1);
                 }
             }
             final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
@@ -121,12 +126,17 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
 
                     Ray refract_ray(rec.point, refract_dir.normalize(), r.time);
                     refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
+                } else {
+                    Vector3 V = r.direction.normalize();
+                    Vector3 reflect_dir = reflect(V, rec.normal).normalize();
+                    Ray reflect_ray(rec.point, reflect_dir, r.time);
+                    refracted_colour = ray_colour(reflect_ray, scene, world, depth - 1);
                 }
             }
             final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
                                     + reflected_colour * rec.mat.reflectivity
                                     + refracted_colour * rec.mat.transparency
-                                    + specular_colour;
+                                    + specular_colour; // manually added specular_colour in, artistic choice
         }
         return final_colour;
     } else {
