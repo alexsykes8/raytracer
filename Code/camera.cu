@@ -6,7 +6,6 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "vector3.h"
 
 
 Camera::Camera(

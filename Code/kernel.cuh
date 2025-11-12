@@ -283,8 +283,8 @@ __global__ void render_kernel(
         return;
     }
 
-    float u = (static_cast<float>(x) + 0.5f) / width;
-    float v = (static_cast<float>(y) + 0.5f) / height;
+    float u = (static_cast<float>(width - 1 - x) + 0.5f) / width;
+    float v = (static_cast<float>(height - 1 - y) + 0.5f) / height;
 
     Ray ray = camera.get_ray(u, v);
 
