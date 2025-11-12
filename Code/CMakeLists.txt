@@ -1,32 +1,23 @@
-cmake_minimum_required(VERSION 4.0)
-project(B216602)
+cmake_minimum_required(VERSION 3.18)
 
-set(CMAKE_CXX_STANDARD 20)
+project(B216602 LANGUAGES CXX CUDA)
 
-add_executable(B216602 main.cpp Image.cpp
-        camera.cpp
-        camera.h
-        vector3.h
-        ray.h
-        test_rays_image.cpp
-        test_rays_image.h
-        shapes/sphere.cpp
-        shapes/sphere.h
-        shapes/hittable_list.cpp
-        shapes/hittable_list.h
-        scene.cpp
-        scene.h
-        matrix4x4.h
-        matrix4x4.cpp
-        shapes/cube.cpp
-        shapes/cube.h
-        shapes/plane.cpp
-        shapes/plane.h
-        acceleration/aabb.cpp
-        acceleration/aabb.h
-        acceleration/bvh.cpp
-        acceleration/bvh.h
-        light.h
-        material.h
-        shading.h
-        tracer.h)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CUDA_STANDARD 17)
+
+add_executable(B216602
+        main.cu
+        scene.cu
+        camera.cu
+        matrix4x4.cu
+        Image.cu
+)
+
+target_include_directories(B216602 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+
+set_target_properties(B216602 PROPERTIES
+        CUDA_ARCHITECTURES "70;75;80;86"
+)
+
+message(STATUS "Executable will be built at: ${CMAKE_BINARY_DIR}/B216602")

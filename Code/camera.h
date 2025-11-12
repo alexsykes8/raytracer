@@ -1,23 +1,11 @@
-//
-// Created by alex on 16/10/2025.
-//
+#pragma once
 
-#ifndef B216602_CAMERA_H
-#define B216602_CAMERA_H
-
-
+#include "device_types.cuh"
 #include <string>
 #include <stdexcept>
-#include "vector3.h" // Assuming Vector3.h contains the Vector3 class and Ray struct
-#include "ray.h"     // Included via Vector3.h in the provided Vector3.h file.
 
-/**
- * @brief Implements the pin-hole camera model and generates viewing rays.
- * This class handles reading camera parameters and the crucial coordinate transformations.
- */
 class Camera {
 public:
-    // Reads the scene file and stores camera information.
     Camera(
             Vector3 location,
             Vector3 gaze_direction_hint,
@@ -28,12 +16,20 @@ public:
             int resolution_x,
             int resolution_y
         );
-    // Converts normalized pixel coordinates (px, py) to a ray in world coordinates.
+
     Ray generateRay(float px, float py) const;
 
-    // Getters for resolution
     int getResolutionX() const { return m_resolution_x; }
     int getResolutionY() const { return m_resolution_y; }
+
+    double getFocalLength() const { return m_focal_length; }
+    double getSensorWidth() const { return m_sensor_width; }
+    double getSensorHeight() const { return m_sensor_height; }
+
+    const Vector3& getLocation() const { return m_location; }
+    const Vector3& getU() const { return m_camera_u; } // "Right"
+    const Vector3& getV() const { return m_camera_v; } // "True Up"
+    const Vector3& getW() const { return m_camera_w; } // "Gaze"
 
 private:
     // Camera Parameters read from file
@@ -46,13 +42,10 @@ private:
     int m_resolution_x;
     int m_resolution_y;
 
-    // Camera Basis Vectors, the orthonormal basis for the camera's local space in world coordinates.
+    // Camera Basis Vectors
     Vector3 m_camera_u; // The calculated 'Right' vector
     Vector3 m_camera_v; // The calculated 'True Up' vector
-    Vector3 m_camera_w; // The calculated 'Gaze/Forward' vector (normalized)
+    Vector3 m_camera_w; // The calculated 'Gaze/Forward' vector
 
-    // Helper method to compute the orthonormal basis from the hints
     void computeCameraBasis();
 };
-
-#endif //B216602_CAMERA_H
