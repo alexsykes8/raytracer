@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
     int glossy_samples = 0;
     bool enable_parallel = false;
     double shutter_time = 0.0;
+    bool enable_fresnel = false;
 
     for (int i = 1; i<argc; ++i) {
         std::string arg = argv[i];
@@ -108,6 +109,10 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
         }
+        else if (arg == "--fresnel") {
+            enable_fresnel = true;
+            std::cout << "Fresnel effect enabled" << std::endl;
+        }
 
     }
     try {
@@ -115,7 +120,7 @@ int main(int argc, char* argv[]) {
         const std::string scene_file = "../../ASCII/scene.txt";
 
         // initialises a scene. Prepares the objects, materials, and object matrices in preparation for calculations.
-        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time);
+        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel);
 
         const Camera& camera = scene.getCamera();
         const HittableList& world = scene.getWorld();

@@ -150,7 +150,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
             double reflect_prob = rec.mat.reflectivity;
             double transmit_prob = rec.mat.transparency;
 
-            if (rec.mat.transparency > 0) {
+            if (rec.mat.transparency > 0 && scene.fresnel_enabled()) {
 
                 Vector3 V_in = r.direction.normalize();
                 Vector3 N_hit = rec.normal.normalize();
@@ -279,7 +279,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
             double reflect_prob = rec.mat.reflectivity;
             double transmit_prob = rec.mat.transparency;
 
-            if (rec.mat.transparency > 0) {
+            if (rec.mat.transparency > 0 && scene.fresnel_enabled()) {
 
                 Vector3 V_in = r.direction.normalize();
                 Vector3 N_hit = rec.normal.normalize();
