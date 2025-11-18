@@ -55,6 +55,8 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
     if (world.intersect(r, 0.001, 100000.0, rec)) {
         // This takes a point that was hit by a ray from the camera (guaranteed to be visible) and finds its colour based on lights in the scene.
         Vector3 local_ad_colour = calculate_local_ad(rec, scene, world); // ad = ambient diffuse
+        Vector3 local_specular_colour = calculate_specular(rec, scene, world, r);
+        Vector3 local_total_colour = local_ad_colour + local_specular_colour;
         Vector3 reflected_colour(0, 0, 0);
         Vector3 refracted_colour(0, 0, 0);
         Vector3 final_colour(0, 0, 0);
@@ -315,11 +317,11 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
             }
 
             if (rec.mat.transparency > 0) {
-                final_colour = local_ad_colour * (1.0 - reflect_prob - transmit_prob)
+                final_colour = local_total_colour * (1.0 - reflect_prob - transmit_prob)
                             + reflected_colour * reflect_prob
                             + refracted_colour * transmit_prob;
             } else {
-                final_colour = local_ad_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
+                final_colour = local_total_colour * (1.0 - rec.mat.reflectivity - rec.mat.transparency)
                             + reflected_colour * rec.mat.reflectivity
                             + refracted_colour * rec.mat.transparency;
             }
