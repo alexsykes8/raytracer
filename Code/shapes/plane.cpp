@@ -142,11 +142,11 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
     rec.mat = m_material;
 
     if (hit_triangle_1) {
-        rec.uv.u = u1;
-        rec.uv.v = v1;
+        rec.u = u1;
+        rec.v = v1;
     } else {
-        rec.uv.u = 1.0 - v2;
-        rec.uv.v = u2 + v2;
+        rec.u = 1.0 - v2;
+        rec.v = u2 + v2;
     }
     if (rec.mat.bump_map) {
         // For a plane, T and B align with the edges used to define the UVs
@@ -161,8 +161,8 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
         int w = rec.mat.bump_map->getWidth();
         int h = rec.mat.bump_map->getHeight();
 
-        int x = static_cast<int>(rec.uv.u * (w - 1));
-        int y = static_cast<int>((1.0 - rec.uv.v) * (h - 1)); // Flip V for image coords
+        int x = static_cast<int>(rec.u * (w - 1));
+        int y = static_cast<int>((1.0 - rec.v) * (h - 1)); // Flip V for image coords
 
         auto get_val = [&](int px, int py) {
             px = std::min(std::max(px, 0), w - 1);

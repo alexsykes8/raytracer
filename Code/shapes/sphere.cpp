@@ -105,8 +105,8 @@ bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& re
     double theta = asin(p.y);
     double phi = atan2(-p.z, p.x) + M_PI;
 
-    rec.uv.u = phi / (2.0 * M_PI);
-    rec.uv.v = (theta + M_PI / 2.0) / M_PI;
+    rec.u = phi / (2.0 * M_PI);
+    rec.v = (theta + M_PI / 2.0) / M_PI;
 
     // bump mapping
     if (rec.mat.bump_map) {
@@ -131,8 +131,8 @@ bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& re
         int w = rec.mat.bump_map->getWidth();
         int h = rec.mat.bump_map->getHeight();
 
-        int x = static_cast<int>(rec.uv.u * (w - 1));
-        int y = static_cast<int>((1.0 - rec.uv.v) * (h - 1));
+        int x = static_cast<int>(rec.u * (w - 1));
+        int y = static_cast<int>((1.0 - rec.v) * (h - 1));
 
         // get brightness
         auto get_val = [&](int px, int py) {
