@@ -29,7 +29,8 @@ add_executable(B216602 main.cpp Image.cpp
         light.h
         material.h
         shading.h
-        tracer.h)
+        tracer.h
+        )
 
 find_package(OpenMP QUIET)
 if(OpenMP_FOUND)

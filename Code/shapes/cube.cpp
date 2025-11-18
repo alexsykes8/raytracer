@@ -124,18 +124,44 @@ bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec)
     // UV Mapping (Simple planar mapping)
     // map the 2 coordinates of the hit face to u,v range [0,1]
     double u = 0.0, v = 0.0;
-    if (hit_axis == 0) { // X-plane, map YZ
-        u = (p.z + 1.0) * 0.5;
-        v = (p.y + 1.0) * 0.5;
-    } else if (hit_axis == 1) { // Y-plane, map XZ
-        u = (p.x + 1.0) * 0.5;
-        v = (p.z + 1.0) * 0.5;
-    } else { // Z-plane, map XY
+if (hit_axis == 0) { // X-planes (Left/Right Sides)
+        u = (p.y * (object_normal.x > 0 ? -1 : 1) + 1.0) * 0.5; // Map Y to U (Wrap direction)
+        v = (p.z + 1.0) * 0.5; // Map Z to V (Height)
+    } else if (hit_axis == 1) { // Y-planes (Front/Back Sides)
+        u = (p.x * (object_normal.y > 0 ? 1 : -1) + 1.0) * 0.5; // Map X to U
+        v = (p.z + 1.0) * 0.5; // Map Z to V (Height)
+    } else { // Z-planes (Top/Bottom)
         u = (p.x + 1.0) * 0.5;
         v = (p.y + 1.0) * 0.5;
     }
-    rec.uv.u = u;
-    rec.uv.v = v;
+
+    double u_offset = 0.0;
+    double v_offset = 0.0;
+    if (hit_axis == 2) {
+        // Z-Axis is TOP/BOTTOM
+        if (object_normal.z > 0) {
+            u_offset = 1.0; v_offset = 2.0; // Top -> Grid(1,2)
+        } else {
+            u_offset = 1.0; v_offset = 0.0; // Bottom -> Grid(1,0)
+        }
+    } else if (hit_axis == 1) {
+        // Y-Axis is Front/Back
+        if (object_normal.y > 0) {
+            u_offset = 1.0; v_offset = 1.0; // Front -> Grid(1,1) (assuming +Y is Front)
+        } else {
+            u_offset = 3.0; v_offset = 1.0; // Back -> Grid(3,1)
+        }
+    } else { // hit_axis == 0
+        // X-Axis is Left/Right
+        if (object_normal.x > 0) {
+            u_offset = 2.0; v_offset = 1.0; // Right -> Grid(2,1)
+        } else {
+            u_offset = 0.0; v_offset = 1.0; // Left -> Grid(0,1)
+        }
+    }
+
+    rec.uv.u = (u + u_offset) * 0.25;
+    rec.uv.v = (v + v_offset) * (1.0/3.0);
 
     // Bump Mapping
     if (rec.mat.bump_map) {
