@@ -29,7 +29,9 @@ struct Material {
     std::string texture_filename;
     std::shared_ptr<Image> texture;
 
-    Material() : ambient(0.1, 0.1, 0.1), diffuse(0.7, 0.7, 0.7), specular(1.0, 1.0, 1.0), shininess(32.0), texture(nullptr) {}
-};
+    std::string bump_map_filename;
+    std::shared_ptr<Image> bump_map;
+
+    Material() : ambient(0.1, 0.1, 0.1), diffuse(0.7, 0.7, 0.7), specular(1.0, 1.0, 1.0), shininess(32.0), texture(nullptr), bump_map(nullptr) {}};
 
 #endif //B216602_MATERIAL_H

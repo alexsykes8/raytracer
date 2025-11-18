@@ -8,8 +8,7 @@
 #include "tracer.h"
 #include <stdexcept>
 
-// This will only include the non-standard c library if its compiled with OpenMP. This is a post-spec feature
-// to improve runtime by using parallel threads.
+// This will only include the non-standard c library if its compiled with OpenMP.
 #ifdef _OPENMP
     #include <omp.h>
 #endif

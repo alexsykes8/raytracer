@@ -31,7 +31,7 @@ PLANE
   corner -1.541530 2.258821 -0.191636
   corner 0.821790 2.258821 -0.191636
   diffuse 0.000000 1.000000 1.000000
-  texture_file ../textures/checkerboard.ppm
+  texture_file ../Textures/checkerboard.jpg
 END_PLANE
 
 POINT_LIGHT

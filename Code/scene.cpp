@@ -11,6 +11,8 @@
 #include "acceleration/bvh.h"
 #include "material.h"
 #include "Image.h"
+#include <cstdlib>
+#include <cstdio>
 
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.
@@ -20,9 +22,70 @@ static void read_vector(std::stringstream& ss, Vector3& vec) {
     }
 }
 
+// function to load textures, converting from JPG/PNG if necessary
+static std::shared_ptr<Image> load_texture_from_file(const std::string& filepath) {
+    std::string ext = "";
+    size_t pos = filepath.find_last_of('.');
+    if (pos != std::string::npos) {
+        ext = filepath.substr(pos);
+        for (char &c : ext) {
+            // conversion to lower case for comparison
+            if (c >= 'A' && c <= 'Z') c = c + ('a' -'A');
+        }
+    }
+    std::string final_path = filepath;
+    bool converted_temp = false;
+    std::string temp_ppm = "temp_texture_conv.ppm";
+
+    // if jpg or png, attempt to convert to ppm via python
+    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png") {
+        std::cout << "  Texture format is " << ext << ". Attempting conversion via Python..." << std::endl;
+        // use python command to convert
+        std::string py_script =
+            "import sys\n"
+                "try:\n"
+                "   from PIL import Image\n"
+                "   img = Image.open('" + filepath + "')\n"
+                "   img.save('" + temp_ppm + "')\n"
+                "except Exception as e:\n"
+                "   print(e)\n"
+                "   sys.exit(1)";
+        std::string command = "python3 -c \"" + py_script + "\"";
+        int ret = std::system(command.c_str());
+
+        // if python3 doesnt work, try python
+        if (ret != 0) {
+            command = "python -c \"" + py_script + "\"";
+            ret = std::system(command.c_str());
+        }
+
+        if (ret == 0) {
+            final_path = temp_ppm;
+            converted_temp = true;
+            std::cout << "  Conversion successful." << std::endl;
+        } else {
+            std::cerr << "  Warning: Texture conversion failed (Python/PIL might be missing). Attempting to load original path..." << std::endl;
+        }
+    }
+    std::shared_ptr<Image> texture = nullptr;
+    try {
+        texture = std::make_shared<Image>(final_path);
+        std::cout << "  Successfully loaded texture: " << filepath << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "  Error loading texture: " << e.what() << std::endl;
+        texture = nullptr;
+    }
+
+    // Cleanup
+    if (converted_temp) {
+        std::remove(temp_ppm.c_str());
+    }
+
+    return texture;
+}
+
 Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time, bool enable_fresnel)
             : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time), m_fresnel_enabled(enable_fresnel) {
-    // m_camera is initially null
     parseSceneFile(scene_filepath);
 
     if (!m_camera) {
@@ -154,13 +217,10 @@ void Scene::parseSceneFile(const std::string& filepath) {
         if (token == "END_SPHERE") {
             if (!temp_mat.texture_filename.empty()) {
                 std::string texture_path = "../" + temp_mat.texture_filename;
-                try {
-                    temp_mat.texture = std::make_shared<Image>(texture_path);
-                    std::cout << "  Successfully loaded texture: " << texture_path << std::endl;
-                } catch (const std::exception& e) {
-                    std::cerr << "  Error loading texture: " << e.what() << std::endl;
-                    temp_mat.texture = nullptr;
-                }
+                temp_mat.texture = load_texture_from_file(texture_path);
+            }
+            if (!temp_mat.bump_map_filename.empty()) {
+                temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
             }
             // Build Transformation Matrices.
             Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
@@ -183,13 +243,10 @@ void Scene::parseSceneFile(const std::string& filepath) {
         if (token == "END_CUBE") {
             if (!temp_mat.texture_filename.empty()) {
                 std::string texture_path = "../" + temp_mat.texture_filename;
-                try {
-                    temp_mat.texture = std::make_shared<Image>(texture_path);
-                    std::cout << "  Successfully loaded texture: " << texture_path << std::endl;
-                } catch (const std::exception& e) {
-                    std::cerr << "  Error loading texture: " << e.what() << std::endl;
-                    temp_mat.texture = nullptr;
-                }
+                temp_mat.texture = load_texture_from_file(texture_path);
+            }
+            if (!temp_mat.bump_map_filename.empty()) {
+                temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
             }
             // Build transforms for Cube. Instead of defining a cube by its corners, define a cube at the origin and then use a transformation matrix to move it.
             Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
@@ -214,13 +271,10 @@ void Scene::parseSceneFile(const std::string& filepath) {
         if (token == "END_PLANE") {
             if (!temp_mat.texture_filename.empty()) {
                 std::string texture_path = "../" + temp_mat.texture_filename;
-                try {
-                    temp_mat.texture = std::make_shared<Image>(texture_path);
-                    std::cout << "  Successfully loaded texture: " << texture_path << std::endl;
-                } catch (const std::exception& e) {
-                    std::cerr << "  Warning: Could not load texture '" << texture_path << "'. " << e.what() << std::endl;
-                    temp_mat.texture = nullptr;
-                }
+                temp_mat.texture = load_texture_from_file(texture_path);
+            }
+            if (!temp_mat.bump_map_filename.empty()) {
+                temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
             }
             if (temp_corners.size() == 4) {
                 // Add the plane object to the world.
@@ -307,10 +361,8 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
             else if (token == "transparency") { ss >> temp_mat.transparency; }
             else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
-            else if (token == "texture_file") {
-                ss >> temp_mat.texture_filename;
-                std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
-            }
+            else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
+            else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
