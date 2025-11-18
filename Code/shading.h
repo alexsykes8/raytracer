@@ -51,8 +51,8 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
     // if a texture is present this is prioritised.
     if (mat.texture) {
         // Get the (u,v) coordinates from the hit record for the texture
-        double u = rec.u;
-        double v = rec.v;
+        double u = rec.uv.u;
+        double v = rec.uv.v;
 
         // Get the texture dimensions
         int tex_width = mat.texture->getWidth();

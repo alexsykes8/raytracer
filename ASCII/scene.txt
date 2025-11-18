@@ -2,7 +2,12 @@ CUBE
   translation 0.000000 0.000000 0.000000
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 1.000000 1.000000 1.000000
+  scale 1.000000 2.000000 1.000000
+  ambient 0.030000 0.090000 0.000000
+  diffuse 0.371000 0.949000 0.000000
+  specular 0.800000 0.800000 0.800000
+  texture_file ../Textures/minecraft.jpg
+  bump_map_file ../Textures/bump_mapping.jpg
 END_CUBE
 
 POINT_LIGHT
