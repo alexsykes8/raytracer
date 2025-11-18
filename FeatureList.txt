@@ -45,3 +45,6 @@ Support for the Fresnel effect, which alters reflection strength based on the vi
 
 Refraction and Transparency
 The "Material" struct in "raytracer/Code/material.h" includes properties for "transparency" and "refractive_index". These fields allow the raytracer to simulate light passing through objects, bending rays according to physical indices of refraction (e.g., 1.52 for glass), enabling the rendering of realistic transparent objects.
+
+Bump Mapping
+Bump mapping simulates detailed surface relief by perturbing the geometric normal based on texture data without adding polygons. This is implemented in "raytracer/Code/shapes/sphere.cpp" within the "intersect" method, where a Tangent-Bitangent-Normal (TBN) matrix is constructed dynamically using the sphere's UV coordinates. The system reads gradient values from a specific bump map texture (parsed in "raytracer/Code/scene.cpp") to alter the normal vector stored in the "HitRecord", which is subsequently used by the shading logic in "raytracer/Code/shading.h" to create realistic lighting highlights and shadows.

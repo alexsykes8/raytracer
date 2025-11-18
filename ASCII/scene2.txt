@@ -1,0 +1,77 @@
+SPHERE
+  translation 0.477568 0.087216 0.566791
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.199892 0.175404 0.195349
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.800000 0.800000 0.800000
+  shininess 152.000000
+  reflectivity 0.262000
+  transparency 0.714000
+  refractive_index 2.828000
+END_SPHERE
+
+CAMERA
+  location 2.500000 -2.500000 1.500000
+  gaze_direction -0.534523 0.801784 -0.267261
+  up_vector -0.148250 0.222375 0.963624
+  rotation_euler_radians 1.300247 -0.000000 0.588003
+  rotation_euler_degrees 74.498665 -0.000000 33.690090
+  focal_length 50.000000
+  sensor_size 36.000000 24.000000
+  resolution 1920 1080
+  f_stop 6.000000
+  focal_distance 2.000000
+END_CAMERA
+
+PLANE
+  corner -1.541530 -0.104498 -0.191636
+  corner 0.821790 -0.104498 -0.191636
+  corner -1.541530 2.258821 -0.191636
+  corner 0.821790 2.258821 -0.191636
+  diffuse 0.000000 1.000000 1.000000
+  texture_file ../Textures/checkerboard.jpg
+  bump_map_file ../Textures/bump_mapping.jpg
+
+END_PLANE
+
+POINT_LIGHT
+  location 0.233330 0.717368 1.959181
+  intensity 10.000000 10.000000 10.000000
+  radius 2.792000
+END_POINT_LIGHT
+
+SPHERE
+  translation 0.262352 0.858970 -0.034119
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.199892 0.175404 0.086268
+  ambient 0.030000 0.090000 0.000000
+  diffuse 0.371000 0.949000 0.000000
+  specular 0.800000 0.800000 0.800000
+  shininess 70.000000
+  reflectivity 0.373000
+  transparency 0.000000
+  refractive_index 2.828000
+  velocity 2.900000 1.000000 0.200000
+END_SPHERE
+
+CUBE
+  translation -0.560527 0.364085 0.074003
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.124362 0.124362 0.265639
+  transparency 1.000000
+  refractive_index 1.520000
+END_CUBE
+
+CUBE
+  translation 1.671166 -0.228209 0.852862
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.124362 0.124362 0.265639
+  transparency 1.000000
+  refractive_index 1.520000
+END_CUBE
+

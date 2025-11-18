@@ -5,6 +5,7 @@
 #include "sphere.h"
 #include <limits>
 #include <cmath>
+#include "../Image.h"
 
 // Helper function to update min/max bounds based on a point
 static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
@@ -97,9 +98,9 @@ bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& re
     rec.mat = m_material;
 
     Vector3 p = object_normal.normalize();
-    #ifndef M_PI
-    #define M_PI 3.14159265358979323846
-    #endif
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
     double theta = asin(p.y);
     double phi = atan2(-p.z, p.x) + M_PI;
@@ -107,5 +108,53 @@ bool Sphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& re
     rec.uv.u = phi / (2.0 * M_PI);
     rec.uv.v = (theta + M_PI / 2.0) / M_PI;
 
+    // bump mapping
+    if (rec.mat.bump_map) {
+        // Calculate Tangent (T) and Bitangent (B) in world space
+        // Tangent is derivative of position wrt phi (around Y axis)
+        // T points along the U direction (latitude line)
+        // Standard sphere parameterization derivative: (-sin(phi), 0, -cos(phi)) roughly
+        // Or simple cross product: T = cross(Y_axis, N)
+        Vector3 Y_axis(0, 1, 0);
+        Vector3 N = outward_normal;
+
+        // Handle singularity at poles where N is parallel to Y
+        Vector3 T;
+        if (std::abs(N.dot(Y_axis)) > 0.999) {
+            T = Vector3(1, 0, 0); // Arbitrary for poles
+        } else {
+            T = Y_axis.cross(N).normalize();
+        }
+        Vector3 B = N.cross(T).normalize();
+
+        // sample gradients from bump map
+        int w = rec.mat.bump_map->getWidth();
+        int h = rec.mat.bump_map->getHeight();
+
+        int x = static_cast<int>(rec.uv.u * (w - 1));
+        int y = static_cast<int>((1.0 - rec.uv.v) * (h - 1));
+
+        // get brightness
+        auto get_val = [&](int px, int py) {
+            px = std::min(std::max(px, 0), w - 1);
+            py = std::min(std::max(py, 0), h - 1);
+            Pixel pix = rec.mat.bump_map->getPixel(px, py);
+            return (pix.r + pix.g + pix.b) / (3.0 * 255.0);
+        };
+
+        double height_c = get_val(x, y);
+        double height_u = get_val(x + 1, y);
+        double height_v = get_val(x, y + 1);
+
+        double bu = (height_u - height_c) * w;
+        double bv = (height_v - height_c) * h;
+
+        double bump_scale = 0.0075;
+        Vector3 perturbed = (N + (T * bu + B * bv) * bump_scale).normalize();
+        outward_normal = perturbed;
+    }
+
+
+    rec.set_face_normal(ray, outward_normal);
     return true;
 }

@@ -107,7 +107,8 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
                 // normalizes the direction vector
                 shadow_ray_dir = shadow_ray_dir.normalize();
                 // creates a shadow ray from P
-                Ray shadow_ray(P, shadow_ray_dir);
+                Vector3 shadow_origin = P + N * 0.001;
+                Ray shadow_ray(shadow_origin, shadow_ray_dir);
                 HitRecord shadow_rec;
                 // performs an intersection check against the whole world.
                 if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
@@ -166,7 +167,8 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
                 double dist_to_light = shadow_ray_dir.length();
                 shadow_ray_dir = shadow_ray_dir.normalize();
 
-                Ray shadow_ray(P, shadow_ray_dir);
+                Vector3 shadow_origin = P + N * 0.001;
+                Ray shadow_ray(shadow_origin, shadow_ray_dir);
                 HitRecord shadow_rec;
 
                 if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {

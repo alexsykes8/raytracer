@@ -1,6 +1,7 @@
 #include "../shapes/plane.h"
 #include <limits>
 #include "../material.h"
+#include "../Image.h"
 
 static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
     min_p.x = std::min(min_p.x, p.x);
@@ -137,7 +138,7 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
 
     // Check if ray is hitting from front or back
     rec.set_face_normal(ray, m_normal);
-
+    Vector3 outward_normal = m_normal;
     rec.mat = m_material;
 
     if (hit_triangle_1) {
@@ -147,5 +148,41 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
         rec.uv.u = 1.0 - v2;
         rec.uv.v = u2 + v2;
     }
+    if (rec.mat.bump_map) {
+        // For a plane, T and B align with the edges used to define the UVs
+        Vector3 T = m_t1_edge1.normalize();
+        Vector3 B = m_t1_edge2.normalize();
+        Vector3 N = outward_normal;
+        T = T.normalize();
+        B = B.normalize();
+        N = N.normalize();
+
+
+        int w = rec.mat.bump_map->getWidth();
+        int h = rec.mat.bump_map->getHeight();
+
+        int x = static_cast<int>(rec.uv.u * (w - 1));
+        int y = static_cast<int>((1.0 - rec.uv.v) * (h - 1)); // Flip V for image coords
+
+        auto get_val = [&](int px, int py) {
+            px = std::min(std::max(px, 0), w - 1);
+            py = std::min(std::max(py, 0), h - 1);
+            Pixel pix = rec.mat.bump_map->getPixel(px, py);
+            return (pix.r + pix.g + pix.b) / (3.0 * 255.0);
+        };
+
+        double height_c = get_val(x, y);
+        double height_u = get_val(x + 1, y);
+        double height_v = get_val(x, y + 1);
+
+        double bu = (height_u - height_c) * w;
+        double bv = (height_v - height_c) * h;
+
+        double bump_scale = 0.0075;
+        Vector3 perturbed = (N + (T * bu + B * bv) * bump_scale).normalize();
+        outward_normal = perturbed;
+    }
+
+    rec.set_face_normal(ray, outward_normal);
     return true;
 }

@@ -320,10 +320,8 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
             else if (token == "transparency") { ss >> temp_mat.transparency; }
             else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
-            else if (token == "texture_file") {
-                ss >> temp_mat.texture_filename;
-                std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
-            }
+            else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
+            else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
@@ -340,10 +338,8 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
             else if (token == "transparency") { ss >> temp_mat.transparency; }
             else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
-            else if (token == "texture_file") {
-                ss >> temp_mat.texture_filename;
-                std::cout << "  Found texture file token: " << temp_mat.texture_filename << std::endl;
-            }
+            else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
+            else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }

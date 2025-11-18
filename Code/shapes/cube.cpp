@@ -1,9 +1,14 @@
-#include "../shapes/cube.h"
-#include <cmath>
-#include <algorithm> // For std::min and std::max
-#include <iostream>
-#include <limits>
+//
+// Created by alex on 29/10/2025.
+//
 
+#include "cube.h"
+#include <limits>
+#include <cmath>
+#include <algorithm>
+#include "../Image.h"
+
+// Helper function to update min/max bounds based on a point
 static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
     min_p.x = std::min(min_p.x, p.x);
     min_p.y = std::min(min_p.y, p.y);
@@ -14,7 +19,6 @@ static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
 }
 
 bool Cube::getBoundingBox(AABB& output_box) const {
-    // Start with invalid bounds
     double infinity = std::numeric_limits<double>::infinity();
     Vector3 min_p(infinity, infinity, infinity);
     Vector3 max_p(-infinity, -infinity, -infinity);
@@ -28,105 +32,151 @@ bool Cube::getBoundingBox(AABB& output_box) const {
                     (j == 0) ? -1.0 : 1.0,
                     (k == 0) ? -1.0 : 1.0
                 );
-                Vector3 transformed_corner = m_transform * corner; // Transform point
+                Vector3 transformed_corner = m_transform * corner;
                 updateBounds(transformed_corner, min_p, max_p);
             }
         }
     }
 
     output_box = AABB(min_p, max_p);
-    return true; // A cube always has a valid bounding box
+    return true;
 }
 
 bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
+    // Adjust ray for motion blur
     Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
-    // Transform the ray into object space
-    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0; // Use modified origin from time
+
+    // Transform ray to object space
+    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0;
     Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
-    Ray object_ray(object_origin, object_direction, ray.time);
 
+    // Slabs method for AABB intersection against unit cube [-1, 1]
+    double t_near = -std::numeric_limits<double>::infinity();
+    double t_far = std::numeric_limits<double>::infinity();
 
-    // Perform the Ray-AABB (Slab) intersection test
-    // AABB is from P_min = (-1.0, -1.0, -1.0) to P_max = (1.0, 1.0, 1.0)
-    
-    // initialize t_near to the smallest possible value and t_far to the largest
-    double t_near = -1.0 / 0.0; // -Infinity
-    double t_far = 1.0 / 0.0;   // +Infinity
+    for (int i = 0; i < 3; ++i) {
+        double origin = (i == 0) ? object_origin.x : ((i == 1) ? object_origin.y : object_origin.z);
+        double dir = (i == 0) ? object_direction.x : ((i == 1) ? object_direction.y : object_direction.z);
 
-    // Check X-Slab
-    double t0 = (-1.0 - object_origin.x) / object_direction.x;
-    double t1 = (1.0 - object_origin.x) / object_direction.x;
-    if (t0 > t1) std::swap(t0, t1);
-    t_near = std::max(t0, t_near);
-    t_far = std::min(t1, t_far);
-    if (t_near > t_far) return false;
-
-    // --- Check Y-Slab ---
-    t0 = (-1.0 - object_origin.y) / object_direction.y;
-    t1 = (1.0 - object_origin.y) / object_direction.y;
-    if (t0 > t1) std::swap(t0, t1);
-    t_near = std::max(t0, t_near);
-    t_far = std::min(t1, t_far);
-    if (t_near > t_far) return false;
-
-    // --- Check Z-Slab ---
-    t0 = (-1.0 - object_origin.z) / object_direction.z;
-    t1 = (1.0 - object_origin.z) / object_direction.z;
-    if (t0 > t1) std::swap(t0, t1);
-    t_near = std::max(t0, t_near);
-    t_far = std::min(t1, t_far);
-    if (t_near > t_far) return false;
-
-    // hit, check if it's in the valid range
-    if (t_near < t_min || t_near > t_max) {
-        // The first hit is outside the valid range.
-        // Check if the second hit (t_far) is valid.
-        if (t_far >= t_min && t_far <= t_max) {
-             t_near = t_far; // Use the exit point
+        double t0, t1;
+        if (dir == 0.0) {
+            // Ray is parallel to the slab.
+            // If origin is outside [-1, 1], we miss the box entirely.
+            if (origin < -1.0 || origin > 1.0) {
+                return false;
+            }
+            // Inside the slab, intersection is everywhere (-inf to +inf)
+            t0 = -std::numeric_limits<double>::infinity();
+            t1 = std::numeric_limits<double>::infinity();
         } else {
-            return false; // Both hits are outside the valid range
+            double inv_d = 1.0 / dir;
+            t0 = (-1.0 - origin) * inv_d;
+            t1 = (1.0 - origin) * inv_d;
+            if (inv_d < 0.0) std::swap(t0, t1);
         }
-    }
-    
-    // Fill the HitRecord
-    rec.t = t_near;
-    rec.point = ray.point_at_parameter(rec.t); // Use the original ray
-    
-    // Find the Normal
-    Vector3 object_point = object_ray.point_at_parameter(rec.t);
-    Vector3 object_normal;
 
-    // Find the component of the object-space hit point with the largest
-    // absolute value. That determines which face was hit.
-    double max_c = std::max(std::abs(object_point.x), 
-                   std::max(std::abs(object_point.y), std::abs(object_point.z)));
-    
-    // Use an epsilon for floating point comparison
-    const double epsilon = 1e-4;
-    
-    if (max_c - std::abs(object_point.x) < epsilon) {
-        // Hit an X-face
-        object_normal = Vector3(object_point.x > 0 ? 1 : -1, 0, 0);
-        rec.uv.u = (object_point.z + 1.0) / 2.0;
-        rec.uv.v = (object_point.y + 1.0) / 2.0;
-    } else if (max_c - std::abs(object_point.y) < epsilon) {
-        // Hit a Y-face
-        object_normal = Vector3(0, object_point.y > 0 ? 1 : -1, 0);
-        rec.uv.u = (object_point.x + 1.0) / 2.0;
-        rec.uv.v = (object_point.z + 1.0) / 2.0;
+        if (t0 > t_near) t_near = t0;
+        if (t1 < t_far) t_far = t1;
+
+        if (t_near > t_far) return false;
+        if (t_far < 0.0) return false;
+    }
+
+    // Determine the valid hit distance
+    double t_hit = t_near;
+    if (t_hit < t_min || t_hit > t_max) {
+        t_hit = t_far;
+        if (t_hit < t_min || t_hit > t_max) return false;
+    }
+
+    rec.t = t_hit;
+    rec.point = ray.point_at_parameter(rec.t);
+    rec.mat = m_material;
+
+    // Calculate Object Space Point
+    Vector3 p = object_origin + object_direction * t_hit;
+
+    // Robust Normal Calculation
+    // We determine the face by finding which component (x, y, or z) is closest to +/- 1.0.
+    // This avoids state-tracking errors from the Slab loop.
+    Vector3 abs_p(std::abs(p.x), std::abs(p.y), std::abs(p.z));
+    Vector3 object_normal(0, 0, 0);
+    int hit_axis = 0;
+
+    if (abs_p.x >= abs_p.y && abs_p.x >= abs_p.z) {
+        hit_axis = 0;
+        object_normal.x = (p.x > 0) ? 1.0 : -1.0;
+    } else if (abs_p.y >= abs_p.x && abs_p.y >= abs_p.z) {
+        hit_axis = 1;
+        object_normal.y = (p.y > 0) ? 1.0 : -1.0;
     } else {
-        // Hit a Z-face
-        object_normal = Vector3(0, 0, object_point.z > 0 ? 1 : -1);
-        rec.uv.u = (object_point.x + 1.0) / 2.0;
-        rec.uv.v = (object_point.y + 1.0) / 2.0;
+        hit_axis = 2;
+        object_normal.z = (p.z > 0) ? 1.0 : -1.0;
     }
 
+    // Transform normal to world space
+    // m_inverse_transpose is (M^-1)^T, which is the correct matrix for normals.
     Vector3 outward_normal = (m_inverse_transpose * object_normal).normalize();
 
-    // Transform the normal back to world space
+    // Ensure normal faces against the ray
     rec.set_face_normal(ray, outward_normal);
 
-    rec.mat = m_material;
+    // UV Mapping (Simple planar mapping)
+    // map the 2 coordinates of the hit face to u,v range [0,1]
+    double u = 0.0, v = 0.0;
+    if (hit_axis == 0) { // X-plane, map YZ
+        u = (p.z + 1.0) * 0.5;
+        v = (p.y + 1.0) * 0.5;
+    } else if (hit_axis == 1) { // Y-plane, map XZ
+        u = (p.x + 1.0) * 0.5;
+        v = (p.z + 1.0) * 0.5;
+    } else { // Z-plane, map XY
+        u = (p.x + 1.0) * 0.5;
+        v = (p.y + 1.0) * 0.5;
+    }
+    rec.uv.u = u;
+    rec.uv.v = v;
+
+    // Bump Mapping
+    if (rec.mat.bump_map) {
+        // Calculate Tangent (T) and Bitangent (B)
+        Vector3 Y_axis(0, 1, 0);
+        Vector3 N = outward_normal; // Use the calculated world-space normal
+
+        Vector3 T;
+        // Handle singularity at poles (if normal is parallel to Y)
+        if (std::abs(N.dot(Y_axis)) > 0.999) {
+            T = Vector3(1, 0, 0);
+        } else {
+            T = Y_axis.cross(N).normalize();
+        }
+        Vector3 B = N.cross(T).normalize();
+
+        // Sample gradients
+        int w = rec.mat.bump_map->getWidth();
+        int h = rec.mat.bump_map->getHeight();
+
+        int x = static_cast<int>(rec.uv.u * (w - 1));
+        int y = static_cast<int>((1.0 - rec.uv.v) * (h - 1));
+
+        auto get_val = [&](int px, int py) {
+            px = std::min(std::max(px, 0), w - 1);
+            py = std::min(std::max(py, 0), h - 1);
+            Pixel pix = rec.mat.bump_map->getPixel(px, py);
+            return (pix.r + pix.g + pix.b) / (3.0 * 255.0);
+        };
+
+        double height_c = get_val(x, y);
+        double height_u = get_val(x + 1, y);
+        double height_v = get_val(x, y + 1);
+
+        double bu = (height_u - height_c) * w;
+        double bv = (height_v - height_c) * h;
+
+        double bump_scale = 0.0075;
+        Vector3 perturbed = (N + (T * bu + B * bv) * bump_scale).normalize();
+        rec.set_face_normal(ray, perturbed);
+    }
 
     return true;
 }
