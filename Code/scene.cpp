@@ -20,8 +20,8 @@ static void read_vector(std::stringstream& ss, Vector3& vec) {
     }
 }
 
-Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time)
-            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time) {
+Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time, bool enable_fresnel)
+            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time), m_fresnel_enabled(enable_fresnel) {
     // m_camera is initially null
     parseSceneFile(scene_filepath);
 
