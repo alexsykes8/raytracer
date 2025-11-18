@@ -61,7 +61,7 @@ bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec)
         double t0, t1;
         if (dir == 0.0) {
             // Ray is parallel to the slab.
-            // If origin is outside [-1, 1], we miss the box entirely.
+            // If origin is outside [-1, 1], miss the box entirely.
             if (origin < -1.0 || origin > 1.0) {
                 return false;
             }
@@ -96,8 +96,7 @@ bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec)
     // Calculate Object Space Point
     Vector3 p = object_origin + object_direction * t_hit;
 
-    // Robust Normal Calculation
-    // We determine the face by finding which component (x, y, or z) is closest to +/- 1.0.
+    // Determine the face by finding which component (x, y, or z) is closest to +/- 1.0.
     // This avoids state-tracking errors from the Slab loop.
     Vector3 abs_p(std::abs(p.x), std::abs(p.y), std::abs(p.z));
     Vector3 object_normal(0, 0, 0);
