@@ -44,6 +44,12 @@ def write_material_properties(f, obj):
             cleaned_name = texture_name.replace('//', '').replace('\\', '/')
             f.write(f"  texture_file {cleaned_name}\n")
 
+    if "bump_map_file" in mat:
+        texture_name = mat['bump_map_file']
+        if texture_name:
+            cleaned_name = texture_name.replace('//', '').replace('\\', '/')
+            f.write(f"  bump_map_file {cleaned_name}\n")
+
     if "velocity" in mat:
         velocity_vec = mathutils.Vector(mat['velocity'])
         f.write(f"  velocity {format_vector(velocity_vec)}\n")
@@ -105,6 +111,14 @@ def export_scene_data(filepath):
         with open(filepath, 'w') as f:
             # Get the active scene
             scene = bpy.context.scene
+
+            # Export HDR world properties
+            world = scene.world
+            if world and "HDR_BACKGROUND" in world:
+                hdr_path = world["HDR_BACKGROUND"]
+                if hdr_path:
+                    cleaned_path = hdr_path.replace('//', '').replace('\\', '/')
+                    f.write(f"HDR_BACKGROUND {cleaned_path}\n\n")
 
             # --- Iterate through all objects in the scene ---
             for obj in scene.objects:

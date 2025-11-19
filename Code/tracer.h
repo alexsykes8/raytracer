@@ -11,6 +11,7 @@
 #include "Image.h"
 #include "shading.h"
 #include "vector3.h"
+#include "HDRImage.h"
 #include <cmath>
 #include <algorithm>
 #include <cstdlib>
@@ -33,6 +34,24 @@ inline Vector3 random_in_unit_sphere_tracer() {
         if (p.dot(p) < 1.0)
             return p;
     }
+}
+
+inline void get_sphere_uv(const Vector3& p, double& u, double& v) {
+
+    double d_up = p.z;
+    double d_fwd = p.y;
+    double d_right = p.x;
+
+    // Assumes Y is up.
+    // u is longitude (horizontal)
+    // v is latitude (vertical)
+    // traces ray to a long/lat coord on the sphere
+    auto longitude = atan2(d_fwd, d_right);
+    auto latitude = acos(d_up);
+
+    u = longitude;
+    // flip vertically
+    v = M_PI - latitude;
 }
 
 
@@ -329,6 +348,17 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
 
         return final_colour;
     } else {
+        // Check if HDR background is enabled
+        if (scene.has_hdr_background()) {
+            // initialises an empty u v coordinates
+            double u, v;
+            // takes the direction of the ray and normalizes
+            Vector3 unit_direction = r.direction.normalize();
+            // calculates the uv coordinates based on the ray
+            get_sphere_uv(unit_direction, u, v);
+            // samples the colour of the pixel at that ray. Uses bilinear interpolation to sample a 2x2 grid of pixels.
+            return scene.get_hdr_background()->sample(u, v);
+        }
         return background_colour_vec;
     }
 }

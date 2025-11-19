@@ -13,6 +13,7 @@
 #include "Image.h"
 #include <cstdlib>
 #include <cstdio>
+#include "HDRImage.h"
 
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.
@@ -156,6 +157,19 @@ void Scene::parseSceneFile(const std::string& filepath) {
 
         // Switch between the different blocks
         if (token.empty() || token[0] == '#') continue; // Skip empty/comment lines
+
+        if (token == "HDR_BACKGROUND") {
+            std::string filename;
+            ss >> filename;
+            if (!filename.empty()) {
+                // assuming generic relative path structure as other textures
+                std::string full_path = "../" + filename;
+                m_hdr_background = std::make_shared<HDRImage>(full_path);
+                std::cout << "Attempted to load HDR Background: " << full_path << std::endl;
+            }
+            continue;
+        }
+
         if (token == "CAMERA") { current_block_type = "CAMERA"; continue; }
 
         if (token == "POINT_LIGHT") {

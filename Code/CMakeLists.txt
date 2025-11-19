@@ -30,7 +30,9 @@ add_executable(B216602 main.cpp Image.cpp
         material.h
         shading.h
         tracer.h
-        )
+        HDRImage.cpp
+        HDRImage.h
+)
 
 find_package(OpenMP QUIET)
 if(OpenMP_FOUND)

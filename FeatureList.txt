@@ -51,3 +51,8 @@ Bump mapping simulates detailed surface relief by perturbing the geometric norma
 
 Cube UV Mapping
 The cube shape implements a custom UV mapping strategy to wrap a single texture across all six faces using an unfolded "cross" layout. Implemented in the "Cube::intersect" method within "raytracer/Code/shapes/cube.cpp", the logic first identifies the hit face by analyzing the object-space intersection point relative to the cube's bounds. It then computes local planar coordinates and applies specific offsets—such as mapping the "Top" face to the (1,2) grid position and "Front" to (1,1)—to normalize the UVs onto a 4x3 grid, enabling the use of standard skybox-style textures.
+
+HDR
+This feature implements Image-Based Lighting (IBL) using High Dynamic Range (HDR) environment maps, specifically supporting the .pfm (Portable FloatMap) format. Implemented primarily in raytracer/Code/HDRImage.cpp and raytracer/Code/tracer.h, the system allows rays that miss all scene geometry to sample a 360° panoramic background.
+
+The implementation includes a robust custom PFM parser (HDRImage::load) capable of handling variable header whitespace, comment skipping, and endianness detection based on the file's scale factor. For rendering, the system maps ray direction vectors to spherical (latitude-longitude) coordinates using get_sphere_uv in tracer.h. These coordinates are then used to perform bilinear interpolation HDRImage::sample by interpolating horizontally and then vertically across a 2x2 square of pixels, ensuring smooth reflections and background rendering even at high resolutions. This allows glossy and transparent objects to reflect complex, real-world lighting environments rather than a static background color.

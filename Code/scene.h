@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "light.h"
 #include "matrix4x4.h"
+#include "HDRImage.h"
+
 
 class Scene {
 public:
@@ -25,6 +27,9 @@ public:
     double get_shutter_time() const { return m_shutter_time;}
     bool fresnel_enabled() const { return m_fresnel_enabled; }
 
+    bool has_hdr_background() const { return m_hdr_background != nullptr; }
+    const HDRImage* get_hdr_background() const { return m_hdr_background.get(); }
+
 
 
 private:
@@ -38,6 +43,8 @@ private:
     int m_glossy_samples;
     double m_shutter_time;
     bool m_fresnel_enabled;
+
+    std::shared_ptr<HDRImage> m_hdr_background;
 };
 
 #endif //B216602_SCENE_H

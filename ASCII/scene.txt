@@ -1,31 +1,65 @@
+HDR_BACKGROUND ../Textures/rose_garden.pfm
+
 CUBE
-  translation 0.000000 0.000000 0.000000
+  translation 0.221935 0.069582 0.325584
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 1.000000 1.000000 1.000000
-  ambient 0.030000 0.090000 0.000000
-  diffuse 0.371000 0.949000 0.000000
-  specular 0.800000 0.800000 0.800000
+  scale 0.325584 0.325584 0.325584
   texture_file ../Textures/minecraft.jpg
   bump_map_file ../Textures/minecraft.jpg
 END_CUBE
 
 POINT_LIGHT
-  location 3.451535 -6.595186 11.297837
+  location 4.699185 -4.577894 5.412796
   intensity 1000.000000 1000.000000 1000.000000
   radius 0.000000
 END_POINT_LIGHT
 
 CAMERA
-  location 7.358891 -6.925791 4.958309
-  gaze_direction -0.651558 0.614170 -0.445271
-  up_vector -0.324013 0.305421 0.895396
-  rotation_euler_radians 1.109319 0.000000 0.814928
-  rotation_euler_degrees 63.559297 0.000000 46.691935
+  location 6.882855 -1.591780 0.758483
+  gaze_direction -0.934892 0.354908 0.004200
+  up_vector 0.003927 -0.001491 0.999991
+  rotation_euler_radians 1.574996 0.000000 1.207978
+  rotation_euler_degrees 90.240624 0.000000 69.212041
   focal_length 50.000000
   sensor_size 36.000000 24.000000
   resolution 1920 1080
   f_stop 99999.0
   focal_distance 10.0
 END_CAMERA
+
+PLANE
+  corner -5.388227 -1.618183 0.000000
+  corner 4.257836 -1.618183 0.000000
+  corner -5.388227 9.556579 0.000000
+  corner 4.257836 9.556579 0.000000
+  texture_file ../Textures/grass.jpg
+END_PLANE
+
+CUBE
+  translation 0.873103 0.720750 0.325584
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.325584 0.325584 0.325584
+  texture_file ../Textures/minecraft.jpg
+  bump_map_file ../Textures/minecraft.jpg
+END_CUBE
+
+CUBE
+  translation 0.221935 0.720750 0.325584
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.325584 0.325584 0.325584
+  texture_file ../Textures/minecraft.jpg
+  bump_map_file ../Textures/minecraft.jpg
+END_CUBE
+
+CUBE
+  translation 0.221935 0.720750 0.976752
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.325584 0.325584 0.325584
+  texture_file ../Textures/minecraft.jpg
+  bump_map_file ../Textures/minecraft.jpg
+END_CUBE
 
