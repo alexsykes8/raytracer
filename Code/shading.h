@@ -38,6 +38,35 @@ inline Vector3 component_wise_multiply(const Vector3& a, const Vector3& b) {
     return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
+inline double trace_shadow_transmission(const Ray& shadow_ray, double dist_to_light, const HittableList& world) {
+    double transmission = 1.0;
+    Ray current_ray = shadow_ray;
+    double current_dist = dist_to_light;
+
+    while (true) {
+        HitRecord rec;
+        if (world.intersect(current_ray, 0.001, current_dist - 0.001, rec)) {
+
+            if (rec.mat.transparency > 0.0) {
+                transmission *= rec.mat.transparency;
+
+                if (transmission < 0.001) return 0.0;
+
+                Vector3 hit_point = rec.point;
+                Vector3 direction = current_ray.direction;
+
+                current_ray = Ray(hit_point + direction * 0.001, direction);
+                current_dist -= rec.t;
+            } else {
+                return 0.0;
+            }
+        } else {
+            return transmission;
+        }
+    }
+}
+
+
 // calculates the local ambient diffuse. It computes the direct illumination component of the surface colour at the ray-hit point.
 inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, const HittableList& world) {
 
@@ -107,18 +136,8 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
                 // creates a shadow ray from P
                 Vector3 shadow_origin = P + N * 0.001;
                 Ray shadow_ray(shadow_origin, shadow_ray_dir);
-                HitRecord shadow_rec;
-                // performs an intersection check against the whole world.
-                if (scene.any_hit_enabled()) {
-                    if (!world.any_hit(shadow_ray, 0.001, dist_to_light - 0.001)) {
-                        shadow_factor += 1.0;
-                    }
-                }
-                else {
-                    if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
-                        shadow_factor += 1.0;
-                    }
-                }
+                shadow_factor += trace_shadow_transmission(shadow_ray, dist_to_light, world);
+
             }
             // the factor is divided by the number of samples. This creates the gradient between blocked and unblocked areas, as in these areas some rays from the light to the area may succeed but the other randomly selected light points may fail.
             shadow_factor /= SHADOW_SAMPLES;
@@ -173,17 +192,7 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
 
                 Vector3 shadow_origin = P + N * 0.001;
                 Ray shadow_ray(shadow_origin, shadow_ray_dir);
-                HitRecord shadow_rec;
-                if (scene.any_hit_enabled()) {
-                    if (!world.any_hit(shadow_ray, 0.001, dist_to_light - 0.001)) {
-                        shadow_factor += 1.0;
-                    }
-                }
-                else {
-                    if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
-                        shadow_factor += 1.0;
-                    }
-                }
+                shadow_factor += trace_shadow_transmission(shadow_ray, dist_to_light, world);
             }
             shadow_factor /= SHADOW_SAMPLES;
         }
