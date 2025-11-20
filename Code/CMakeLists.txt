@@ -32,6 +32,10 @@ add_executable(B216602 main.cpp Image.cpp
         tracer.h
         HDRImage.cpp
         HDRImage.h
+        shapes/complex_cube.cpp
+        shapes/complex_cube.h
+        shapes/complex_sphere.cpp
+        shapes/complex_sphere.h
 )
 
 find_package(OpenMP QUIET)

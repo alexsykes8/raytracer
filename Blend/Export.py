@@ -69,10 +69,14 @@ def get_primitive_type(obj):
         # Additional check: all faces are quads (4 vertices per face)
         is_quad_cube = all(poly.loop_total == 4 for poly in mesh.polygons)
         if is_quad_cube:
+            if "complex" in obj.name.lower():
+                return "COMPLEX_CUBE"
             return "CUBE"
 
 
     # --- Assume if not a cube or plane then it is a sphere
+    if "complex" in obj.name.lower():
+        return "COMPLEX_SPHERE"
     return "SPHERE"
 
 
@@ -193,6 +197,19 @@ def export_scene_data(filepath):
                         write_material_properties(f, obj)
                         f.write("END_SPHERE\n\n")
 
+                    elif object_type == "COMPLEX_SPHERE":
+                        f.write("COMPLEX_SPHERE\n")
+                        # Use 'translation' for consistency with CUBE
+                        f.write(f"  translation {format_vector(obj.location)}\n")
+                        # Export rotation in Euler angles (XYZ order in radians)
+                        rotation_euler = format_vector(obj.rotation_euler)
+                        f.write(f"  rotation_euler_radians {rotation_euler}\n")
+                        f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n")
+                        # Export non-uniform scaling (X, Y, Z)
+                        f.write(f"  scale {format_vector(obj.scale)}\n")
+                        write_material_properties(f, obj)
+                        f.write("END_COMPLEX_SPHERE\n\n")
+
                     # --- EXPORT CUBE ---
                     elif object_type == "CUBE":
                         f.write("CUBE\n")
@@ -206,6 +223,16 @@ def export_scene_data(filepath):
                         f.write(f"  scale {format_vector(obj.scale)}\n")
                         write_material_properties(f, obj)
                         f.write("END_CUBE\n\n")
+
+                    elif object_type == "COMPLEX_CUBE":
+                        f.write("COMPLEX_CUBE\n")
+                        f.write(f"  translation {format_vector(obj.location)}\n")
+                        rotation_euler = format_vector(obj.rotation_euler)
+                        f.write(f"  rotation_euler_radians {rotation_euler}\n")
+                        f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n")
+                        f.write(f"  scale {format_vector(obj.scale)}\n")
+                        write_material_properties(f, obj)
+                        f.write("END_COMPLEX_CUBE\n\n")
 
                     # --- EXPORT PLANE ---
                     elif object_type == "PLANE":

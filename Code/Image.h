@@ -37,6 +37,8 @@ public:
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
 
+    Pixel getPixelBilinear(double u, double v) const;
+
 private:
     // Helper method to read the PPM file
     void read(const std::string& filename);

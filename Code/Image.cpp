@@ -1,6 +1,43 @@
 #include "Image.h"
 #include <fstream>
 #include <iostream>
+#include <cmath>
+
+Pixel Image::getPixelBilinear(double u, double v) const {
+    u = std::max(0.0, std::min(1.0, u));
+    v = std::max(0.0, std::min(1.0, v));
+
+    double px = u * (m_width - 1);
+    double py = v * (m_height - 1);
+
+    int x0 = static_cast<int>(std::floor(px));
+    int y0 = static_cast<int>(std::floor(py));
+
+    int x1 = std::min(x0 + 1, m_width - 1);
+    int y1 = std::min(y0 + 1, m_height - 1);
+
+    double dx = px - x0;
+    double dy = py - y0;
+
+    Pixel c00 = getPixel(x0, y0);
+    Pixel c10 = getPixel(x1, y0);
+    Pixel c01 = getPixel(x0, y1);
+    Pixel c11 = getPixel(x1, y1);
+
+    double r_top = (1.0 - dx) * c00.r + dx * c10.r;
+    double g_top = (1.0 - dx) * c00.g + dx * c10.g;
+    double b_top = (1.0 - dx) * c00.b + dx * c10.b;
+
+    double r_bot = (1.0 - dx) * c01.r + dx * c11.r;
+    double g_bot = (1.0 - dx) * c01.g + dx * c11.g;
+    double b_bot = (1.0 - dx) * c01.b + dx * c11.b;
+
+    unsigned char r = static_cast<unsigned char>((1.0 - dy) * r_top + dy * r_bot);
+    unsigned char g = static_cast<unsigned char>((1.0 - dy) * g_top + dy * g_bot);
+    unsigned char b = static_cast<unsigned char>((1.0 - dy) * b_top + dy * b_bot);
+
+    return {r, g, b};
+}
 
 // Constructor to read an image from a file.
 Image::Image(const std::string& filename) : m_width(0), m_height(0), m_max_color_val(255) {

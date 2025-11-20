@@ -14,7 +14,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include "HDRImage.h"
-
+#include "shapes/complex_cube.h"
+#include "shapes/complex_sphere.h"
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.
 static void read_vector(std::stringstream& ss, Vector3& vec) {
@@ -47,6 +48,7 @@ static std::shared_ptr<Image> load_texture_from_file(const std::string& filepath
                 "try:\n"
                 "   from PIL import Image\n"
                 "   img = Image.open('" + filepath + "')\n"
+                "   img = img.convert('RGB')\n"
                 "   img.save('" + temp_ppm + "')\n"
                 "except Exception as e:\n"
                 "   print(e)\n"
@@ -189,11 +191,32 @@ void Scene::parseSceneFile(const std::string& filepath) {
             temp_velocity = Vector3(0,0,0);
             continue;
         }
+
+        if (token == "COMPLEX_SPHERE") {
+            current_block_type = "COMPLEX_SPHERE";
+            translation = Vector3(0, 0, 0);
+            rotation = Vector3(0, 0, 0);
+            scale_vec = Vector3(1, 1, 1); // Default scale is (1,1,1)
+            temp_mat = Material();
+            temp_velocity = Vector3(0,0,0);
+            continue;
+        }
+
         if (token == "CUBE") {
             current_block_type = "CUBE";
             translation = Vector3(0, 0, 0);
             rotation = Vector3(0, 0, 0);
             scale_vec = Vector3(1, 1, 1); // Default scale is (1,1,1)
+            temp_mat = Material();
+            temp_velocity = Vector3(0,0,0);
+            continue;
+        }
+
+        if (token == "COMPLEX_CUBE") {
+            current_block_type = "COMPLEX_CUBE";
+            translation = Vector3(0, 0, 0);
+            rotation = Vector3(0, 0, 0);
+            scale_vec = Vector3(1, 1, 1);
             temp_mat = Material();
             temp_velocity = Vector3(0,0,0);
             continue;
@@ -254,6 +277,32 @@ void Scene::parseSceneFile(const std::string& filepath) {
             current_block_type = "NONE";
             continue;
         }
+        if (token == "END_COMPLEX_SPHERE") {
+            if (!temp_mat.texture_filename.empty()) {
+                std::string texture_path = "../" + temp_mat.texture_filename;
+                temp_mat.texture = load_texture_from_file(texture_path);
+            }
+            if (!temp_mat.bump_map_filename.empty()) {
+                temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
+            }
+            // Build Transformation Matrices.
+            Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
+            Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
+            Matrix4x4 mat_ry = Matrix4x4::createRotationY(rotation.y);
+            Matrix4x4 mat_rz = Matrix4x4::createRotationZ(rotation.z);
+            Matrix4x4 mat_t = Matrix4x4::createTranslation(translation);
+
+            // Combine transforms: T * Rz * Ry * Rx * S
+            // Produces the final object-to-world transformation matrix for the sphere.
+            Matrix4x4 transform = mat_t * mat_rz * mat_ry * mat_rx * mat_s;
+            // Calculates the inverse of the transform matrix to convert world space back to local object space.
+            Matrix4x4 inv_transform = transform.inverse();
+
+            // Add the completed shape
+            m_world.add(std::make_shared<ComplexSphere>(transform, inv_transform, temp_mat, temp_velocity));
+            current_block_type = "NONE";
+            continue;
+        }
         if (token == "END_CUBE") {
             if (!temp_mat.texture_filename.empty()) {
                 std::string texture_path = "../" + temp_mat.texture_filename;
@@ -278,6 +327,30 @@ void Scene::parseSceneFile(const std::string& filepath) {
 
             // Add the object to the world.
             m_world.add(std::make_shared<Cube>(transform, inv_transform, temp_mat, temp_velocity));
+            current_block_type = "NONE";
+            continue;
+        }
+
+        if (token == "END_COMPLEX_CUBE") {
+            if (!temp_mat.texture_filename.empty()) {
+                std::string texture_path = "../" + temp_mat.texture_filename;
+                temp_mat.texture = load_texture_from_file(texture_path);
+            }
+            if (!temp_mat.bump_map_filename.empty()) {
+                temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
+            }
+
+            Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
+            Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
+            Matrix4x4 mat_ry = Matrix4x4::createRotationY(rotation.y);
+            Matrix4x4 mat_rz = Matrix4x4::createRotationZ(rotation.z);
+            Matrix4x4 mat_t = Matrix4x4::createTranslation(translation);
+
+            Matrix4x4 transform = mat_t * mat_rz * mat_ry * mat_rx * mat_s;
+            Matrix4x4 inv_transform = transform.inverse();
+
+            // Instantiate ComplexCube here
+            m_world.add(std::make_shared<ComplexCube>(transform, inv_transform, temp_mat, temp_velocity));
             current_block_type = "NONE";
             continue;
         }
@@ -341,6 +414,25 @@ void Scene::parseSceneFile(const std::string& filepath) {
             }
 
         }
+
+        else if (current_block_type == "COMPLEX_SPHERE") {
+            if (token == "translation") { read_vector(ss, translation); }
+            else if (token == "rotation_euler_radians") { read_vector(ss, rotation); }
+            else if (token == "scale") { read_vector(ss, scale_vec); }
+            else if (token == "ambient") { read_vector(ss, temp_mat.ambient); }
+            else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
+            else if (token == "specular") { read_vector(ss, temp_mat.specular); }
+            else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
+            else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
+            else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
+            else if (token == "velocity") {
+                read_vector(ss, temp_velocity);
+            }
+
+        }
         else if (current_block_type == "CUBE") {
             if (token == "translation") { read_vector(ss, translation); }
             else if (token == "rotation_euler_radians") { read_vector(ss, rotation); }
@@ -358,6 +450,23 @@ void Scene::parseSceneFile(const std::string& filepath) {
                 read_vector(ss, temp_velocity);
             }
         }
+
+        else if (current_block_type == "COMPLEX_CUBE") {
+            if (token == "translation") { read_vector(ss, translation); }
+            else if (token == "rotation_euler_radians") { read_vector(ss, rotation); }
+            else if (token == "scale") { read_vector(ss, scale_vec); }
+            else if (token == "ambient") { read_vector(ss, temp_mat.ambient); }
+            else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
+            else if (token == "specular") { read_vector(ss, temp_mat.specular); }
+            else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
+            else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
+            else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
+            else if (token == "velocity") { read_vector(ss, temp_velocity); }
+        }
+
         else if (current_block_type == "PLANE") {
             if (token == "corner") {
                 Vector3 corner;
