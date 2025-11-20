@@ -9,6 +9,7 @@
 #include "shapes/hittable.h"
 #include "shapes/hittable_list.h"
 #include "vector3.h"
+#include "config.h"
 
 #include <cmath>
 #include <algorithm>
@@ -19,13 +20,7 @@
 #define B216602_SHADING_H
 
 
-inline Vector3 random_in_unit_sphere() {
-    while (true) {
-        auto p = Vector3(random_double() * 2 - 1, random_double() * 2 - 1, random_double() * 2 - 1);
-        if (p.dot(p) < 1.0)
-            return p;
-    }
-}
+
 
 inline Vector3 random_point_on_light(const PointLight& light) {
     if (light.radius == 0.0) {
@@ -66,6 +61,55 @@ inline double trace_shadow_transmission(const Ray& shadow_ray, double dist_to_li
     }
 }
 
+
+inline double calculate_shadow_factor(const Scene& scene, const HittableList& world, const Vector3& P, const Vector3& N) {
+    if (!scene.shadows_enabled()) return 1.0;
+
+    const int SHADOW_SAMPLES = 4;
+    double shadow_factor = 0.0;
+
+    for (const auto& light : scene.getLights()) {
+        double light_shadow = 0.0;
+        for (int i = 0; i < SHADOW_SAMPLES; i++) {
+            Vector3 point_on_light = random_point_on_light(light);
+            Vector3 shadow_ray_dir = point_on_light - P;
+            double dist_to_light = shadow_ray_dir.length();
+            shadow_ray_dir = shadow_ray_dir.normalize();
+
+            Vector3 shadow_origin = P + N * 0.001;
+            Ray shadow_ray(shadow_origin, shadow_ray_dir);
+
+            // Accumulate transmission
+            light_shadow += trace_shadow_transmission(shadow_ray, dist_to_light, world);
+        }
+        shadow_factor += (light_shadow / SHADOW_SAMPLES);
+    }
+
+
+    return 0;
+}
+
+inline double compute_light_visibility(const Scene& scene, const HittableList& world, const PointLight& light, const Vector3& P, const Vector3& N) {
+    if (!scene.shadows_enabled()) return 1.0;
+
+    int samples = scene.get_shadow_samples();
+
+    double epsilon = Config::Instance().getDouble("advanced.epsilon", 1e-4);
+
+    double shadow_accumulator = 0.0;
+
+    for (int i = 0; i < samples; i++) {
+        Vector3 point_on_light = random_point_on_light(light);
+        Vector3 shadow_ray_dir = point_on_light - P;
+        double dist_to_light = shadow_ray_dir.length();
+        shadow_ray_dir = shadow_ray_dir.normalize();
+
+        Vector3 shadow_origin = P + N * epsilon;
+        Ray shadow_ray(shadow_origin, shadow_ray_dir);
+        shadow_accumulator += trace_shadow_transmission(shadow_ray, dist_to_light, world);
+    }
+    return shadow_accumulator / samples;
+}
 
 // calculates the local ambient diffuse. It computes the direct illumination component of the surface colour at the ray-hit point.
 inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, const HittableList& world) {
@@ -115,58 +159,26 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
     const Vector3 N = rec.normal.normalize();
     double exposure = scene.getExposure();
 
-    const int SHADOW_SAMPLES = 16;
-
-    // rather than hard shadows, use a monte carlo sampling technique to implement soft shadows.
     for (const auto& light : scene.getLights()) {
-        // default for if shadows are turned off
-        double shadow_factor = 1.0;
+        double shadow_factor = compute_light_visibility(scene, world, light, P, N);
 
-        if (scene.shadows_enabled()) {
-            shadow_factor = 0.0;
-            for (int i = 0; i < SHADOW_SAMPLES; i++) {
-                // randomly select a point on the surface of the light.
-                Vector3 point_on_light = random_point_on_light(light);
-                // calculates the vector from P (the hit point that was visible from the camera) to the light
-                Vector3 shadow_ray_dir = point_on_light - P;
-                // gets the distance to the light
-                double dist_to_light = shadow_ray_dir.length();
-                // normalizes the direction vector
-                shadow_ray_dir = shadow_ray_dir.normalize();
-                // creates a shadow ray from P
-                Vector3 shadow_origin = P + N * 0.001;
-                Ray shadow_ray(shadow_origin, shadow_ray_dir);
-                shadow_factor += trace_shadow_transmission(shadow_ray, dist_to_light, world);
-
-            }
-            // the factor is divided by the number of samples. This creates the gradient between blocked and unblocked areas, as in these areas some rays from the light to the area may succeed but the other randomly selected light points may fail.
-            shadow_factor /= SHADOW_SAMPLES;
-        }
-        // calculate the final, integrated caclulation of the diffuse light intensity.
         if (shadow_factor > 0) {
-            // calculates the vector from P (the hit point that was visible from the camera) to the light
             Vector3 L_raw = light.position - P;
-            // calculates the squared distance to the light
-            double distance_squared = L_raw.dot(L_raw);
-            // calculates the inverse square law of light falloff. Light intensity decreases proportional to the square of the distance from the source.
-            double falloff = 1.0 / distance_squared;
-            Vector3 L = L_raw.normalize(); // Normalized light vector
-            // scales down the lights intensity using the falloff value and the exposure setting (passed as a command line argument) which controls the overall scene brightness
-            Vector3 light_intensity_at_point = light.intensity * falloff * exposure;
-            // Diffuse shading Lambert's cosine law
-            double L_dot_N = std::max(0.0, L.dot(N)); // calculates the dot product of the light vector and the normal vector. this is the cosine of the angle between the light direction and the surface normal.
-            // If the light hits perpendicularly, cos(theta) is 1.0 (max brightness). The closer the ray is to parallel with the surface, the closer it is to 0.0 (low brightness)
+            double dist_sq = L_raw.dot(L_raw);
+            double falloff = 1.0 / dist_sq;
+            Vector3 L = L_raw.normalize();
 
-            // multiplies the diffuse colour by the light intensity of each colour. Scales by L_dot_N to account for surface angle, then applies shadow factor.
-            Vector3 diffuse = component_wise_multiply(diffuse_colour, light_intensity_at_point) * L_dot_N * shadow_factor; // multiplied by shadow factor to reduce intensity based on visibility to the light source.
+            Vector3 light_intensity = light.intensity * falloff * exposure;
+            double L_dot_N = std::max(0.0, L.dot(N));
 
-            // add to the final_colour_vec, which already contains ambient light and contributions from other lights.
+            Vector3 diffuse = component_wise_multiply(diffuse_colour, light_intensity) * L_dot_N * shadow_factor;
             final_colour_vec = final_colour_vec + diffuse;
         }
     }
-
     return final_colour_vec;
 }
+
+
 inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, const HittableList& world, const Ray& view_ray) {
     const Vector3 P = rec.point;
     const Vector3 N = rec.normal.normalize();
@@ -175,11 +187,11 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
     double exposure = scene.getExposure();
 
     Vector3 specular_colour(0, 0, 0);
-    const int SHADOW_SAMPLES = 16;
+    const int SHADOW_SAMPLES = 4;
 
     for (const auto& light : scene.getLights()) {
 
-        double shadow_factor = 1.0;
+        double shadow_factor = compute_light_visibility(scene, world, light, P, N);
 
         if (scene.shadows_enabled()) {
             shadow_factor = 0.0;

@@ -8,38 +8,13 @@
 #include <algorithm>
 #include "../Image.h"
 
-// Helper function to update min/max bounds based on a point
-static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
-    min_p.x = std::min(min_p.x, p.x);
-    min_p.y = std::min(min_p.y, p.y);
-    min_p.z = std::min(min_p.z, p.z);
-    max_p.x = std::max(max_p.x, p.x);
-    max_p.y = std::max(max_p.y, p.y);
-    max_p.z = std::max(max_p.z, p.z);
-}
+Cube::Cube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
+    : TransformedShape(transform, inv_transform, mat, velocity)
+{}
 
 bool Cube::getBoundingBox(AABB& output_box) const {
-    double infinity = std::numeric_limits<double>::infinity();
-    Vector3 min_p(infinity, infinity, infinity);
-    Vector3 max_p(-infinity, -infinity, -infinity);
-
-    // Transform the 8 corners of the unit cube's bounding box (-1 to 1)
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            for (int k = 0; k < 2; ++k) {
-                Vector3 corner(
-                    (i == 0) ? -1.0 : 1.0,
-                    (j == 0) ? -1.0 : 1.0,
-                    (k == 0) ? -1.0 : 1.0
-                );
-                Vector3 transformed_corner = m_transform * corner;
-                updateBounds(transformed_corner, min_p, max_p);
-            }
-        }
-    }
-
-    output_box = AABB(min_p, max_p);
-    return true;
+    // Unit cube is bounded by box from (-1,-1,-1) to (1,1,1)
+    return getTransformedBoundingBox(output_box, Vector3(-1, -1, -1), Vector3(1, 1, 1));
 }
 
 bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {

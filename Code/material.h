@@ -14,6 +14,7 @@ class Image;
 
 // defines the Blinn-Phong material properties
 struct Material {
+    // Glass should not have ambient or diffuse
     Vector3 ambient;    // each component range is [0,1]. This is the colour when hit by global ambient light. It should be about 10% of diffuse.
     Vector3 diffuse;    // each component range is [0,1]. This is the colour when hit by light. (base colour)
     Vector3 specular;   // each component range is [0,1]. low specular is more matt

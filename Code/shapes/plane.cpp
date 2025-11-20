@@ -3,15 +3,6 @@
 #include "../material.h"
 #include "../Image.h"
 
-static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
-    min_p.x = std::min(min_p.x, p.x);
-    min_p.y = std::min(min_p.y, p.y);
-    min_p.z = std::min(min_p.z, p.z);
-    max_p.x = std::max(max_p.x, p.x);
-    max_p.y = std::max(max_p.y, p.y);
-    max_p.z = std::max(max_p.z, p.z);
-}
-
 
 bool Plane::getBoundingBox(AABB& output_box) const {
     // Calculate the actual world-space vertices of the quad
@@ -26,9 +17,10 @@ bool Plane::getBoundingBox(AABB& output_box) const {
     Vector3 max_p = v0;
 
     // Update bounds with the other distinct vertices
-    updateBounds(v1, min_p, max_p);
-    updateBounds(v2, min_p, max_p);
-    updateBounds(v3, min_p, max_p);
+
+    AABB::updateBounds(v1, min_p, max_p);
+    AABB::updateBounds(v2, min_p, max_p);
+    AABB::updateBounds(v3, min_p, max_p);
 
     // Add epsilon for thickness
     const double epsilon = 1e-4;

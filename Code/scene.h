@@ -30,6 +30,9 @@ public:
 
     bool has_hdr_background() const { return m_hdr_background != nullptr; }
     const HDRImage* get_hdr_background() const { return m_hdr_background.get(); }
+    int get_shadow_samples() const { return m_shadow_samples; }
+    double get_epsilon() const { return m_epsilon; }
+    int get_max_bounces() const { return m_max_bounces; }
 
 
 
@@ -45,6 +48,11 @@ private:
     double m_shutter_time;
     bool m_fresnel_enabled;
     bool m_any_hit_enabled;
+    int m_shadow_samples;
+    double m_epsilon;
+    int m_max_bounces;
+
+
 
     std::shared_ptr<HDRImage> m_hdr_background;
 };

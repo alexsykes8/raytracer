@@ -24,7 +24,14 @@ inline int random_int(int min, int max) {
     static thread_local std::mt19937 generator(std::random_device{}());
     std::uniform_int_distribution<int> distribution(min, max);
     return distribution(generator);
+}
 
+inline Vector3 random_in_unit_sphere() {
+    while (true) {
+        auto p = Vector3(random_double() * 2 - 1, random_double() * 2 - 1, random_double() * 2 - 1);
+        if (p.dot(p) < 1.0)
+            return p;
+    }
 }
 
 #endif //B216602_RANDOM_UTILS_H

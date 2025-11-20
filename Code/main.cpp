@@ -8,6 +8,7 @@
 #include "tracer.h"
 #include <stdexcept>
 #include "random_utils.h"
+#include "config.h"
 
 #include <chrono>
 #include <filesystem>
@@ -15,8 +16,9 @@
 #include <sstream>
 #include <iomanip>
 #include <ctime>
+#include <atomic>
 
-// This will only include the non-standard c library if its compiled with OpenMP.
+// This will only include the non-standard c library if it's compiled with OpenMP.
 #ifdef _OPENMP
     #include <omp.h>
 #endif
@@ -33,17 +35,18 @@ std::string get_current_timestamp() {
 }
 
 int main(int argc, char* argv[]) {
+    Config::Instance().load("../config.json");
 
     // turning on and off features
-    bool use_bvh = true;
-    int samples_per_pixel = 1;
-    double exposure = 1.0;
-    bool enable_shadows = false;
-    int glossy_samples = 0;
-    bool enable_parallel = false;
-    double shutter_time = 0.0;
+    bool use_bvh = Config::Instance().getBool("render.use_bvh", true);
+    int samples_per_pixel = Config::Instance().getInt("settings.samples_per_pixel", 1);
+    double exposure = Config::Instance().getDouble("image.exposure", 1.0);
+    bool enable_shadows = true;
+    int glossy_samples = Config::Instance().getInt("render.glossy_samples", 0);
+    bool enable_parallel = Config::Instance().getBool("render.parallel", false);
+    double shutter_time = Config::Instance().getDouble("image.shutter_time", 0.0);
     bool enable_fresnel = false;
-    bool any_hit_enabled = true;
+    bool any_hit_enabled = Config::Instance().getBool("render.any_hit_enabled", true);
     int run_count = 1;
     bool enable_timing = false;
     std::string all_args = "";
@@ -206,6 +209,8 @@ int main(int argc, char* argv[]) {
             // by default it is 1, where only 1 ray determines the colour of the pizel.
             const int SAMPLES_PER_PIXEL = samples_per_pixel;
 
+            const int MAX_DEPTH = Config::Instance().getInt("settings.max_bounces", 10);
+
             std::cout << "Rendering scene (" << width << "x" << height << ") with "
                       << SAMPLES_PER_PIXEL << " samples per pixel..." << std::endl;
 
@@ -224,14 +229,17 @@ int main(int argc, char* argv[]) {
             #endif
 
             std::cout << "Starting render with " << num_threads << " thread(s)..." << std::endl;
+            std::atomic<int> scanlines_completed(0);
+            int total_scanlines = height;
+
             #ifdef _OPENMP
-            #pragma omp parallel for
+            #pragma omp parallel for schedule(dynamic, 10)
             #endif
 
             for (int y = 0; y < height; ++y) {
                 if (y % (height / 20) == 0) {
                     #ifdef _OPENMP
-                                        std::cout << "Scanlines remaining: " << (height - y) << " (Thread " << omp_get_thread_num() << ")" << std::endl;
+
                     #else
                                         std::cout << "Scanlines remaining: " << (height - y) << std::endl;
                     #endif
@@ -256,13 +264,21 @@ int main(int argc, char* argv[]) {
                         Ray ray = camera.generateRay(px, py, ray_time);
 
                         // decides the colour of the ray.
-                        pixel_color_vec = pixel_color_vec + ray_colour(ray, scene, world, MAX_RECURSION_DEPTH);
+                        pixel_color_vec = pixel_color_vec + ray_colour(ray, scene, world, MAX_DEPTH);
                     }
                     // finds the average colour of the samples taken.
                     Vector3 averaged_color_vec = pixel_color_vec * (1.0 / SAMPLES_PER_PIXEL);
                     Pixel final_color = final_colour_to_pixel(averaged_color_vec);
                     image.setPixel(x, y, final_color);
 
+                }
+                int completed = ++scanlines_completed;
+                if (completed % (total_scanlines / 20) == 0 || completed == total_scanlines) {
+                    int percent = (static_cast<long long>(completed) * 100) / total_scanlines;
+                    std::stringstream ss;
+                    ss << "\rRendering: " << percent << "% [" << completed << "/" << total_scanlines << "]";
+                    if (completed == total_scanlines) ss << std::endl;
+                    std::cout << ss.str() << std::flush;
                 }
             }
 

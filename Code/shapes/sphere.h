@@ -5,43 +5,19 @@
 #ifndef B216602_SPHERE_H
 #define B216602_SPHERE_H
 
-#include "hittable.h"
-#include "../matrix4x4.h"
 #include "../acceleration/aabb.h"
-#include "../material.h"
+#include "transformed_shape.h"
 
-class Sphere : public Shape {
+
+class Sphere : public TransformedShape {
 public:
-    // initialises the object-to-world transform and inverse
-    Sphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
-        : m_transform(transform),
-          m_inverse_transform(inv_transform),
-          m_inverse_transpose(inv_transform.transpose()),//precalculates inverse transpose for later
-          m_material(mat),
-          m_velocity(velocity)
-    {}
+    Sphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity);
 
-    // virtual enables polymorphism
-
-    // returns true for a hit, false for a miss
-    virtual bool intersect(
-        const Ray& ray,
-        double t_min,
-        double t_max,
-        // details about the intersection point
-        HitRecord& rec
-    ) const override;
-
+    virtual bool intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const override;
     virtual bool getBoundingBox(AABB &output_box) const override;
 
-    bool any_hit(const Ray& ray, double t_min, double t_max) const override;
-
-private:
-    Matrix4x4 m_transform;         // M: Object-to-World
-    Matrix4x4 m_inverse_transform; // M_inverse: World-to-Object
-    Matrix4x4 m_inverse_transpose; // (M_inverse)^T
-    Material m_material;
-    Vector3 m_velocity;
+protected:
+    static void get_sphere_uv(const Vector3& p, double& u, double& v);
 };
 
 #endif //B216602_SPHERE_H

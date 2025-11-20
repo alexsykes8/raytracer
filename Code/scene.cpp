@@ -16,6 +16,8 @@
 #include "HDRImage.h"
 #include "shapes/complex_cube.h"
 #include "shapes/complex_sphere.h"
+#include "config.h"
+
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.
 static void read_vector(std::stringstream& ss, Vector3& vec) {
@@ -89,7 +91,9 @@ static std::shared_ptr<Image> load_texture_from_file(const std::string& filepath
 
 Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time, bool enable_fresnel, bool any_hit_enabled)
             : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time), m_fresnel_enabled(enable_fresnel), m_any_hit_enabled(any_hit_enabled) {
-    parseSceneFile(scene_filepath);
+    parseSceneFile(scene_filepath), m_shadow_samples = Config::Instance().getInt("render.shadow_samples", 4);
+    m_epsilon = Config::Instance().getDouble("advanced.epsilon", 1e-4);
+    m_max_bounces = Config::Instance().getInt("settings.max_bounces", 5);;
 
     if (!m_camera) {
         throw std::runtime_error("Scene file error: No camera data found.");
@@ -151,7 +155,6 @@ void Scene::parseSceneFile(const std::string& filepath) {
 
 
     while (std::getline(file, line)) {
-        std::cout << "Processing line: " << line << std::endl;
         std::stringstream ss(line);
         std::string token;
         // tokenize each line of the file

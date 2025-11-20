@@ -1,0 +1,39 @@
+{
+  "settings": {
+    // Image resolution default
+    "width": 800,
+    "height": 600,
+    // Number of rays per pixel for antialiasing default
+    "samples_per_pixel": 1,
+    // Maximum number of light bounces (reflections/refractions)
+    "max_bounces": 5
+  },
+  "image": {
+    // Brightness multiplier
+    "exposure": 0.05,
+    // Gamma correction value (usually 2.2)
+    "gamma": 2.2,
+    // Duration of the shutter open time for motion blur
+    "shutter_time": 0.5
+  },
+  "render": {
+    // Number of shadow rays cast per light source per hit
+    "shadow_samples": 4,
+    // Number of reflection rays for rough surfaces
+    "glossy_samples": 0,
+    // Use Bounding Volume Hierarchy acceleration
+    "use_bvh": true,
+    // Use OpenMP multi-threading
+    "parallel": true,
+    // Optimization for shadow rays (stop at first hit)
+    "any_hit_enabled": true
+  },
+  "advanced": {
+    // Small offset to prevent self-shadowing "acne"
+    "epsilon": 0.0001,
+    // Max iterations for ray marching complex shapes
+    "ray_march_steps": 64,
+    // How far the displacement map pushes the surface out
+    "displacement_strength": 0.15
+  }
+}

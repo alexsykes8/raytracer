@@ -30,8 +30,32 @@ bool boxCompareZ(const std::shared_ptr<Shape>& a, const std::shared_ptr<Shape>& 
 }
 
 BVHNode::BVHNode(std::vector<std::shared_ptr<Shape>>& objects, size_t start, size_t end) {
+    AABB span_box;
+    bool first_box = true;
 
-    int axis = 0; 
+    // Compute the bounding box spanning all objects in this list segment
+    for (size_t i = start; i < end; i++) {
+        AABB temp_box;
+        if (objects[i]->getBoundingBox(temp_box)) {
+            if (first_box) {
+                span_box = temp_box;
+                first_box = false;
+            } else {
+                span_box = AABB::combine(span_box, temp_box);
+            }
+        }
+    }
+    Vector3 extent = span_box.max_point - span_box.min_point;
+    int axis = 0;
+
+    // Pick the axis with the largest extent
+    if (extent.y > extent.x && extent.y > extent.z) {
+        axis = 1; // Y is longest
+    } else if (extent.z > extent.x && extent.z > extent.y) {
+        axis = 2; // Z is longest
+    } else {
+        axis = 0; // X is longest (or default)
+    }
     
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
 
@@ -51,7 +75,8 @@ BVHNode::BVHNode(std::vector<std::shared_ptr<Shape>>& objects, size_t start, siz
         }
     } else {
         // General case: Sort and split
-        std::sort(objects.begin() + start, objects.begin() + end, comparator);
+        auto mid_iter = objects.begin() + start + object_span / 2;
+        std::nth_element(objects.begin() + start, mid_iter, objects.begin() + end, comparator);
 
         size_t mid = start + object_span / 2;
         m_left = std::make_shared<BVHNode>(objects, start, mid);

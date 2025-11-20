@@ -7,39 +7,15 @@
 #include <cmath>
 #include <algorithm>
 #include "../Image.h"
+#include "../config.h"
 
-static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
-    min_p.x = std::min(min_p.x, p.x);
-    min_p.y = std::min(min_p.y, p.y);
-    min_p.z = std::min(min_p.z, p.z);
-    max_p.x = std::max(max_p.x, p.x);
-    max_p.y = std::max(max_p.y, p.y);
-    max_p.z = std::max(max_p.z, p.z);
-}
+ComplexCube::ComplexCube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
+    : Cube(transform, inv_transform, mat, velocity)
+{m_max_displacement = Config::Instance().getDouble("advanced.displacement_strength", 0.2);}
 
 bool ComplexCube::getBoundingBox(AABB& output_box) const {
-    double infinity = std::numeric_limits<double>::infinity();
-    Vector3 min_p(infinity, infinity, infinity);
-    Vector3 max_p(-infinity, -infinity, -infinity);
-
-    double expansion = 1.0 + MAX_DISPLACEMENT;
-
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            for (int k = 0; k < 2; ++k) {
-                Vector3 corner(
-                    (i == 0) ? -expansion : expansion,
-                    (j == 0) ? -expansion : expansion,
-                    (k == 0) ? -expansion : expansion
-                );
-                Vector3 transformed_corner = m_transform * corner;
-                updateBounds(transformed_corner, min_p, max_p);
-            }
-        }
-    }
-
-    output_box = AABB(min_p, max_p);
-    return true;
+    double expansion = 1.0 + m_max_displacement;
+    return getTransformedBoundingBox(output_box, Vector3(-expansion, -expansion, -expansion), Vector3(expansion, expansion, expansion));
 }
 
 double ComplexCube::signed_distance_box(const Vector3& p) const {
@@ -102,7 +78,7 @@ bool ComplexCube::intersect(const Ray& ray, double t_min, double t_max, HitRecor
     Vector3 obj_origin = m_inverse_transform * ray_origin_at_t0;
     Vector3 obj_dir = m_inverse_transform.transformDirection(ray.direction);
 
-    double bound = 1.0 + MAX_DISPLACEMENT;
+    double bound = 1.0 + m_max_displacement;
     double t_near = -std::numeric_limits<double>::infinity();
     double t_far = std::numeric_limits<double>::infinity();
 
@@ -126,8 +102,8 @@ bool ComplexCube::intersect(const Ray& ray, double t_min, double t_max, HitRecor
     double t_current = std::max(t_near, t_min);
     double t_limit = std::min(t_far, t_max);
 
-    const int MAX_STEPS = 64;
-    const double EPSILON = 0.001;
+    const int MAX_STEPS = Config::Instance().getInt("advanced.ray_march_steps", 64);
+    const double EPSILON = Config::Instance().getDouble("advanced.epsilon", 0.001);
 
     for(int i = 0; i < MAX_STEPS; ++i) {
         if (t_current > t_limit) break;
@@ -152,7 +128,7 @@ bool ComplexCube::intersect(const Ray& ray, double t_min, double t_max, HitRecor
 
             Pixel pix = m_material.bump_map->getPixel(x, y);
             double intensity = (pix.r + pix.g + pix.b) / (3.0 * 255.0);
-            displacement = intensity * MAX_DISPLACEMENT;
+            displacement = intensity * m_max_displacement;
         }
 
 
@@ -176,7 +152,7 @@ bool ComplexCube::intersect(const Ray& ray, double t_min, double t_max, HitRecor
                      x = std::max(0, std::min(x, w-1));
                      y = std::max(0, std::min(y, h-1));
                     Pixel pix = m_material.bump_map->getPixel(x, y);
-                    q_disp = ((pix.r + pix.g + pix.b) / (3.0 * 255.0)) * MAX_DISPLACEMENT;
+                    q_disp = ((pix.r + pix.g + pix.b) / (3.0 * 255.0)) * m_max_displacement;
                 }
                 return signed_distance_box(q) - q_disp;
             };
@@ -199,39 +175,4 @@ bool ComplexCube::intersect(const Ray& ray, double t_min, double t_max, HitRecor
     }
 
     return false;
-}
-
-bool ComplexCube::any_hit(const Ray& ray, double t_min, double t_max) const {
-    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
-    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0;
-    Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
-
-    double t0 = t_min;
-    double t1 = t_max;
-
-    double invRayDir = 1.0 / object_direction.x;
-    double tNear = (-1.0 - object_origin.x) * invRayDir;
-    double tFar  = ( 1.0 - object_origin.x) * invRayDir;
-    if (invRayDir < 0.0) std::swap(tNear, tFar);
-    t0 = tNear > t0 ? tNear : t0;
-    t1 = tFar  < t1 ? tFar  : t1;
-    if (t0 > t1) return false;
-
-    invRayDir = 1.0 / object_direction.y;
-    tNear = (-1.0 - object_origin.y) * invRayDir;
-    tFar  = ( 1.0 - object_origin.y) * invRayDir;
-    if (invRayDir < 0.0) std::swap(tNear, tFar);
-    t0 = tNear > t0 ? tNear : t0;
-    t1 = tFar  < t1 ? tFar  : t1;
-    if (t0 > t1) return false;
-
-    invRayDir = 1.0 / object_direction.z;
-    tNear = (-1.0 - object_origin.z) * invRayDir;
-    tFar  = ( 1.0 - object_origin.z) * invRayDir;
-    if (invRayDir < 0.0) std::swap(tNear, tFar);
-    t0 = tNear > t0 ? tNear : t0;
-    t1 = tFar  < t1 ? tFar  : t1;
-    if (t0 > t1) return false;
-
-    return true;
 }

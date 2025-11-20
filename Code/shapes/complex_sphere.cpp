@@ -3,58 +3,29 @@
 #include <cmath>
 #include <algorithm>
 #include "../Image.h"
+#include "../config.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
-static void updateBounds(const Vector3& p, Vector3& min_p, Vector3& max_p) {
-    min_p.x = std::min(min_p.x, p.x);
-    min_p.y = std::min(min_p.y, p.y);
-    min_p.z = std::min(min_p.z, p.z);
-    max_p.x = std::max(max_p.x, p.x);
-    max_p.y = std::max(max_p.y, p.y);
-    max_p.z = std::max(max_p.z, p.z);
+ComplexSphere::ComplexSphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
+    : Sphere(transform, inv_transform, mat, velocity) {
+    m_max_displacement = Config::Instance().getDouble("advanced.displacement_strength", 0.15);
 }
 
 bool ComplexSphere::getBoundingBox(AABB& output_box) const {
-    double infinity = std::numeric_limits<double>::infinity();
-    Vector3 min_p(infinity, infinity, infinity);
-    Vector3 max_p(-infinity, -infinity, -infinity);
-
-    double r = 1.0 + MAX_DISPLACEMENT;
-
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            for (int k = 0; k < 2; ++k) {
-                Vector3 corner(
-                    (i == 0) ? -r : r,
-                    (j == 0) ? -r : r,
-                    (k == 0) ? -r : r
-                );
-                Vector3 transformed_corner = m_transform * corner;
-                updateBounds(transformed_corner, min_p, max_p);
-            }
-        }
-    }
-    output_box = AABB(min_p, max_p);
-    return true;
+    double r = 1.0 + m_max_displacement;
+    return getTransformedBoundingBox(output_box, Vector3(-r, -r, -r), Vector3(r, r, r));
 }
 
-void ComplexSphere::get_sphere_uv(const Vector3& p, double& u, double& v) const {
-
-    double theta = asin(p.y);
-    double phi = atan2(-p.z, p.x) + M_PI;
-    u = phi / (2.0 * M_PI);
-    v = (theta + M_PI / 2.0) / M_PI;
-}
 
 bool ComplexSphere::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
     Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
     Vector3 obj_origin = m_inverse_transform * ray_origin_at_t0;
     Vector3 obj_dir = m_inverse_transform.transformDirection(ray.direction);
 
-    double max_r = 1.0 + MAX_DISPLACEMENT;
+    double max_r = 1.0 + m_max_displacement;
     
     Vector3 oc = obj_origin; 
     double a = obj_dir.dot(obj_dir);
@@ -72,8 +43,8 @@ bool ComplexSphere::intersect(const Ray& ray, double t_min, double t_max, HitRec
     double t_current = std::max(t_entry, t_min);
     double t_limit = std::min(t_exit, t_max);
 
-    const int MAX_STEPS = 128;
-    const double EPSILON = 0.001;
+    const int MAX_STEPS = Config::Instance().getInt("advanced.ray_march_steps", 64);
+    const double EPSILON = Config::Instance().getDouble("advanced.epsilon", 0.001);
 
     for (int i = 0; i < MAX_STEPS; ++i) {
         if (t_current > t_limit) break;
@@ -91,7 +62,7 @@ bool ComplexSphere::intersect(const Ray& ray, double t_min, double t_max, HitRec
             Pixel pix = m_material.bump_map->getPixelBilinear(u, 1.0 - v);
 
             double intensity = (pix.r + pix.g + pix.b) / (3.0 * 255.0);
-            displacement = intensity * MAX_DISPLACEMENT;
+            displacement = intensity * m_max_displacement;
         }
 
         double dist_to_surface = dist_from_center - (1.0 + displacement);
@@ -113,7 +84,7 @@ bool ComplexSphere::intersect(const Ray& ray, double t_min, double t_max, HitRec
                 double q_disp = 0.0;
                 if (m_material.bump_map) {
                     Pixel pix = m_material.bump_map->getPixelBilinear(qu, 1.0 - qv);
-                    q_disp = ((pix.r + pix.g + pix.b) / (3.0 * 255.0)) * MAX_DISPLACEMENT;
+                    q_disp = ((pix.r + pix.g + pix.b) / (3.0 * 255.0)) * m_max_displacement;
                 }
                 return q_len - (1.0 + q_disp);
             };
@@ -135,24 +106,3 @@ bool ComplexSphere::intersect(const Ray& ray, double t_min, double t_max, HitRec
     return false;
 }
 
-bool ComplexSphere::any_hit(const Ray& ray, double t_min, double t_max) const {
-    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
-    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0;
-    Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
-
-    Vector3 oc = object_origin;
-    double a = object_direction.dot(object_direction);
-    double b = 2.0 * oc.dot(object_direction);
-    double c = oc.dot(oc) - 1.0;
-
-    double discriminant = b * b - 4 * a * c;
-    if (discriminant < 0) return false;
-
-    double root = (-b - std::sqrt(discriminant)) / (2.0 * a);
-    if (root < t_min || root > t_max) {
-        root = (-b + std::sqrt(discriminant)) / (2.0 * a);
-        if (root < t_min || root > t_max) return false;
-    }
-
-    return true;
-}

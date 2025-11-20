@@ -37,6 +37,9 @@ add_executable(B216602 main.cpp Image.cpp
         shapes/complex_sphere.cpp
         shapes/complex_sphere.h
         random_utils.h
+        shapes/transformed_shape.h
+        config.cpp
+        config.h
 )
 
 find_package(OpenMP QUIET)
