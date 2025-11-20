@@ -33,19 +33,21 @@ inline Vector3 component_wise_multiply(const Vector3& a, const Vector3& b) {
     return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
-inline double trace_shadow_transmission(const Ray& shadow_ray, double dist_to_light, const HittableList& world) {
-    double transmission = 1.0;
+inline Vector3 trace_shadow_transmission(const Ray& shadow_ray, double dist_to_light, const HittableList& world) {
+    Vector3 transmission(1.0, 1.0, 1.0); // Start with full white light
     Ray current_ray = shadow_ray;
     double current_dist = dist_to_light;
 
     while (true) {
         HitRecord rec;
+        // Intersect with objects
         if (world.intersect(current_ray, 0.001, current_dist - 0.001, rec)) {
 
             if (rec.mat.transparency > 0.0) {
-                transmission *= rec.mat.transparency;
+                Vector3 tint = rec.mat.diffuse * rec.mat.transparency;
+                transmission = component_wise_multiply(transmission, tint);
 
-                if (transmission < 0.001) return 0.0;
+                if (transmission.length() < 0.001) return Vector3(0, 0, 0);
 
                 Vector3 hit_point = rec.point;
                 Vector3 direction = current_ray.direction;
@@ -53,50 +55,25 @@ inline double trace_shadow_transmission(const Ray& shadow_ray, double dist_to_li
                 current_ray = Ray(hit_point + direction * 0.001, direction);
                 current_dist -= rec.t;
             } else {
-                return 0.0;
+                // Opaque object hit, no light gets through
+                return Vector3(0, 0, 0);
             }
         } else {
+            // No more intersections, return the accumulated transmission colour
             return transmission;
         }
     }
 }
 
 
-inline double calculate_shadow_factor(const Scene& scene, const HittableList& world, const Vector3& P, const Vector3& N) {
-    if (!scene.shadows_enabled()) return 1.0;
 
-    const int SHADOW_SAMPLES = 4;
-    double shadow_factor = 0.0;
-
-    for (const auto& light : scene.getLights()) {
-        double light_shadow = 0.0;
-        for (int i = 0; i < SHADOW_SAMPLES; i++) {
-            Vector3 point_on_light = random_point_on_light(light);
-            Vector3 shadow_ray_dir = point_on_light - P;
-            double dist_to_light = shadow_ray_dir.length();
-            shadow_ray_dir = shadow_ray_dir.normalize();
-
-            Vector3 shadow_origin = P + N * 0.001;
-            Ray shadow_ray(shadow_origin, shadow_ray_dir);
-
-            // Accumulate transmission
-            light_shadow += trace_shadow_transmission(shadow_ray, dist_to_light, world);
-        }
-        shadow_factor += (light_shadow / SHADOW_SAMPLES);
-    }
-
-
-    return 0;
-}
-
-inline double compute_light_visibility(const Scene& scene, const HittableList& world, const PointLight& light, const Vector3& P, const Vector3& N) {
-    if (!scene.shadows_enabled()) return 1.0;
+inline Vector3 compute_light_visibility(const Scene& scene, const HittableList& world, const PointLight& light, const Vector3& P, const Vector3& N) {
+    if (!scene.shadows_enabled()) return Vector3(1.0, 1.0, 1.0); // Return full white if shadows disabled
 
     int samples = scene.get_shadow_samples();
-
     double epsilon = Config::Instance().getDouble("advanced.epsilon", 1e-4);
 
-    double shadow_accumulator = 0.0;
+    Vector3 shadow_accumulator(0, 0, 0);
 
     for (int i = 0; i < samples; i++) {
         Vector3 point_on_light = random_point_on_light(light);
@@ -106,9 +83,12 @@ inline double compute_light_visibility(const Scene& scene, const HittableList& w
 
         Vector3 shadow_origin = P + N * epsilon;
         Ray shadow_ray(shadow_origin, shadow_ray_dir);
-        shadow_accumulator += trace_shadow_transmission(shadow_ray, dist_to_light, world);
+
+        // Add the colour returned by the new trace_shadow_transmission
+        shadow_accumulator = shadow_accumulator + trace_shadow_transmission(shadow_ray, dist_to_light, world);
     }
-    return shadow_accumulator / samples;
+    // Return the average colour
+    return shadow_accumulator * (1.0 / samples);
 }
 
 // calculates the local ambient diffuse. It computes the direct illumination component of the surface colour at the ray-hit point.
@@ -160,9 +140,9 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
     double exposure = scene.getExposure();
 
     for (const auto& light : scene.getLights()) {
-        double shadow_factor = compute_light_visibility(scene, world, light, P, N);
+        Vector3 shadow_factor = compute_light_visibility(scene, world, light, P, N);
 
-        if (shadow_factor > 0) {
+        if (shadow_factor.x > 0 || shadow_factor.y > 0 || shadow_factor.z > 0) {
             Vector3 L_raw = light.position - P;
             double dist_sq = L_raw.dot(L_raw);
             double falloff = 1.0 / dist_sq;
@@ -171,8 +151,13 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
             Vector3 light_intensity = light.intensity * falloff * exposure;
             double L_dot_N = std::max(0.0, L.dot(N));
 
-            Vector3 diffuse = component_wise_multiply(diffuse_colour, light_intensity) * L_dot_N * shadow_factor;
-            final_colour_vec = final_colour_vec + diffuse;
+            // Calculate diffuse: (MaterialColor * LightIntensity) * Lambert * ShadowColor
+            Vector3 diffuse_part = component_wise_multiply(diffuse_colour, light_intensity) * L_dot_N;
+
+            // Apply the coloured shadow here using component-wise multiplication
+            Vector3 final_diffuse = component_wise_multiply(diffuse_part, shadow_factor);
+
+            final_colour_vec = final_colour_vec + final_diffuse;
         }
     }
     return final_colour_vec;
@@ -187,29 +172,12 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
     double exposure = scene.getExposure();
 
     Vector3 specular_colour(0, 0, 0);
-    const int SHADOW_SAMPLES = 4;
 
     for (const auto& light : scene.getLights()) {
 
-        double shadow_factor = compute_light_visibility(scene, world, light, P, N);
+        Vector3 shadow_factor = compute_light_visibility(scene, world, light, P, N);
 
-        if (scene.shadows_enabled()) {
-            shadow_factor = 0.0;
-            for (int i = 0; i < SHADOW_SAMPLES; ++i) {
-
-                Vector3 point_on_light = random_point_on_light(light);
-                Vector3 shadow_ray_dir = point_on_light - P;
-                double dist_to_light = shadow_ray_dir.length();
-                shadow_ray_dir = shadow_ray_dir.normalize();
-
-                Vector3 shadow_origin = P + N * 0.001;
-                Ray shadow_ray(shadow_origin, shadow_ray_dir);
-                shadow_factor += trace_shadow_transmission(shadow_ray, dist_to_light, world);
-            }
-            shadow_factor /= SHADOW_SAMPLES;
-        }
-
-        if (shadow_factor > 0) {
+        if (shadow_factor.length() > 0) { // Check if not black
             Vector3 L_raw = light.position - P;
             double distance_squared = L_raw.dot(L_raw);
             double falloff = 1.0 / distance_squared;
@@ -219,10 +187,16 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
             Vector3 light_intensity_at_point = light.intensity * falloff * exposure;
 
             double H_dot_N = std::max(0.0, H.dot(N));
-            Vector3 specular = component_wise_multiply(mat.specular, light_intensity_at_point) * std::pow(H_dot_N, mat.shininess) * shadow_factor;
 
-            specular_colour = specular_colour + specular;
+            // Calculate base specular
+            Vector3 specular_part = component_wise_multiply(mat.specular, light_intensity_at_point) * std::pow(H_dot_N, mat.shininess);
+
+            // Apply coloured shadow
+            Vector3 final_specular = component_wise_multiply(specular_part, shadow_factor);
+
+            specular_colour = specular_colour + final_specular;
         }
+
     }
 
     return specular_colour;

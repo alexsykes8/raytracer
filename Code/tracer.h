@@ -142,7 +142,9 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
                 }
             }
             reflected_colour = reflected_colour * (1.0 / loop_count);
-            reflected_colour = component_wise_multiply(reflected_colour, rec.mat.diffuse);
+            if (rec.mat.type == "metal") {
+                reflected_colour = component_wise_multiply(reflected_colour, rec.mat.diffuse);
+            }
 
         }
 

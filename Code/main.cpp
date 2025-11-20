@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     bool use_bvh = Config::Instance().getBool("render.use_bvh", true);
     int samples_per_pixel = Config::Instance().getInt("settings.samples_per_pixel", 1);
     double exposure = Config::Instance().getDouble("image.exposure", 1.0);
-    bool enable_shadows = Config::Instance().getBool("render.enable_shadows", false);
+    bool enable_shadows = false;
     int glossy_samples = Config::Instance().getInt("render.glossy_samples", 0);
     bool enable_parallel = Config::Instance().getBool("render.parallel", false);
     double shutter_time = Config::Instance().getDouble("image.shutter_time", 0.0);
@@ -116,19 +116,7 @@ int main(int argc, char* argv[]) {
         }
 
         else if (arg == "--glossy") {
-            if (i + 1 < argc) {
-                try {
-                    glossy_samples = std::stoi(argv[i + 1]);
-                    i++;
-                    std::cout << "Glossy reflections enabled: " << glossy_samples << " samples." << std::endl;
-                } catch (const std::exception& e) {
-                    std::cerr << "Error: Invalid value for --glossy flag. Must be an integer." << std::endl;
-                    return 1;
-                }
-            } else {
-                std::cerr << "Error: --glossy flag requires a number of samples (e.g., --glossy 16)." << std::endl;
-                return 1;
-            }
+            std::cout << "Glossy flag present: using sample count from config.json" << std::endl;
         }
 
         else if (arg == "--parallel") {
@@ -172,6 +160,13 @@ int main(int argc, char* argv[]) {
         try {
             fs::create_directories(output_dir);
             std::cout << "Output directory created: " << output_dir << std::endl;
+
+            std::string source_scene = "../../ASCII/scene.txt";
+            std::string dest_scene = output_dir + "/scene.txt";
+
+            fs::copy(source_scene, dest_scene, fs::copy_options::overwrite_existing);
+            std::cout << "Saved copy of scene.txt to output folder." << std::endl;
+
         } catch (const std::exception& e) {
             std::cerr << "Error creating output directory: " << e.what() << std::endl;
             return 1;

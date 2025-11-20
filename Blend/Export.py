@@ -38,6 +38,9 @@ def write_material_properties(f, obj):
     if "refractive_index" in mat:
         f.write(f"  refractive_index {mat['refractive_index']:.6f}\n")
 
+    if "material" in mat:
+        f.write(f"  material {mat['material']}\n")
+
     if "texture_file" in mat:
         texture_name = mat['texture_file']
         if texture_name:

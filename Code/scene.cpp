@@ -415,6 +415,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
+            else if (token == "material") { ss >> temp_mat.type; }
 
         }
 
@@ -434,6 +435,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
+            else if (token == "material") { ss >> temp_mat.type; }
 
         }
         else if (current_block_type == "CUBE") {
@@ -452,6 +454,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
+            else if (token == "material") { ss >> temp_mat.type; }
         }
 
         else if (current_block_type == "COMPLEX_CUBE") {
@@ -468,6 +471,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
             else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
             else if (token == "velocity") { read_vector(ss, temp_velocity); }
+            else if (token == "material") { ss >> temp_mat.type; }
         }
 
         else if (current_block_type == "PLANE") {
@@ -488,6 +492,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
+            else if (token == "material") { ss >> temp_mat.type; }
         }
     }
 }

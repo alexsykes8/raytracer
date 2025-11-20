@@ -2,7 +2,7 @@ HDR_BACKGROUND ../Textures/clouds.pfm
 
 POINT_LIGHT
   location 4.699185 -2.222839 3.088729
-  intensity 1000.000000 1000.000000 1000.000000
+  intensity 500.000000 500.000000 500.000000
   radius 0.500000
 END_POINT_LIGHT
 
@@ -49,8 +49,10 @@ SPHERE
   diffuse 0.898000 0.301000 0.217000
   specular 0.800000 0.800000 0.800000
   shininess 2500.000000
+  reflectivity 0.300000
   transparency 0.600000
   refractive_index 1.520000
+  material metal
 END_SPHERE
 
 PLANE
@@ -125,10 +127,12 @@ SPHERE
   scale 0.383239 0.383239 0.383239
   ambient 0.100000 0.100000 0.100000
   diffuse 0.700000 0.700000 1.000000
-  specular 0.500000 0.500000 0.500000
-  shininess 100.000000
-  transparency 0.400000
-  refractive_index 0.300000
+  specular 0.700000 0.700000 0.700000
+  shininess 2400.000000
+  reflectivity 0.600000
+  transparency 0.700000
+  refractive_index 1.000000
+  material metal
 END_SPHERE
 
 SPHERE
@@ -140,8 +144,10 @@ SPHERE
   diffuse 0.898000 0.301000 0.217000
   specular 0.800000 0.800000 0.800000
   shininess 2500.000000
+  reflectivity 0.300000
   transparency 0.600000
   refractive_index 1.520000
+  material metal
 END_SPHERE
 
 SPHERE
@@ -154,6 +160,6 @@ SPHERE
   specular 0.500000 0.500000 0.500000
   shininess 100.000000
   transparency 1.000000
-  refractive_index 0.300000
+  refractive_index 1.200000
 END_SPHERE
 
