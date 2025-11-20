@@ -13,7 +13,7 @@
 class Scene {
 public:
     // load scene from file
-    explicit Scene(const std::string& scene_filepath, bool build_bvh = true, double exposure = 1.0, bool enable_shadows = false, int glossy_samples = 0, double shutter_time = 0.0, bool enable_fresnel = false);
+    explicit Scene(const std::string& scene_filepath, bool build_bvh = true, double exposure = 1.0, bool enable_shadows = false, int glossy_samples = 0, double shutter_time = 0.0, bool enable_fresnel = false, bool any_hit_enabled = true);
 
     // access the loaded camera
     const Camera& getCamera() const { return *m_camera; }
@@ -26,6 +26,7 @@ public:
     int get_glossy_samples() const { return m_glossy_samples;}
     double get_shutter_time() const { return m_shutter_time;}
     bool fresnel_enabled() const { return m_fresnel_enabled; }
+    bool any_hit_enabled() const { return m_any_hit_enabled; }
 
     bool has_hdr_background() const { return m_hdr_background != nullptr; }
     const HDRImage* get_hdr_background() const { return m_hdr_background.get(); }
@@ -43,6 +44,7 @@ private:
     int m_glossy_samples;
     double m_shutter_time;
     bool m_fresnel_enabled;
+    bool m_any_hit_enabled;
 
     std::shared_ptr<HDRImage> m_hdr_background;
 };

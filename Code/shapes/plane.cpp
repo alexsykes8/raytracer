@@ -186,3 +186,41 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
     rec.set_face_normal(ray, outward_normal);
     return true;
 }
+
+bool Plane::any_hit(const Ray& ray, double t_min, double t_max) const {
+    Vector3 velocity_offset = m_velocity * ray.time;
+    Vector3 p0 = m_c0 + velocity_offset;
+    Vector3 p1 = m_c1 + velocity_offset;
+    Vector3 p2 = m_c2 + velocity_offset;
+
+    Vector3 edge1 = p1 - p0;
+    Vector3 edge2 = p2 - p0;
+    Vector3 normal = edge1.cross(edge2).normalize();
+
+    double denom = normal.dot(ray.direction);
+    if (std::abs(denom) < 1e-6) return false;
+
+    double t = (p0 - ray.origin).dot(normal) / denom;
+
+    // Check distance bounds
+    if (t < t_min || t > t_max) return false;
+
+    // Check inside quad
+    Vector3 intersection_point = ray.point_at_parameter(t);
+    Vector3 v = intersection_point - p0;
+
+    double dot00 = edge1.dot(edge1);
+    double dot01 = edge1.dot(edge2);
+    double dot02 = edge1.dot(v);
+    double dot11 = edge2.dot(edge2);
+    double dot12 = edge2.dot(v);
+
+    double invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+    double u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    double v_coord = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+    // If inside [0,1], it's a hit. Return true.
+    if (u >= 0.0 && u <= 1.0 && v_coord >= 0.0 && v_coord <= 1.0) return true;
+
+    return false;
+}

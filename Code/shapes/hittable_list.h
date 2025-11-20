@@ -26,6 +26,8 @@ public:
 
     virtual bool getBoundingBox(AABB &output_box) const override;
 
+    bool any_hit(const Ray &ray, double t_min, double t_max) const override;
+
 public:
     std::vector<std::shared_ptr<Shape>> objects;
 };

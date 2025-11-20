@@ -39,6 +39,12 @@ public:
         ) const = 0;
     virtual bool getBoundingBox(AABB& output_box) const = 0;
     virtual ~Shape() {}
+
+    // optimisation for shadows, instead of calculating hit data it just returns true/false if there is a hit
+    virtual bool any_hit(const Ray& ray, double t_min, double t_max) const {
+        HitRecord temp_rec;
+        return intersect(ray, t_min, t_max, temp_rec);
+    }
 };
 
 #endif //B216602_HITTABLE_H

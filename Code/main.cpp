@@ -7,6 +7,7 @@
 #include "material.h"
 #include "tracer.h"
 #include <stdexcept>
+#include "random_utils.h"
 
 // This will only include the non-standard c library if its compiled with OpenMP.
 #ifdef _OPENMP
@@ -16,8 +17,6 @@
 
 
 int main(int argc, char* argv[]) {
-    // random number for antialiasing
-    srand(static_cast<unsigned int>(time(nullptr)));
 
     // turning on and off features
     bool use_bvh = true;
@@ -28,6 +27,7 @@ int main(int argc, char* argv[]) {
     bool enable_parallel = false;
     double shutter_time = 0.0;
     bool enable_fresnel = false;
+    bool any_hit_enabled = true;
 
     for (int i = 1; i<argc; ++i) {
         std::string arg = argv[i];
@@ -113,13 +113,18 @@ int main(int argc, char* argv[]) {
             std::cout << "Fresnel effect enabled" << std::endl;
         }
 
+        else if (arg == "--any_hit_off") {
+            any_hit_enabled = false;
+            std::cout << "Any hit optimisation turned off." << std::endl;
+        }
+
     }
     try {
         std::cout << "Loading scene..." << std::endl;
         const std::string scene_file = "../../ASCII/scene.txt";
 
         // initialises a scene. Prepares the objects, materials, and object matrices in preparation for calculations.
-        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel);
+        Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel, any_hit_enabled);
 
         const Camera& camera = scene.getCamera();
         const HittableList& world = scene.getWorld();
@@ -170,8 +175,8 @@ int main(int argc, char* argv[]) {
                 // takes one or more pixel per sample, with a tiny bit of noise added so that each ray hits a slightly different area within the pixel.
                 for (int s = 0; s < SAMPLES_PER_PIXEL; ++s) {
 
-                    float random_u = static_cast<float>(rand()) / (RAND_MAX + 1.0f);
-                    float random_v = static_cast<float>(rand()) / (RAND_MAX + 1.0f);
+                    float random_u = random_double();
+                    float random_v = random_double();
 
                     float px = (static_cast<float>(x) + random_u) / width;
                     float py = (static_cast<float>(y) + random_v) / height;

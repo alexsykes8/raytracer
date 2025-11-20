@@ -36,6 +36,7 @@ add_executable(B216602 main.cpp Image.cpp
         shapes/complex_cube.h
         shapes/complex_sphere.cpp
         shapes/complex_sphere.h
+        random_utils.h
 )
 
 find_package(OpenMP QUIET)
@@ -45,4 +46,8 @@ if(OpenMP_FOUND)
     target_link_libraries(B216602 PRIVATE -fopenmp)
 else()
 message(STATUS "OpenMP not found. Building without parallel support.")
+endif()
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
 endif()

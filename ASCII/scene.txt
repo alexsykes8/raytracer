@@ -1,9 +1,9 @@
-HDR_BACKGROUND ../Textures/checkerboard.pfm
+HDR_BACKGROUND ../Textures/clouds.pfm
 
 POINT_LIGHT
   location 4.699185 -4.577894 5.412796
   intensity 1000.000000 1000.000000 1000.000000
-  radius 0.000000
+  radius 0.500000
 END_POINT_LIGHT
 
 CAMERA
@@ -19,35 +19,114 @@ CAMERA
   focal_distance 10.0
 END_CAMERA
 
-COMPLEX_SPHERE
-  translation -0.071653 -0.197391 0.730331
+SPHERE
+  translation 0.107912 0.271511 1.077238
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 1.000000 1.000000 1.000000
+  scale 0.381956 0.381956 0.381956
   ambient 0.070000 0.100000 0.020000
   diffuse 0.700000 1.000000 0.200000
-  specular 0.800000 0.800000 0.800000
-  shininess 2.000000
-  reflectivity 0.800000
-  bump_map_file ../Textures/fur_displacement.png
-END_COMPLEX_SPHERE
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
 
 SPHERE
-  translation 0.725401 1.902195 0.730331
+  translation 0.338041 0.887222 0.273874
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 1.000000 1.000000 1.000000
+  scale 0.381956 0.381956 0.381956
   ambient 0.070000 0.100000 0.020000
   diffuse 0.700000 1.000000 0.200000
-  specular 0.800000 0.800000 0.800000
-  bump_map_file ../Textures/fur_displacement.png
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
+
+SPHERE
+  translation 0.516984 1.346596 1.287208
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.381956 0.381956 0.381956
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
+
+SPHERE
+  translation -0.445597 1.095417 1.597594
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.262975 0.262975 0.262975
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
+
+SPHERE
+  translation -1.006648 0.462966 1.046669
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.262975 0.262975 0.262975
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
+
+SPHERE
+  translation 1.271412 1.297896 0.674201
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.262975 0.262975 0.262975
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.300000 0.300000 0.300000
 END_SPHERE
 
 PLANE
-  corner -6.280973 -3.797849 4.640374
-  corner -6.280972 -3.797849 -4.640374
-  corner -6.280973 11.006273 4.640374
-  corner -6.280972 11.006273 -4.640374
-  texture_file ../Textures/checkerboard.jpg
+  corner -6.159227 -3.431014 -0.429069
+  corner 7.782367 -3.431014 -0.429069
+  corner -6.159227 7.716814 -0.429069
+  corner 7.782367 7.716814 -0.429069
+  ambient 0.030000 0.090000 0.060000
+  diffuse 0.300000 0.900000 0.600000
+  specular 0.800000 0.800000 0.800000
 END_PLANE
+
+PLANE
+  corner -3.539051 -2.909732 4.159995
+  corner -3.539051 -2.909732 -2.242877
+  corner -3.539051 8.238096 4.159995
+  corner -3.539051 8.238096 -2.242877
+  ambient 0.030000 0.090000 0.060000
+  diffuse 0.300000 0.900000 0.600000
+  specular 0.800000 0.800000 0.800000
+END_PLANE
+
+SPHERE
+  translation -0.251972 -0.666008 0.191712
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.381956 0.381956 0.381956
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
+
+SPHERE
+  translation 2.446763 1.658754 1.262627
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.262975 0.262975 0.262975
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.300000 0.300000 0.300000
+END_SPHERE
+
+SPHERE
+  translation 0.824349 -0.847549 1.704691
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.283936 0.283936 0.283936
+  ambient 0.070000 0.100000 0.020000
+  diffuse 0.700000 1.000000 0.200000
+  specular 0.800000 0.800000 0.800000
+  transparency 0.600000
+END_SPHERE
 

@@ -29,6 +29,7 @@ public:
     ) const override;
 
     virtual bool getBoundingBox(AABB &output_box) const override;
+    virtual bool any_hit(const Ray& ray, double t_min, double t_max) const override;
 
 private:
     Matrix4x4 m_transform;

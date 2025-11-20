@@ -56,3 +56,8 @@ HDR
 This feature implements Image-Based Lighting (IBL) using High Dynamic Range (HDR) environment maps, specifically supporting the .pfm (Portable FloatMap) format. Implemented primarily in raytracer/Code/HDRImage.cpp and raytracer/Code/tracer.h, the system allows rays that miss all scene geometry to sample a 360° panoramic background.
 
 The implementation includes a robust custom PFM parser (HDRImage::load) capable of handling variable header whitespace, comment skipping, and endianness detection based on the file's scale factor. For rendering, the system maps ray direction vectors to spherical (latitude-longitude) coordinates using get_sphere_uv in tracer.h. These coordinates are then used to perform bilinear interpolation HDRImage::sample by interpolating horizontally and then vertically across a 2x2 square of pixels, ensuring smooth reflections and background rendering even at high resolutions. This allows glossy and transparent objects to reflect complex, real-world lighting environments rather than a static background color.
+
+Something something complexshapes and displacement mapping
+
+Something something shadows optimaization "Any Hit" optimization (often called occluded or shadow_hit)
+Changes from what is the closest object this ray hits (calculate all properties) to is there anything in the way of the ray (bool yes or no with no unnecesasary maths)

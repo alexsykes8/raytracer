@@ -12,14 +12,12 @@
 
 #include <cmath>
 #include <algorithm>
-#include <cstdlib>
+
+#include "random_utils.h"
 
 #ifndef B216602_SHADING_H
 #define B216602_SHADING_H
 
-inline double random_double () {
-    return rand() / (RAND_MAX + 1.0);
-}
 
 inline Vector3 random_in_unit_sphere() {
     while (true) {
@@ -111,9 +109,15 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
                 Ray shadow_ray(shadow_origin, shadow_ray_dir);
                 HitRecord shadow_rec;
                 // performs an intersection check against the whole world.
-                if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
-                    // if there is no object blocking the way to the light source, the shadow_factor is incremented (less shadow)
-                    shadow_factor += 1.0;
+                if (scene.any_hit_enabled()) {
+                    if (!world.any_hit(shadow_ray, 0.001, dist_to_light - 0.001)) {
+                        shadow_factor += 1.0;
+                    }
+                }
+                else {
+                    if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
+                        shadow_factor += 1.0;
+                    }
                 }
             }
             // the factor is divided by the number of samples. This creates the gradient between blocked and unblocked areas, as in these areas some rays from the light to the area may succeed but the other randomly selected light points may fail.
@@ -170,9 +174,15 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
                 Vector3 shadow_origin = P + N * 0.001;
                 Ray shadow_ray(shadow_origin, shadow_ray_dir);
                 HitRecord shadow_rec;
-
-                if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
-                    shadow_factor += 1.0;
+                if (scene.any_hit_enabled()) {
+                    if (!world.any_hit(shadow_ray, 0.001, dist_to_light - 0.001)) {
+                        shadow_factor += 1.0;
+                    }
+                }
+                else {
+                    if (!world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, shadow_rec)) {
+                        shadow_factor += 1.0;
+                    }
                 }
             }
             shadow_factor /= SHADOW_SAMPLES;

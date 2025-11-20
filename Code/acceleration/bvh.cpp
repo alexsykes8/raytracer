@@ -30,10 +30,7 @@ bool boxCompareZ(const std::shared_ptr<Shape>& a, const std::shared_ptr<Shape>& 
 }
 
 BVHNode::BVHNode(std::vector<std::shared_ptr<Shape>>& objects, size_t start, size_t end) {
-    
 
-    // TODO look into better options for this.
-    // currently always splits on x
     int axis = 0; 
     
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
@@ -89,4 +86,15 @@ bool BVHNode::intersect(const Ray& ray, double t_min, double t_max, HitRecord& r
     bool hit_right = m_right->intersect(ray, t_min, (hit_left ? rec.t : t_max), rec);
 
     return hit_left || hit_right;
+}
+
+bool BVHNode::any_hit(const Ray& ray, double t_min, double t_max) const {
+    if (!m_box.intersect(ray, t_min, t_max)) {
+        return false;
+    }
+    if (m_left->any_hit(ray, t_min, t_max)) {
+        return true;
+    }
+
+    return m_right->any_hit(ray, t_min, t_max);
 }

@@ -20,6 +20,8 @@ public:
 
     virtual bool getBoundingBox(AABB &output_box) const override;
 
+    virtual bool any_hit(const Ray& ray, double t_min, double t_max) const override;
+
 private:
     Vector3 m_c0, m_c1, m_c2, m_c3;
 

@@ -15,6 +15,7 @@
 #include <cmath>
 #include <algorithm>
 #include <cstdlib>
+#include "random_utils.h"
 
 // prevents infinite recursion
 const int MAX_RECURSION_DEPTH = 10;
@@ -25,7 +26,7 @@ inline Vector3 reflect(const Vector3& V, const Vector3& N) {
 }
 
 inline double random_double_tracer() {
-    return rand() / (RAND_MAX + 1.0);
+    return random_double();
 }
 
 inline Vector3 random_in_unit_sphere_tracer() {
@@ -59,7 +60,10 @@ inline void get_sphere_uv(const Vector3& p, double& u, double& v) {
 inline double schlick(double cos_i, double n1, double n2) {
     double r0 = ((n1 - n2) / (n1 + n2)) * ((n1 - n2) / (n1 + n2));
 
-    return r0 + (1.0 - r0) * pow((1.0 - cos_i), 5.0);
+    // direct multiplication used instead of pow for x^5, faster
+    double x = 1.0 - cos_i;
+    double x2 = x * x;
+    return r0 + (1.0 - r0) * (x2 * x2 * x);
 }
 
 // provided a scene and the objects in it, along with a ray to trace.

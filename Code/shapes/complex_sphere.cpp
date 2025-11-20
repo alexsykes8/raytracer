@@ -134,3 +134,25 @@ bool ComplexSphere::intersect(const Ray& ray, double t_min, double t_max, HitRec
 
     return false;
 }
+
+bool ComplexSphere::any_hit(const Ray& ray, double t_min, double t_max) const {
+    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
+    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0;
+    Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
+
+    Vector3 oc = object_origin;
+    double a = object_direction.dot(object_direction);
+    double b = 2.0 * oc.dot(object_direction);
+    double c = oc.dot(oc) - 1.0;
+
+    double discriminant = b * b - 4 * a * c;
+    if (discriminant < 0) return false;
+
+    double root = (-b - std::sqrt(discriminant)) / (2.0 * a);
+    if (root < t_min || root > t_max) {
+        root = (-b + std::sqrt(discriminant)) / (2.0 * a);
+        if (root < t_min || root > t_max) return false;
+    }
+
+    return true;
+}

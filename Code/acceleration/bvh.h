@@ -28,8 +28,11 @@ public:
         HitRecord& rec
     ) const override;
 
+    bool any_hit(const Ray &ray, double t_min, double t_max) const;
+
     // Returns the bounding box of this node.
     virtual bool getBoundingBox(AABB& output_box) const override;
+
 
 private:
     std::shared_ptr<Shape> m_left;  // Left child node

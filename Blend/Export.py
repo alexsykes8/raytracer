@@ -174,8 +174,14 @@ def export_scene_data(filepath):
                     # the final intensity is the energy multiplied by the colour
                     f.write(f"  intensity {colour[0] * energy:.6f} {colour[1] * energy:.6f} {colour[2] * energy:.6f}\n")
                     radius = 0.0
-                    if "light_radius" in obj:
+                    if "radius" in obj:
+                        radius = obj["radius"]
+                    elif "light_radius" in obj:
                         radius = obj["light_radius"]
+                    elif "radius" in light_data:
+                        radius = light_data["radius"]
+                    elif "light_radius" in light_data:
+                        radius = light_data["light_radius"]
                     f.write(f"  radius {radius:.6f}\n")
                     f.write("END_POINT_LIGHT\n\n")
 

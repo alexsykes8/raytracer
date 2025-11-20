@@ -34,6 +34,8 @@ public:
 
     virtual bool getBoundingBox(AABB &output_box) const override;
 
+    bool any_hit(const Ray& ray, double t_min, double t_max) const override;
+
 private:
     Matrix4x4 m_transform;         // M: Object-to-World
     Matrix4x4 m_inverse_transform; // M_inverse: World-to-Object

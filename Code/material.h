@@ -16,7 +16,7 @@ class Image;
 struct Material {
     Vector3 ambient;    // each component range is [0,1]. This is the colour when hit by global ambient light. It should be about 10% of diffuse.
     Vector3 diffuse;    // each component range is [0,1]. This is the colour when hit by light. (base colour)
-    Vector3 specular;   // each component range is [0,1]
+    Vector3 specular;   // each component range is [0,1]. low specular is more matt
     double shininess;   // component range is [0,inf]
     // if specular is black [0,0,0] then you will not see any shininess.
 
