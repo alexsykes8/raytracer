@@ -17,6 +17,8 @@
     "shutter_time": 0.5
   },
   "render": {
+    // whether or not shadows are turned on
+    "enable_shadows": false
     // Number of shadow rays cast per light source per hit
     "shadow_samples": 4,
     // Number of reflection rays for rough surfaces

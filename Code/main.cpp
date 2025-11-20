@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     bool use_bvh = Config::Instance().getBool("render.use_bvh", true);
     int samples_per_pixel = Config::Instance().getInt("settings.samples_per_pixel", 1);
     double exposure = Config::Instance().getDouble("image.exposure", 1.0);
-    bool enable_shadows = true;
+    bool enable_shadows = Config::Instance().getBool("render.enable_shadows", false);
     int glossy_samples = Config::Instance().getInt("render.glossy_samples", 0);
     bool enable_parallel = Config::Instance().getBool("render.parallel", false);
     double shutter_time = Config::Instance().getDouble("image.shutter_time", 0.0);
