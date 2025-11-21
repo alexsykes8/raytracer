@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
     bool enable_parallel = Config::Instance().getBool("render.parallel", false);
     double shutter_time = Config::Instance().getDouble("image.shutter_time", 0.0);
     bool enable_fresnel = false;
-    bool any_hit_enabled = Config::Instance().getBool("render.any_hit_enabled", true);
     int run_count = 1;
     bool enable_timing = false;
     std::string all_args = "";
@@ -145,10 +144,6 @@ int main(int argc, char* argv[]) {
             std::cout << "Fresnel effect enabled" << std::endl;
         }
 
-        else if (arg == "--any_hit_off") {
-            any_hit_enabled = false;
-            std::cout << "Any hit optimisation turned off." << std::endl;
-        }
 
     }
 
@@ -191,7 +186,7 @@ int main(int argc, char* argv[]) {
             const std::string scene_file = "../../ASCII/scene.txt";
 
             // initialises a scene. Prepares the objects, materials, and object matrices in preparation for calculations.
-            Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel, any_hit_enabled);
+            Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel);
 
             const Camera& camera = scene.getCamera();
             const HittableList& world = scene.getWorld();

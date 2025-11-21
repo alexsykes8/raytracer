@@ -11,22 +11,18 @@
   "image": {
     // Brightness multiplier
     "exposure": 0.05,
-    // Gamma correction value (usually 2.2)
-    "gamma": 2.2,
     // Duration of the shutter open time for motion blur
     "shutter_time": 0.5
   },
   "render": {
     // Number of shadow rays cast per light source per hit
-    "shadow_samples": 4,
+    "shadow_samples": 16,
     // Number of reflection rays for rough surfaces
     "glossy_samples": 2,
     // Use Bounding Volume Hierarchy acceleration
     "use_bvh": true,
     // Use OpenMP multi-threading
-    "parallel": true,
-    // Optimization for shadow rays (stop at first hit)
-    "any_hit_enabled": true
+    "parallel": true
   },
   "advanced": {
     // Small offset to prevent self-shadowing "acne"

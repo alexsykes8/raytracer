@@ -181,38 +181,3 @@ if (hit_axis == 0) { // X-planes (Left/Right Sides)
 
     return true;
 }
-
-bool Cube::any_hit(const Ray& ray, double t_min, double t_max) const {
-    Vector3 ray_origin_at_t0 = ray.origin - m_velocity * ray.time;
-    Vector3 object_origin = m_inverse_transform * ray_origin_at_t0;
-    Vector3 object_direction = m_inverse_transform.transformDirection(ray.direction);
-
-    double t0 = t_min;
-    double t1 = t_max;
-
-    double invRayDir = 1.0 / object_direction.x;
-    double tNear = (-1.0 - object_origin.x) * invRayDir;
-    double tFar  = ( 1.0 - object_origin.x) * invRayDir;
-    if (invRayDir < 0.0) std::swap(tNear, tFar);
-    t0 = tNear > t0 ? tNear : t0;
-    t1 = tFar  < t1 ? tFar  : t1;
-    if (t0 > t1) return false;
-
-    invRayDir = 1.0 / object_direction.y;
-    tNear = (-1.0 - object_origin.y) * invRayDir;
-    tFar  = ( 1.0 - object_origin.y) * invRayDir;
-    if (invRayDir < 0.0) std::swap(tNear, tFar);
-    t0 = tNear > t0 ? tNear : t0;
-    t1 = tFar  < t1 ? tFar  : t1;
-    if (t0 > t1) return false;
-
-    invRayDir = 1.0 / object_direction.z;
-    tNear = (-1.0 - object_origin.z) * invRayDir;
-    tFar  = ( 1.0 - object_origin.z) * invRayDir;
-    if (invRayDir < 0.0) std::swap(tNear, tFar);
-    t0 = tNear > t0 ? tNear : t0;
-    t1 = tFar  < t1 ? tFar  : t1;
-    if (t0 > t1) return false;
-
-    return true;
-}

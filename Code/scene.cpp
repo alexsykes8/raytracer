@@ -89,8 +89,8 @@ static std::shared_ptr<Image> load_texture_from_file(const std::string& filepath
     return texture;
 }
 
-Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time, bool enable_fresnel, bool any_hit_enabled)
-            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time), m_fresnel_enabled(enable_fresnel), m_any_hit_enabled(any_hit_enabled) {
+Scene::Scene(const std::string& scene_filepath, bool build_bvh, double exposure, bool enable_shadows, int glossy_samples, double shutter_time, bool enable_fresnel)
+            : m_exposure(exposure) , m_shadows_enabled(enable_shadows), m_glossy_samples(glossy_samples), m_shutter_time(shutter_time), m_fresnel_enabled(enable_fresnel) {
     parseSceneFile(scene_filepath), m_shadow_samples = Config::Instance().getInt("render.shadow_samples", 4);
     m_epsilon = Config::Instance().getDouble("advanced.epsilon", 1e-4);
     m_max_bounces = Config::Instance().getInt("settings.max_bounces", 5);;

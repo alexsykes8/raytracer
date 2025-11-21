@@ -44,11 +44,3 @@ bool HittableList::getBoundingBox(AABB &output_box) const {
     return true;
 }
 
-bool HittableList::any_hit(const Ray &ray, double t_min, double t_max) const {
-    for (const auto& object : objects) {
-        if (object->any_hit(ray, t_min, t_max)) {
-            return true; // Found a blocker, stop checking other objects
-        }
-    }
-    return false;
-}

@@ -113,13 +113,3 @@ bool BVHNode::intersect(const Ray& ray, double t_min, double t_max, HitRecord& r
     return hit_left || hit_right;
 }
 
-bool BVHNode::any_hit(const Ray& ray, double t_min, double t_max) const {
-    if (!m_box.intersect(ray, t_min, t_max)) {
-        return false;
-    }
-    if (m_left->any_hit(ray, t_min, t_max)) {
-        return true;
-    }
-
-    return m_right->any_hit(ray, t_min, t_max);
-}
