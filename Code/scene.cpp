@@ -17,6 +17,7 @@
 #include "shapes/complex_cube.h"
 #include "shapes/complex_sphere.h"
 #include "config.h"
+#include "shapes/complex_plane.h"
 
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.
@@ -234,6 +235,17 @@ void Scene::parseSceneFile(const std::string& filepath) {
             continue;
         }
 
+        if (token == "COMPLEX_PLANE") {
+            current_block_type = "COMPLEX_PLANE";
+            current_block_type = "COMPLEX_PLANE";
+            translation = Vector3(0, 0, 0);
+            rotation = Vector3(0, 0, 0);
+            scale_vec = Vector3(1, 1, 1);
+            temp_mat = Material();
+            temp_velocity = Vector3(0,0,0);
+            continue;
+        }
+
 
         // End Block Logic
         if (token == "END_CAMERA") {
@@ -367,12 +379,33 @@ void Scene::parseSceneFile(const std::string& filepath) {
                 temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
             }
             if (temp_corners.size() == 4) {
-                // Add the plane object to the world.
                 m_world.add(std::make_shared<Plane>(temp_corners[0], temp_corners[1], temp_corners[2], temp_corners[3], temp_mat, temp_velocity));
             } else {
-                // Error if the plane does not have corners.
                 std::cerr << "Warning: Plane block ended with " << temp_corners.size() << " corners, expected 4." << std::endl;
             }
+            current_block_type = "NONE";
+            continue;
+        }
+
+        if (token == "END_COMPLEX_PLANE") {
+            if (!temp_mat.texture_filename.empty()) {
+                std::string texture_path = "../" + temp_mat.texture_filename;
+                temp_mat.texture = load_texture_from_file(texture_path);
+            }
+            if (!temp_mat.bump_map_filename.empty()) {
+                temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
+            }
+
+            Matrix4x4 mat_s = Matrix4x4::createScale(scale_vec);
+            Matrix4x4 mat_rx = Matrix4x4::createRotationX(rotation.x);
+            Matrix4x4 mat_ry = Matrix4x4::createRotationY(rotation.y);
+            Matrix4x4 mat_rz = Matrix4x4::createRotationZ(rotation.z);
+            Matrix4x4 mat_t = Matrix4x4::createTranslation(translation);
+
+            Matrix4x4 transform = mat_t * mat_rz * mat_ry * mat_rx * mat_s;
+            Matrix4x4 inv_transform = transform.inverse();
+
+            m_world.add(std::make_shared<ComplexPlane>(transform, inv_transform, temp_mat, temp_velocity));
             current_block_type = "NONE";
             continue;
         }
@@ -492,6 +525,23 @@ void Scene::parseSceneFile(const std::string& filepath) {
             else if (token == "velocity") {
                 read_vector(ss, temp_velocity);
             }
+            else if (token == "material") { ss >> temp_mat.type; }
+        }
+
+        else if (current_block_type == "COMPLEX_PLANE") {
+            if (token == "translation") { read_vector(ss, translation); }
+            else if (token == "rotation_euler_radians") { read_vector(ss, rotation); }
+            else if (token == "scale") { read_vector(ss, scale_vec); }
+            else if (token == "ambient") { read_vector(ss, temp_mat.ambient); }
+            else if (token == "diffuse") { read_vector(ss, temp_mat.diffuse); }
+            else if (token == "specular") { read_vector(ss, temp_mat.specular); }
+            else if (token == "shininess") { ss >> temp_mat.shininess; }
+            else if (token == "reflectivity") { ss >> temp_mat.reflectivity; }
+            else if (token == "transparency") { ss >> temp_mat.transparency; }
+            else if (token == "refractive_index") { ss >> temp_mat.refractive_index; }
+            else if (token == "texture_file") { ss >> temp_mat.texture_filename; }
+            else if (token == "bump_map_file") { ss >> temp_mat.bump_map_filename; }
+            else if (token == "velocity") { read_vector(ss, temp_velocity); }
             else if (token == "material") { ss >> temp_mat.type; }
         }
     }

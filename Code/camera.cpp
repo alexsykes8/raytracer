@@ -91,6 +91,9 @@ Ray Camera::generateRay(float px, float py, double time) const {
     double pixel_width_m = m_sensor_width / m_resolution_x;
     double pixel_height_m = m_sensor_height / m_resolution_y;
 
+    double image_aspect_ratio = static_cast<double>(m_resolution_x) / static_cast<double>(m_resolution_y);
+    double effective_sensor_height = m_sensor_width / image_aspect_ratio;
+
     // Calculate the coordinate on the sensor plane relative to the center of the sensor (in camera's local U/V space)
 
     // includes flipping the image

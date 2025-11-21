@@ -30,6 +30,8 @@
     // Max iterations for ray marching complex shapes
     "ray_march_steps": 64,
     // How far the displacement map pushes the surface out
-    "displacement_strength": 0.15
+    "displacement_strength": 0.15,
+    // The step size the ray marcher takes
+    "step_multiplier": 0.5
   }
 }

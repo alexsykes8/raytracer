@@ -2,6 +2,7 @@
 #include <limits>
 #include "../material.h"
 #include "../Image.h"
+#include "../config.h"
 
 
 bool Plane::getBoundingBox(AABB& output_box) const {
@@ -32,8 +33,6 @@ bool Plane::getBoundingBox(AABB& output_box) const {
     return true;
 }
 
-// Epsilon for floating point comparisons
-const double EPSILON = 1e-6;
 
 Plane::Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity) : m_material(mat), m_velocity(velocity)
 {
@@ -57,6 +56,7 @@ bool Plane::rayTriangleIntersect(
     const Vector3& v0, const Vector3& edge1, const Vector3& edge2,
     double& out_t, double& out_u, double& out_v
 ) const {
+    double EPSILON = Config::Instance().getDouble("advanced.epsilon", 0.001);
     Vector3 h = ray.direction.cross(edge2);
     double a = edge1.dot(h);
 

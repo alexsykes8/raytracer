@@ -40,6 +40,8 @@ add_executable(B216602 main.cpp Image.cpp
         shapes/transformed_shape.h
         config.cpp
         config.h
+        shapes/complex_plane.cpp
+        shapes/complex_plane.h
 )
 
 find_package(OpenMP QUIET)

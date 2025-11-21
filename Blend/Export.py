@@ -64,6 +64,8 @@ def get_primitive_type(obj):
     # --- Plane Check ---
     # A default plane has: 4 vertices, 4 edges, 1 face
     if len(mesh.vertices) == 4 and len(mesh.edges) == 4 and len(mesh.polygons) == 1:
+        if "complex" in obj.name.lower():
+            return "COMPLEX_PLANE"
         return "PLANE"
 
     # --- Cube Check ---
@@ -254,6 +256,20 @@ def export_scene_data(filepath):
                                 f.write(f"  corner {format_vector(world_coord)}\n")
                             write_material_properties(f, obj)
                             f.write("END_PLANE\n\n")
+
+                    elif object_type == "COMPLEX_PLANE":
+                        f.write("COMPLEX_PLANE\n")
+                        f.write(f"  translation {format_vector(obj.location)}\n")
+
+                        rotation_euler = format_vector(obj.rotation_euler)
+                        f.write(f"  rotation_euler_radians {rotation_euler}\n")
+                        f.write(f"  rotation_euler_degrees {radians_to_deg(rotation_euler)}\n")
+
+                        f.write(f"  scale {format_vector(obj.scale)}\n")
+                        write_material_properties(f, obj)
+                        f.write("END_COMPLEX_PLANE\n\n")
+
+
 
         print(f"Scene successfully exported to: {filepath}")
         return True
