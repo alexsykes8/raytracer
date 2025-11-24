@@ -34,35 +34,20 @@ inline Vector3 component_wise_multiply(const Vector3& a, const Vector3& b) {
 }
 
 inline Vector3 trace_shadow_transmission(const Ray& shadow_ray, double dist_to_light, const HittableList& world) {
-    Vector3 transmission(1.0, 1.0, 1.0); // Start with full white light
-    Ray current_ray = shadow_ray;
-    double current_dist = dist_to_light;
-
-    while (true) {
-        HitRecord rec;
-        // Intersect with objects
-        if (world.intersect(current_ray, 0.001, current_dist - 0.001, rec)) {
-
-            if (rec.mat.transparency > 0.0) {
-                Vector3 tint = rec.mat.diffuse * rec.mat.transparency;
-                transmission = component_wise_multiply(transmission, tint);
-
-                if (transmission.length() < 0.001) return Vector3(0, 0, 0);
-
-                Vector3 hit_point = rec.point;
-                Vector3 direction = current_ray.direction;
-
-                current_ray = Ray(hit_point + direction * 0.001, direction);
-                current_dist -= rec.t;
-            } else {
-                // Opaque object hit, no light gets through
-                return Vector3(0, 0, 0);
-            }
+    Vector3 transmission(1.0, 1.0, 1.0);
+    HitRecord rec;
+    if (world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, rec)) {
+        if (rec.mat.transparency > 0.0) {
+            Vector3 tint = rec.mat.diffuse * rec.mat.transparency;
+            transmission = component_wise_multiply(transmission, tint);
+            if (transmission.length() < 0.001) return Vector3(0, 0, 0);
+            Ray new_ray(rec.point + shadow_ray.direction * 0.001, shadow_ray.direction);
+            return component_wise_multiply(transmission, trace_shadow_transmission(new_ray, dist_to_light - rec.t, world));
         } else {
-            // No more intersections, return the accumulated transmission colour
-            return transmission;
+            return Vector3(0, 0, 0);
         }
     }
+    return transmission;
 }
 
 
@@ -163,6 +148,9 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
     return final_colour_vec;
 }
 
+inline double fast_pow(double base, double exp) {
+    return std::exp(exp * std::log(base));
+}
 
 inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, const HittableList& world, const Ray& view_ray) {
     const Vector3 P = rec.point;
@@ -189,7 +177,7 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
             double H_dot_N = std::max(0.0, H.dot(N));
 
             // Calculate base specular
-            Vector3 specular_part = component_wise_multiply(mat.specular, light_intensity_at_point) * std::pow(H_dot_N, mat.shininess);
+            Vector3 specular_part = component_wise_multiply(mat.specular, light_intensity_at_point) * fast_pow(H_dot_N, mat.shininess);
 
             // Apply coloured shadow
             Vector3 final_specular = component_wise_multiply(specular_part, shadow_factor);

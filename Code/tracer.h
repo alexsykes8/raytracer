@@ -19,43 +19,50 @@
 #include "config.h"
 
 
-// calculates the reflected ray direction
+// calculates the reflection of a vector v about a normal n.
 inline Vector3 reflect(const Vector3& V, const Vector3& N) {
+    // calculates the reflection vector using the formula: r = v - 2 * dot(v, n) * n.
     return V - 2 * V.dot(N) * N;
 }
 
-
+// calculates the spherical (u, v) coordinates for a point p on a unit sphere.
 inline void get_sphere_uv(const Vector3& p, double& u, double& v) {
 
+    // maps the point's coordinates to directions. assumes z is up.
     double d_up = p.z;
     double d_fwd = p.y;
     double d_right = p.x;
 
-    // Assumes Y is up.
-    // u is longitude (horizontal)
-    // v is latitude (vertical)
-    // traces ray to a long/lat coord on the sphere
+    // assumes z is up for the sphere mapping.
+    // u corresponds to longitude (horizontal angle).
+    // v corresponds to latitude (vertical angle).
+    // calculates the longitude (azimuthal angle) from the x and y components.
     auto longitude = atan2(d_fwd, d_right);
+    // calculates the latitude (polar angle) from the z component.
     auto latitude = acos(d_up);
 
+    // assign the calculated longitude to u.
     u = longitude;
-    // flip vertically
+    // flip the latitude to match common texture mapping conventions (origin at top-left).
     v = M_PI - latitude;
 }
 
 
 
 
-// used to approximate the contribution of the fresnel factor in the specular reflection of light
+// approximates the fresnel factor using schlick's approximation.
 inline double schlick(double cos_i, double n1, double n2) {
+    // calculates reflectance at normal incidence using the formula: r0 = ((n1 - n2) / (n1 + n2))^2.
     double r0 = ((n1 - n2) / (n1 + n2)) * ((n1 - n2) / (n1 + n2));
-
-    // direct multiplication used instead of pow for x^5, faster
+    // intermediate term for the approximation.
     double x = 1.0 - cos_i;
-    double x2 = x * x;
-    return r0 + (1.0 - r0) * (x2 * x2 * x);
+    // calculates (1 - cos(i))^5.
+    double x5 = x * x * x * x * x;
+    // calculates the schlick approximation using the formula: r(θ) = r0 + (1 - r0) * (1 - cos(θ))^5.
+    return r0 + (1.0 - r0) * x5;
 }
 
+// computes the refracted ray direction and the fresnel reflection probability.
 inline bool compute_refraction(const Vector3& V_in, const Vector3& N, double refractive_index,
                              bool front_face, Vector3& refract_dir, double& out_reflect_prob, bool fresnel_enabled) {
 
@@ -63,6 +70,7 @@ inline bool compute_refraction(const Vector3& V_in, const Vector3& N, double ref
     Vector3 N_outward = N;
 
     if (front_face) {
+        // ray is entering the object from air.
         n1 = 1.0;
         n2 = refractive_index;
     } else {
@@ -70,29 +78,29 @@ inline bool compute_refraction(const Vector3& V_in, const Vector3& N, double ref
         n2 = 1.0;
     }
 
+    // calculates the ratio of refractive indices, η = n1 / n2.
     double eta_ratio = n1 / n2;
+    // calculates the cosine of the angle of incidence.
     double cos_i = -V_in.dot(N_outward);
-    cos_i = std::clamp(cos_i, 0.0, 1.0);
+    // calculates sin^2(θt) using snell's law: sin^2(θt) = η^2 * (1 - cos^2(θi)).
     double sin_t_squared = eta_ratio * eta_ratio * (1.0 - cos_i * cos_i);
 
-    // Check for Total Internal Reflection
+    // checks for total internal reflection.
     if (sin_t_squared > 1.0) {
-        out_reflect_prob = 1.0; // Full reflection
+        // total internal reflection occurs, so reflection probability is 1.
+        out_reflect_prob = 1.0;
         return false;
     }
 
-    // Calculate Refraction Direction
+    // calculates the cosine of the transmission angle: cos(θt) = sqrt(1 - sin^2(θt)).
     double cos_t = sqrt(1.0 - sin_t_squared);
+    // calculates the refracted ray direction using the vector form of snell's law.
     refract_dir = (eta_ratio * V_in) + (eta_ratio * cos_i - cos_t) * N_outward;
 
-    // Calculate Fresnel Effect if enabled
+    // calculates the reflection probability using the fresnel effect if enabled.
     if (fresnel_enabled) {
-        double cos_theta = cos_i;
-        // If moving to a denser medium, use transmitted angle for Schlick
-        if (n1 > n2) {
-            cos_theta = cos_t;
-        }
-        out_reflect_prob = schlick(cos_theta, n1, n2);
+        // uses schlick's approximation to determine reflection probability.
+        out_reflect_prob = schlick(cos_i, n1, n2);
     } else {
         out_reflect_prob = 0.0; // Will rely purely on material transparency property
     }
@@ -101,98 +109,136 @@ inline bool compute_refraction(const Vector3& V_in, const Vector3& N, double ref
 }
 
 
-// provided a scene and the objects in it, along with a ray to trace.
+// recursively traces a ray and calculates the color seen along its path.
 inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& world, int depth) {
+    // stops recursion if the maximum depth is reached.
     if (depth <= 0) return Vector3(0, 0, 0);
 
+    // gets a small offset value to prevent self-intersection artifacts.
     double epsilon = scene.get_epsilon();
 
     HitRecord rec;
+    // checks if the ray intersects with any object in the world.
     if (world.intersect(r, epsilon, 100000.0, rec)) {
+        // calculates the local color from ambient, diffuse, and specular lighting.
         Vector3 local_colour = calculate_local_ad(rec, scene, world) +
                                calculate_specular(rec, scene, world, r);
 
+        // initializes reflected and refracted color components.
         Vector3 reflected_colour(0, 0, 0);
         Vector3 refracted_colour(0, 0, 0);
 
+        // determines if the material is transparent or reflective.
         bool is_transparent = rec.mat.transparency > 0;
         bool has_reflection = rec.mat.reflectivity > 0;
 
+        // if fresnel is enabled, any transparent object can also be reflective.
         if (is_transparent && scene.fresnel_enabled()) has_reflection = true;
         if (has_reflection) {
+            // gets the number of samples for glossy reflections.
             int samples = scene.get_glossy_samples();
-            int loop_count = (samples > 0) ? samples : 1;
-
+            // calculates roughness from shininess for glossy reflections.
             double roughness = 1.0 / sqrt(rec.mat.shininess);
-            roughness = std::min(roughness, 1.0);
 
+            // gets the normalized incoming ray direction.
             Vector3 V = r.direction.normalize();
+            // calculates the perfect reflection direction.
             Vector3 perfect_reflect_dir = reflect(V, rec.normal).normalize();
 
-            for (int i = 0; i < loop_count; i++) {
-                Vector3 target_dir = perfect_reflect_dir;
-                if (samples > 0) {
+            // handles glossy reflections with multiple samples.
+            if (samples > 0) {
+                for (int i = 0; i < samples; i++) {
+                    // creates a random offset in a unit sphere, scaled by roughness.
                     Vector3 random_offset = random_in_unit_sphere() * roughness;
-                    target_dir = (perfect_reflect_dir + random_offset).normalize();
+                    // calculates a perturbed reflection direction for a glossy effect.
+                    Vector3 target_dir = (perfect_reflect_dir + random_offset).normalize();
+                    // ensures the reflected ray is on the same side of the surface as the normal.
+                    if (target_dir.dot(rec.normal) > 0) {
+                        // creates the reflected ray, offset slightly to avoid self-intersection.
+                        Ray reflect_ray(rec.point + rec.normal * epsilon, target_dir, r.time);
+                        // recursively traces the reflected ray and accumulates color.
+                        reflected_colour = reflected_colour + ray_colour(reflect_ray, scene, world, depth - 1);
+                    }
                 }
-
-                if (target_dir.dot(rec.normal) > 0) { // Ensure ray is not pointing into the surface
-                    Ray reflect_ray(rec.point + rec.normal * epsilon, target_dir, r.time);
-                    reflected_colour = reflected_colour + ray_colour(reflect_ray, scene, world, depth - 1);
-                }
+                // averages the color from all glossy samples.
+                reflected_colour = reflected_colour * (1.0 / samples);
+            } else {
+                // handles perfect (mirror) reflection with a single ray.
+                Ray reflect_ray(rec.point + rec.normal * epsilon, perfect_reflect_dir, r.time);
+                // recursively traces the reflected ray.
+                reflected_colour = ray_colour(reflect_ray, scene, world, depth - 1);
             }
-            reflected_colour = reflected_colour * (1.0 / loop_count);
+
+            // for metal materials, the reflected color is tinted by the material's diffuse color.
             if (rec.mat.type == "metal") {
                 reflected_colour = component_wise_multiply(reflected_colour, rec.mat.diffuse);
             }
-
         }
 
+        // gets the base reflection and transmission probabilities from the material.
         double reflect_prob = rec.mat.reflectivity;
         double transmit_prob = rec.mat.transparency;
 
+        // handles refraction for transparent materials.
         if (is_transparent) {
             Vector3 refract_dir;
             double fresnel_reflect_prob = 0.0;
+            // gets the normalized incoming ray direction and hit normal.
             Vector3 V_in = r.direction.normalize();
             Vector3 N_hit = rec.normal.normalize();
 
+            // computes the refraction direction and fresnel reflection probability.
             bool valid_refraction = compute_refraction(V_in, N_hit, rec.mat.refractive_index,
                                                      rec.front_face, refract_dir, fresnel_reflect_prob,
                                                      scene.fresnel_enabled());
 
+            // if refraction is possible (no total internal reflection).
             if (valid_refraction) {
+                // creates the refracted ray.
                 Ray refract_ray(rec.point, refract_dir.normalize(), r.time);
+                // recursively traces the refracted ray.
                 refracted_colour = ray_colour(refract_ray, scene, world, depth - 1);
-
+                // tints the refracted color by the material's diffuse color (like colored glass).
                 refracted_colour = component_wise_multiply(refracted_colour, rec.mat.diffuse);
 
+                // if fresnel is enabled, update reflection and transmission probabilities.
                 if (scene.fresnel_enabled()) {
                     reflect_prob = fresnel_reflect_prob;
+                    // transmission probability is the remainder.
                     transmit_prob = 1.0 - reflect_prob;
                 }
             } else {
+                // total internal reflection occurred.
                 transmit_prob = 0.0;
                 reflect_prob = 1.0;
+                // if reflection wasn't already calculated, calculate it now.
                 if (!has_reflection) {
+                    // calculates the reflection direction.
                     Vector3 v_reflect = reflect(V_in, N_hit).normalize();
+                    // creates and traces the reflected ray.
                     Ray reflect_ray(rec.point + N_hit * epsilon, v_reflect, r.time);
                     reflected_colour = ray_colour(reflect_ray, scene, world, depth - 1);
                 }
             }
         }
+        // combines local, reflected, and refracted colors for transparent materials.
         if (is_transparent) {
+            // final color is a mix based on reflection and transmission probabilities.
             return local_colour * (1.0 - reflect_prob - transmit_prob)
                  + reflected_colour * reflect_prob
                  + refracted_colour * transmit_prob;
         } else {
+            // combines local and reflected colors for opaque materials.
             return local_colour * (1.0 - rec.mat.reflectivity)
                  + reflected_colour * rec.mat.reflectivity;
         }
     } else {
+        // if the ray doesn't hit any object, sample the background.
         if (scene.has_hdr_background()) {
             double u, v;
+            // converts the ray direction to spherical coordinates.
             get_sphere_uv(r.direction.normalize(), u, v);
+            // samples the hdr image at the calculated (u, v) coordinates.
             return scene.get_hdr_background()->sample(u,v);
         }
         return Vector3(0.5, 0.7, 1.0); // default background
@@ -200,10 +246,14 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
 }
 
 inline Pixel final_colour_to_pixel(const Vector3& colour_vec) {
+    // a lambda function to clamp a value between 0.0 and 1.0.
     auto clamp = [](double val) { return std::max(0.0, std::min(1.0, val)); };
     return {
+        // clamps and scales the red component to an 8-bit unsigned char.
         static_cast<unsigned char>(255 * clamp(colour_vec.x)),
+        // clamps and scales the green component to an 8-bit unsigned char.
         static_cast<unsigned char>(255 * clamp(colour_vec.y)),
+        // clamps and scales the blue component to an 8-bit unsigned char.
         static_cast<unsigned char>(255 * clamp(colour_vec.z))
     };
 }

@@ -18,11 +18,7 @@
     // Number of shadow rays cast per light source per hit
     "shadow_samples": 16,
     // Number of reflection rays for rough surfaces
-    "glossy_samples": 2,
-    // Use Bounding Volume Hierarchy acceleration
-    "use_bvh": true,
-    // Use OpenMP multi-threading
-    "parallel": true
+    "glossy_samples": 2
   },
   "advanced": {
     // Small offset to prevent self-shadowing "acne"
