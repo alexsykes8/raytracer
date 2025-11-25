@@ -8,8 +8,8 @@
 
 #include <string>
 #include <stdexcept>
-#include "vector3.h"
-#include "ray.h"
+#include "../utilities/vector3.h"
+#include "../utilities/ray.h"
 #include <cmath>
 
 /**

@@ -3,11 +3,11 @@
 
 #include <string>
 #include <memory>
-#include "shapes/hittable_list.h"
-#include "camera.h"
-#include "light.h"
+#include "../shapes/hittable_list.h"
+#include "../environment/camera.h"
+#include "../environment/light.h"
 #include "matrix4x4.h"
-#include "HDRImage.h"
+#include "../environment/HDRImage.h"
 
 
 class Scene {

@@ -5,7 +5,7 @@
 #include <map>
 #include <variant>
 #include <iostream>
-#include "vector3.h"
+#include "utilities/vector3.h"
 
 class Config {
 public:

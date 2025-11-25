@@ -1,13 +1,13 @@
-#include "Image.h"
-#include "ray.h"
-#include "scene.h"
+#include "utilities/Image.h"
+#include "utilities/ray.h"
+#include "utilities/scene.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "material.h"
-#include "tracer.h"
+#include "shapes/material.h"
+#include "utilities/tracer.h"
 #include <stdexcept>
-#include "random_utils.h"
+#include "utilities/random_utils.h"
 #include "config.h"
 
 #include <chrono>

@@ -1,15 +1,15 @@
 //
 // Created by alex on 04/11/2025.
 //
-#include "material.h"
-#include "light.h"
+#include "../shapes/material.h"
+#include "../environment/light.h"
 #include "scene.h"
 #include "ray.h"
 #include "Image.h"
-#include "shapes/hittable.h"
-#include "shapes/hittable_list.h"
+#include "../shapes/hittable.h"
+#include "../shapes/hittable_list.h"
 #include "vector3.h"
-#include "config.h"
+#include "../config.h"
 
 #include <cmath>
 #include <algorithm>

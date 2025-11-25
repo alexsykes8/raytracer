@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include "vector3.h"
+#include "../utilities/vector3.h"
 
 class HDRImage {
 public:

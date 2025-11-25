@@ -2,7 +2,7 @@
 // Created by alex on 04/11/2025.
 //
 
-#include "vector3.h"
+#include "../utilities/vector3.h"
 
 #ifndef B216602_LIGHT_H
 #define B216602_LIGHT_H

@@ -6,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "vector3.h"
+#include "../utilities/vector3.h"
 #include <cstdlib>
 
 inline Vector3 random_in_unit_disk() {

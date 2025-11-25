@@ -10,24 +10,34 @@
 #include <memory>
 #include "../acceleration/aabb.h"
 
-// Create list of objects in the scene
+// a container class that holds a list of 'shape' objects and acts as a single 'shape' itself.
 class HittableList : public Shape {
 public:
+    // 'public' makes members accessible from outside the class.
+    // default constructor.
     HittableList(){}
 
+    // adds a shape to the list.
+    // 'std::shared_ptr' is a smart pointer that retains shared ownership of an object through a pointer.
     void add(std::shared_ptr<Shape> object) {
         objects.push_back(object);
     }
 
+    // removes all shapes from the list.
     void clear() { objects.clear(); }
 
-    // test the ray against every object in the list
+    // 'virtual' indicates a member function can be overridden in a derived class.
+    // 'override' specifies that a virtual function is meant to override a virtual function in a base class.
+    // overrides the base class method to test the ray against every object in the list.
     virtual bool intersect(const Ray &ray, double t_min, double t_max, HitRecord& rec) const override;
 
+    // overrides the base class method to compute a bounding box that encloses all objects in the list.
     virtual bool getBoundingBox(AABB &output_box) const override;
 
 
 public:
+    // a list of smart pointers to the shape objects in the scene.
+    // 'std::vector' is a sequence container that encapsulates dynamic size arrays.
     std::vector<std::shared_ptr<Shape>> objects;
 };
 

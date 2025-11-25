@@ -1,23 +1,23 @@
 #include "scene.h"
-#include "shapes/sphere.h"
-#include "shapes/plane.h"
-#include "shapes/cube.h"
+#include "../shapes/sphere.h"
+#include "../shapes/plane.h"
+#include "../shapes/cube.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <memory>
 #include "matrix4x4.h"
 #include <vector>
-#include "acceleration/bvh.h"
-#include "material.h"
+#include "../acceleration/bvh.h"
+#include "../shapes/material.h"
 #include "Image.h"
 #include <cstdlib>
 #include <cstdio>
-#include "HDRImage.h"
-#include "shapes/complex_cube.h"
-#include "shapes/complex_sphere.h"
-#include "config.h"
-#include "shapes/complex_plane.h"
+#include "../environment/HDRImage.h"
+#include "../shapes/complex_cube.h"
+#include "../shapes/complex_sphere.h"
+#include "../config.h"
+#include "../shapes/complex_plane.h"
 
 
 // Helper that reads three doubles from a stream and store into a Vector3 object.

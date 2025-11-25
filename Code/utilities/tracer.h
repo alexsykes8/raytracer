@@ -7,16 +7,16 @@
 
 #include "scene.h"
 #include "ray.h"
-#include "shapes/hittable.h"
+#include "../shapes/hittable.h"
 #include "Image.h"
 #include "shading.h"
 #include "vector3.h"
-#include "HDRImage.h"
+#include "../environment/HDRImage.h"
 #include <cmath>
 #include <algorithm>
 #include <cstdlib>
 #include "random_utils.h"
-#include "config.h"
+#include "../config.h"
 
 
 // calculates the reflection of a vector v about a normal n.

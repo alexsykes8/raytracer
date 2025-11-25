@@ -3,21 +3,19 @@ project(B216602)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(B216602 main.cpp Image.cpp
-        camera.cpp
-        camera.h
-        vector3.h
-        ray.h
-        test_rays_image.cpp
-        test_rays_image.h
+add_executable(B216602 main.cpp utilities/Image.cpp
+        environment/camera.cpp
+        environment/camera.h
+        utilities/vector3.h
+        utilities/ray.h
         shapes/sphere.cpp
         shapes/sphere.h
         shapes/hittable_list.cpp
         shapes/hittable_list.h
-        scene.cpp
-        scene.h
-        matrix4x4.h
-        matrix4x4.cpp
+        utilities/scene.cpp
+        utilities/scene.h
+        utilities/matrix4x4.h
+        utilities/matrix4x4.cpp
         shapes/cube.cpp
         shapes/cube.h
         shapes/plane.cpp
@@ -26,17 +24,17 @@ add_executable(B216602 main.cpp Image.cpp
         acceleration/aabb.h
         acceleration/bvh.cpp
         acceleration/bvh.h
-        light.h
-        material.h
-        shading.h
-        tracer.h
-        HDRImage.cpp
-        HDRImage.h
+        environment/light.h
+        shapes/material.h
+        utilities/shading.h
+        utilities/tracer.h
+        environment/HDRImage.cpp
+        environment/HDRImage.h
         shapes/complex_cube.cpp
         shapes/complex_cube.h
         shapes/complex_sphere.cpp
         shapes/complex_sphere.h
-        random_utils.h
+        utilities/random_utils.h
         shapes/transformed_shape.h
         config.cpp
         config.h

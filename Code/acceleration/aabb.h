@@ -1,8 +1,8 @@
 #ifndef B216602_AABB_H
 #define B216602_AABB_H
 
-#include "../vector3.h"
-#include "../ray.h"
+#include "../utilities/vector3.h"
+#include "../utilities/ray.h"
 #include <algorithm> // For std::min/max
 
 class AABB {
