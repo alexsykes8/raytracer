@@ -82,6 +82,25 @@ The functionality for image reading and writing can be found in `Code/utilities/
   </tr>
 </table>
 
+### Module 2
+
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/M2/scene_test_white.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1:</b>Generated image</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/M2/blender_white.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2:</b>Original Blender scene</p>
+    </td>
+  </tr>
+</table>
+
+
+
 # Timeliness
 
 All deadlines were met, with the corresponding features implemented in each module.
@@ -93,6 +112,25 @@ This module involved a python exporter which took limited data about objects. Fo
 Additionally this module exported 1D scales for the shapes, whereas later versions retrieved values for scale in 3D dimensions. Similarly, the intensity of the light at this point is a 1D vector, whereas in future this was changed to a 3D vector to allow the light to be coloured. The values of this new vector represent the intensity of each colour channel.
 
 Finally, the methods for reading the file from the exporter are in the camera class and header in M1. In future, they are moved to `Code/utilities/scene.cpp` and `Code/utilities/scene.h` for tidiness. 
+
+### Module 2
+
+
+The intensity vector for the light in this is now a 3D vector to allow coloured lighting. 
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/M2/scene_test.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1:</b>Generated image</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/M2/blender_green.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2:</b>Original Blender scene</p>
+    </td>
+  </tr>
+</table>
+
 
 # Parameters
 
