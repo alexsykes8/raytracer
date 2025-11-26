@@ -8,7 +8,6 @@ CAMERA
   sensor_size 36.000000 24.000000
   resolution 1920 1080
   f_stop 6.000000
-  focal_distance 3.000000
 END_CAMERA
 
 PLANE
@@ -17,9 +16,6 @@ PLANE
   corner -1.541530 2.258821 -0.191636
   corner 0.821790 2.258821 -0.191636
   diffuse 0.000000 1.000000 1.000000
-  texture_file ../Textures/checkerboard.jpg
-  bump_map_file ../Textures/bump_mapping.jpg
-
 END_PLANE
 
 POINT_LIGHT
@@ -41,12 +37,9 @@ SPHERE
   transparency 0.000000
   refractive_index 2.828000
   velocity 2.900000 1.000000 0.200000
-  bump_map_file ../Textures/bump_mapping.jpg
 END_SPHERE
 
 CUBE
-  translation 1.671166 -0.228209 0.852862
-  diffuse 0.000000 1.000000 1.000000
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
   scale 0.124362 0.124362 0.265639

@@ -28,4 +28,5 @@ add_executable(B216602 main.cpp Image.cpp
         acceleration/bvh.h
         light.h
         material.h
-        shading.h)
+        shading.h
+        tracer.h)
