@@ -44,6 +44,39 @@ The resulting image is saved as a `.ppm` file in `Output/scene_test.ppm`.
 
 ### Module 1
 
+In module 1, the `ASCII/scene.txt` contains the following information:
+* Cameras
+  * Location
+  * Direction of the gaze and up vectors
+  * Focal length
+  * Sensor width and height
+  * Film resolution
+* Point lights
+  * Location
+  * Radiant intensity
+* Spheres
+  * Location
+  * Radius (1D)
+* Cubes
+  * Translation
+  * Rotation
+  * Scale (1D)
+* Planes
+  * 3D coordinates of its four corners
+An example output of `ASCII/scene.txt` for module 1 can be found at `Report/examples/M1/scene.txt`. This was tested by manually entering the values in the text file into a new object in Blender, and checking that it overlaps with the existing object.
+The camera class and header files can be found in `Code/environment`. 
+
+# Timeliness
+
+All deadlines were met, with the corresponding features implemented in each module.
+
+## Deviations
+### Module 1
+This module involved a python exporter which took limited data about objects. For example, module 1 did not require any data about the material of the object and so future versions of the exporter has additional functionality to retrieve material data.
+
+Additionally this module exported 1D scales for the shapes, whereas later versions retrieved values for scale in 3D dimensions. Similarly, the intensity of the light at this point is a 1D vector, whereas in future this was changed to a 3D vector to allow the light to be coloured. The values of this new vector represent the intensity of each colour channel.
+
+Finally, the methods for reading the file from the exporter are in the camera class and header in M1. In future, they are moved to `Code/utilities/scene.cpp` and `Code/utilities/scene.h` for tidiness. 
 
 # Parameters
 
