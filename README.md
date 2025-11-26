@@ -5,6 +5,46 @@ The base of this project exclusively uses the standard C++ library. You should b
 
 The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard compiler.
 
+# Features
+
+* Module 1
+  * Blender exporter.
+  * Raytracing from a camera.
+  * Image read and write in `.ppm` format.
+* Module 2
+  * Ray intersection for sphere, plane and cube objects.
+  * Acceleration hierarchy using the bounding volume hierarchy.
+* Module 3 
+  * Whitted-Style ray tracing, shading intersections according to the Blinn-Phong model.
+  * Traced refracted/reflected rays.
+  * Antialiasing using average contributions of samples.
+  * UV textures mapped to shapes.
+* Final Raytracer 
+  * Implementation of soft shadows via distributed raytracing.
+  * Implementation of glossy reflection via distributed raytracing.
+  * Motion blur.
+  * Depth of field blur.
+* Advanced Features
+  * Fresnel effect.
+  * `.jpeg`, `.jpg`, or `png` texture conversion.
+  * Bump mapping.
+  * Displacement mapping.
+  * Metal material.
+  * Multi-threading.
+
+# Usage
+
+The raytracer parses `ASCII/scene.txt` which contains the objects and object data exported from Blender. To export this data from Blender, load and run the `Blend/Export.py` in the `Blend/scene.py` file. Details on structuring the scene for parsing can be found in [Parameters](#parameters).
+
+Once the `scene.txt` has been generated, the code can be executed. By default it will run without any command line arguments, however it can be tuned using the `Code/config.json` parameters and the command line arguments described in [Parameters](#parameters).   
+
+The resulting image is saved as a `.ppm` file in `Output/scene_test.ppm`.
+
+## Example Outputs
+
+### 
+
+
 # Parameters
 
 | Parameter / Property    | Location / Method                                         | Description                                                                                                                                                                                                                                                                                                    |
@@ -56,3 +96,6 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
 | `Material`              | Blender → Material → Custom Properties → material         | This property can be `glass` or `metal`. Reflective metal objects will tint their reflection with the colour of the metal.                                                                                                                                                                                     |
 | `Texture File`          | Blender → Material → Custom Properties → texture_file     | Filename of the texture map to apply. If python is installed, then texture files can be `.ppm`, `.jpeg`, `.jpg`, or `png`. Otherwise, texture files must be `.ppm`.                                                                                                                                            |
 | `Bump Map File`         | Blender → Material → Custom Properties → bump_map_file    | Filename of the bump map for surface detail. The addition of the `complex_` keyword to a shapes name will result in this map being used to displace the geometry of the shape. If python is installed, then bump map files can be `.ppm`, `.jpeg`, `.jpg`, or `png`. Otherwise, bump map files must be `.ppm`. |
+
+
+# Theory
