@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
     bool enable_fresnel = false;
     int run_count = 1;
     bool enable_timing = false;
+    bool render_normals = false;
     std::string all_args = "";
 
     // concatenate all command line arguments for logging purposes.
@@ -175,6 +176,12 @@ int main(int argc, char* argv[]) {
         std::cout << "Fresnel effect enabled" << std::endl;
     };
 
+    arg_handlers["--normals"] = [&](int& i, int argc, char* argv[]) {
+        render_normals = true;
+        std::cout << "Debug: Rendering surface normals." << std::endl;
+    };
+
+
     // parse command-line arguments.
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
@@ -184,6 +191,11 @@ int main(int argc, char* argv[]) {
             arg_handlers[arg](i, argc, argv);
         }
     }
+
+    arg_handlers["--normals"] = [&](int& i, int argc, char* argv[]) {
+        render_normals = true;
+        std::cout << "Debug: Rendering surface normals." << std::endl;
+    };
 
     std::string timestamp_str;
     std::string output_dir;
@@ -231,7 +243,7 @@ int main(int argc, char* argv[]) {
             const std::string scene_file = "../../ASCII/scene.txt";
 
             // initialises a scene. prepares the objects, materials, and object matrices in preparation for calculations.
-            Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel);
+            Scene scene(scene_file, use_bvh, exposure, enable_shadows, glossy_samples, shutter_time, enable_fresnel, render_normals);
 
             const Camera& camera = scene.getCamera();
             const HittableList& world = scene.getWorld();

@@ -120,6 +120,12 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
     HitRecord rec;
     // checks if the ray intersects with any object in the world.
     if (world.intersect(r, epsilon, 100000.0, rec)) {
+        if (scene.rendering_normals()) {
+            // Map Normal [-1, 1] to Colour [0, 1]
+            // Equation: Colour = 0.5 * (Normal + 1.0)
+            return (rec.normal + Vector3(1, 1, 1)) * 0.5;
+        }
+
         // calculates the local color from ambient, diffuse, and specular lighting.
         Vector3 local_colour = calculate_local_ad(rec, scene, world) +
                                calculate_specular(rec, scene, world, r);
