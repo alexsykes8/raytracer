@@ -42,7 +42,7 @@ The resulting image is saved as a `.ppm` file in `Output/scene_test.ppm`.
 
 ## Example Outputs
 
-### 
+### Module 1
 
 
 # Parameters
