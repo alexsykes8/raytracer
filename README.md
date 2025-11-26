@@ -63,8 +63,24 @@ In module 1, the `ASCII/scene.txt` contains the following information:
   * Scale (1D)
 * Planes
   * 3D coordinates of its four corners
+
 An example output of `ASCII/scene.txt` for module 1 can be found at `Report/examples/M1/scene.txt`. This was tested by manually entering the values in the text file into a new object in Blender, and checking that it overlaps with the existing object.
-The camera class and header files can be found in `Code/environment`. 
+
+The camera class and header files can be found in `Code/environment/camera.h` and `Code/environment/camera.cpp`. 
+
+The functionality for image reading and writing can be found in `Code/utilities/scene.h` and `Code/utilities/scene.cpp`. This was tested by reading a `.ppm` file of a generic gradient, replacing some pixels' colour values with white, and writing it back to a `.ppm`.
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/M1/gradient.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1:</b> Read file</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/M1/modified.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2:</b> Write file</p>
+    </td>
+  </tr>
+</table>
 
 # Timeliness
 
