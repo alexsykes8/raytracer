@@ -12,10 +12,6 @@
 // it handles the transformation logic, while derived classes implement the specific geometry.
 class TransformedShape : public Shape {
 public:
-    // 'public' makes members accessible from outside the class.
-    // constructor for a transformed shape.
-    // 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
-    // '&' declares a reference variable. a reference is an alias for an already existing variable.
     TransformedShape(const Matrix4x4& transform, const Matrix4x4& inv_transform,
                      const Material& mat, const Vector3& velocity)
         // initialises member variables with the provided parameters.
@@ -28,7 +24,6 @@ public:
     {}
 
 protected:
-    // 'protected' makes members accessible only within this class and its derived classes.
     // the object-to-world transformation matrix.
     Matrix4x4 m_transform;
     // the world-to-object inverse transformation matrix.

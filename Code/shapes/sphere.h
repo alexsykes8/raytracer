@@ -13,13 +13,9 @@
 class Sphere : public TransformedShape {
 public:
     // constructor for the sphere.
-    // 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
-    // '&' declares a reference variable. a reference is an alias for an already existing variable.
     Sphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity);
 
-    // overrides the base class method to provide sphere-specific intersection logic.
     virtual bool intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const override;
-    // overrides the base class method to calculate the sphere's world-space bounding box.
     virtual bool getBoundingBox(AABB &output_box) const override;
 
 protected:

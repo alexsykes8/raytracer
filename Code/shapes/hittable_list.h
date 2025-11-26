@@ -13,7 +13,6 @@
 // a container class that holds a list of 'shape' objects and acts as a single 'shape' itself.
 class HittableList : public Shape {
 public:
-    // 'public' makes members accessible from outside the class.
     // default constructor.
     HittableList(){}
 
@@ -26,8 +25,7 @@ public:
     // removes all shapes from the list.
     void clear() { objects.clear(); }
 
-    // 'virtual' indicates a member function can be overridden in a derived class.
-    // 'override' specifies that a virtual function is meant to override a virtual function in a base class.
+
     // overrides the base class method to test the ray against every object in the list.
     virtual bool intersect(const Ray &ray, double t_min, double t_max, HitRecord& rec) const override;
 

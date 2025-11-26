@@ -5,10 +5,7 @@
 #include <cmath>
 #include <stdexcept>
 
-/**
- * @brief A 4x4 transformation matrix class.
- * Stores data in row-major order: m[row][col]
- */
+
 class Matrix4x4 {
 public:
     double m[4][4];
@@ -29,8 +26,6 @@ public:
 
     // Matrix-Vector Multiplication to transform a point.
     Vector3 operator*(const Vector3& v) const;
-
-    // --- Utility Methods ---
 
     //Transforms a direction vector (w=0).
     Vector3 transformDirection(const Vector3& v) const;

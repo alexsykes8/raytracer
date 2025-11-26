@@ -10,8 +10,6 @@
 #include "../config.h"
 
 // constructor for a complex plane.
-// 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
-// '&' declares a reference variable. a reference is an alias for an already existing variable.
 ComplexPlane::ComplexPlane(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
     // initialises member variables with the provided parameters.
     : m_transform(transform), m_inverse_transform(inv_transform), m_material(mat), m_velocity(velocity)

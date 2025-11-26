@@ -9,7 +9,7 @@ inline bool boxCompare(const std::shared_ptr<Shape>& a, const std::shared_ptr<Sh
     if (!a->getBoundingBox(box_a) || !b->getBoundingBox(box_b)) {
         std::cerr << "Error: No bounding box in BVHNode constructor.\n";
     }
-    
+
     // Calculate centers
     Vector3 center_a = (box_a.min_point + box_a.max_point) * 0.5;
     Vector3 center_b = (box_b.min_point + box_b.max_point) * 0.5;
@@ -56,7 +56,7 @@ BVHNode::BVHNode(std::vector<std::shared_ptr<Shape>>& objects, size_t start, siz
     } else {
         axis = 0; // X is longest (or default)
     }
-    
+
     auto comparator = (axis == 0) ? boxCompareX : (axis == 1) ? boxCompareY : boxCompareZ;
 
     size_t object_span = end - start;
@@ -106,10 +106,9 @@ bool BVHNode::intersect(const Ray& ray, double t_min, double t_max, HitRecord& r
 
     // Ray hit the box, recursively check children
     bool hit_left = m_left->intersect(ray, t_min, t_max, rec);
-    
+
     // Update t_max for the right child test. If the left child is hit, only closer hits matter.
     bool hit_right = m_right->intersect(ray, t_min, (hit_left ? rec.t : t_max), rec);
 
     return hit_left || hit_right;
 }
-

@@ -2,8 +2,8 @@ HDR_BACKGROUND ../Textures/clouds.pfm
 
 POINT_LIGHT
   location 4.699185 -2.222839 3.088729
-  intensity 1000.000000 1000.000000 1000.000000
-  radius 0.500000
+  intensity 536.470640 538.898098 700.000000
+  radius 0.000000
 END_POINT_LIGHT
 
 CAMERA
@@ -14,37 +14,29 @@ CAMERA
   rotation_euler_degrees 90.240624 0.000000 69.212041
   focal_length 50.000000
   sensor_size 36.000000 24.000000
-  resolution 1920 1080
-  f_stop 99999.0
-  focal_distance 10.0
+  resolution 900 1080
+  f_stop 2.800000
+  focal_distance 10.000000
 END_CAMERA
 
-PLANE
-  corner -6.159227 -3.431014 -0.429069
-  corner 7.782367 -3.431014 -0.429069
-  corner -6.159227 7.716814 -0.429069
-  corner 7.782367 7.716814 -0.429069
+COMPLEX_PLANE
+  translation 0.819268 2.159507 -0.707480
+  rotation_euler_radians -3.228860 0.165090 0.000000
+  rotation_euler_degrees -185.000051 9.458960 0.000000
+  scale 6.970797 5.573914 3.201436
   ambient 0.000000 0.100000 0.100000
   diffuse 0.000000 1.000000 1.000000
   specular 0.800000 0.800000 0.800000
   reflectivity 0.400000
-END_PLANE
+  texture_file ../Textures/displacement_map.png
+  bump_map_file ../Textures/displacement_map.png
+END_COMPLEX_PLANE
 
-PLANE
-  corner -3.539051 -2.909732 4.159995
-  corner -3.539051 -2.909732 -2.242877
-  corner -3.539051 8.238096 4.159995
-  corner -3.539051 8.238096 -2.242877
-  ambient 0.000000 0.100000 0.100000
-  diffuse 1.000000 1.000000 1.000000
-  specular 0.800000 0.800000 0.800000
-END_PLANE
-
-SPHERE
-  translation 0.756621 2.175031 0.554883
+CUBE
+  translation -1.353442 1.185901 0.570931
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.983953 0.983953 0.983953
+  scale 0.345762 1.000000 1.000000
   ambient 0.082000 0.011000 0.006000
   diffuse 0.898000 0.301000 0.217000
   specular 0.800000 0.800000 0.800000
@@ -53,113 +45,5 @@ SPHERE
   transparency 0.600000
   refractive_index 1.520000
   material metal
-END_SPHERE
-
-PLANE
-  corner 6.679160 -2.909731 4.345973
-  corner -9.147749 -2.909733 2.961296
-  corner 6.679158 8.238097 4.345974
-  corner -9.147751 8.238094 2.961297
-  ambient 0.000000 0.100000 0.100000
-  diffuse 1.000000 1.000000 1.000000
-  specular 0.800000 0.800000 0.800000
-END_PLANE
-
-PLANE
-  corner -35.894104 -2.356919 -4.156730
-  corner 33.103058 -3.058400 -4.156720
-  corner -35.894104 -2.356919 6.991098
-  corner 33.103058 -3.058401 6.991108
-  ambient 0.000000 0.100000 0.100000
-  diffuse 1.000000 1.000000 1.000000
-  specular 0.800000 0.800000 0.800000
-END_PLANE
-
-PLANE
-  corner 11.383299 8.191673 -4.156723
-  corner -14.174341 8.451513 -4.156727
-  corner 11.383297 8.191673 6.991105
-  corner -14.174343 8.451513 6.991101
-  ambient 0.000000 0.100000 0.100000
-  diffuse 1.000000 1.000000 1.000000
-  specular 0.800000 0.800000 0.800000
-END_PLANE
-
-SPHERE
-  translation -1.533323 -0.095532 -0.045831
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.383239 0.383239 0.383239
-  ambient 0.000000 0.100000 0.000000
-  diffuse 0.000000 1.000000 0.000000
-  specular 0.800000 0.800000 0.800000
-  shininess 2500.000000
-END_SPHERE
-
-SPHERE
-  translation -0.564963 -0.422261 -0.045831
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.383239 0.383239 0.383239
-  ambient 0.000000 0.000000 0.000000
-  diffuse 1.000000 1.000000 1.000000
-  specular 0.800000 0.800000 0.800000
-  shininess 2500.000000
-  transparency 0.500000
-  refractive_index 1.520000
-END_SPHERE
-
-SPHERE
-  translation 0.495193 -0.395668 -0.045831
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.383239 0.383239 0.383239
-  ambient 0.000000 0.100000 0.000000
-  diffuse 0.000000 1.000000 0.000000
-  specular 0.800000 0.800000 0.800000
-  shininess 2500.000000
-END_SPHERE
-
-SPHERE
-  translation 1.562459 -0.043004 -0.045831
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.383239 0.383239 0.383239
-  ambient 0.100000 0.100000 0.100000
-  diffuse 0.700000 0.700000 1.000000
-  specular 0.700000 0.700000 0.700000
-  shininess 2400.000000
-  reflectivity 0.600000
-  transparency 0.700000
-  refractive_index 1.000000
-  material metal
-END_SPHERE
-
-SPHERE
-  translation -2.555100 0.995957 1.314704
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.983953 0.983953 0.983953
-  ambient 0.082000 0.011000 0.006000
-  diffuse 0.898000 0.301000 0.217000
-  specular 0.800000 0.800000 0.800000
-  shininess 2500.000000
-  reflectivity 0.300000
-  transparency 0.600000
-  refractive_index 1.520000
-  material metal
-END_SPHERE
-
-SPHERE
-  translation -1.738343 -0.184457 1.298967
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 0.383239 0.383239 0.383239
-  ambient 0.100000 0.100000 0.100000
-  diffuse 0.700000 0.700000 1.000000
-  specular 0.500000 0.500000 0.500000
-  shininess 100.000000
-  transparency 1.000000
-  refractive_index 1.200000
-END_SPHERE
+END_CUBE
 

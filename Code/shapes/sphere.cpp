@@ -12,8 +12,6 @@
 #endif
 
 // constructor for a sphere.
-// 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
-// '&' declares a reference variable. a reference is an alias for an already existing variable.
 Sphere::Sphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
     // initialises the base class 'transformedshape' with the provided parameters.
     : TransformedShape(transform, inv_transform, mat, velocity)

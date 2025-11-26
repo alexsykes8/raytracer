@@ -112,7 +112,7 @@ Matrix4x4 Matrix4x4::transpose() const {
     return result;
 }
 
-// Full 4x4 Matrix Inversion (Cramer's Rule / Adjugate method)
+// Full 4x4 Matrix Inversion
 Matrix4x4 Matrix4x4::inverse() const {
     Matrix4x4 inv;
     double det;

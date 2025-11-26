@@ -9,8 +9,6 @@
 #include "../utilities/Image.h"
 
 // constructor for a cube.
-// 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
-// '&' declares a reference variable. a reference is an alias for an already existing variable.
 Cube::Cube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
     // initialises the base class 'transformedshape' with the provided parameters.
     : TransformedShape(transform, inv_transform, mat, velocity)
@@ -49,7 +47,7 @@ bool Cube::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec)
         double t0, t1;
         if (dir == 0.0) {
             // Ray is parallel to the slab.
-            // If origin is outside [-1, 1], we miss the box entirely.
+            // If origin is outside [-1, 1], the box is missed entirely.
             // if the ray is parallel to a slab and its origin is outside the slab, it can never intersect.
             if (origin < -1.0 || origin > 1.0) {
                 return false;

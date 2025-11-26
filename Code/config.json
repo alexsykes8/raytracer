@@ -1,8 +1,5 @@
 {
   "settings": {
-    // Image resolution default
-    "width": 800,
-    "height": 600,
     // Number of rays per pixel for antialiasing default
     "samples_per_pixel": 1,
     // Maximum number of light bounces (reflections/refractions)

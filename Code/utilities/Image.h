@@ -15,9 +15,6 @@ struct Pixel {
     unsigned char r, g, b;
 };
 
-/**
- * A class to handle reading, writing, and modifying binary PPM (P6) image files.
- */
 class Image {
 public:
     // take a file name to read from
