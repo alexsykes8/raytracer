@@ -26,5 +26,11 @@
     "displacement_strength": 0.15,
     // The step size the ray marcher takes
     "step_multiplier": 0.5
+  },
+  // Background colour. If the scene has an HDR file, the background colour will be overridden.
+  "background": {
+    "r": 0.5,
+    "g": 0.7,
+    "b": 1.0
   }
 }

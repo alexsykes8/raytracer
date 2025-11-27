@@ -44,6 +44,8 @@ The resulting image is saved as a `.ppm` file in `Output/scene_test.ppm`.
 
 ### Module 1
 
+#### Blender exporter
+
 In module 1, the `ASCII/scene.txt` contains the following information:
 * Cameras
   * Location
@@ -66,7 +68,8 @@ In module 1, the `ASCII/scene.txt` contains the following information:
 
 An example output of `ASCII/scene.txt` for module 1 can be found at `Report/examples/M1/scene.txt`. This was tested by manually entering the values in the text file into a new object in Blender, and checking that it overlaps with the existing object.
 
-The camera class and header files can be found in `Code/environment/camera.h` and `Code/environment/camera.cpp`. 
+#### Camera space transformations
+The camera class and header files can be found in `Code/environment/camera.h` and `Code/environment/camera.cpp`. In module 1, the file is read by the camera class and information stored. It uses a Vector3 class for 
 
 The functionality for image reading and writing can be found in `Code/utilities/scene.h` and `Code/utilities/scene.cpp`. This was tested by reading a `.ppm` file of a generic gradient, replacing some pixels' colour values with white, and writing it back to a `.ppm`.
 <table style="width: 100%; border: none;">
@@ -84,21 +87,24 @@ The functionality for image reading and writing can be found in `Code/utilities/
 
 ### Module 2
 
+#### Ray Intersection
 
+Module 2 was tested by overlaying the original Blender file with the output from the raytracer and checking that they match.
 
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <img src="Report/examples/M2/scene_test_white.png" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1:</b>Generated image</p>
+      <p style="text-align: center;"><b>Figure 1: </b>Generated image</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <img src="Report/examples/M2/blender_white.png" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2:</b>Original Blender scene</p>
+      <p style="text-align: center;"><b>Figure 2: </b>Original Blender scene</p>
     </td>
   </tr>
 </table>
 
+#### Acceleration Hierarchy
 
 
 # Timeliness
@@ -122,11 +128,11 @@ The intensity vector for the light in this is now a 3D vector to allow coloured 
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <img src="Report/examples/M2/scene_test.png" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1:</b>Generated image</p>
+      <p style="text-align: center;"><b>Figure 1: </b>Generated image</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <img src="Report/examples/M2/blender_green.png" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2:</b>Original Blender scene</p>
+      <p style="text-align: center;"><b>Figure 2: </b>Original Blender scene</p>
     </td>
   </tr>
 </table>
@@ -146,12 +152,14 @@ The intensity vector for the light in this is now a 3D vector to allow coloured 
 | `epsilon`               | `config.json`                                             | Small offset value to prevent self-shadowing acne.                                                                                                                                                                                                                                                             |
 | `ray_march_steps`       | `config.json`                                             | Maximum iterations for ray marching complex shapes.                                                                                                                                                                                                                                                            |
 | `displacement_strength` | `config.json`                                             | Intensity of displacement mapping on surfaces.                                                                                                                                                                                                                                                                 |
+| `background`            | `config.json`                                             | The default R, G, B values of background pixels.                                                                                                                                                                                                                                                               |
 | **Command Line Flags**  |                                                           |                                                                                                                                                                                                                                                                                                                |
 | `--aa <int>`            | Command Line                                              | Overrides `samples_per_pixel` from config.                                                                                                                                                                                                                                                                     |
 | `--exposure <float>`    | Command Line                                              | Overrides `exposure` from config.                                                                                                                                                                                                                                                                              |
 | `--motion-blur <float>` | Command Line                                              | Overrides `shutter_time` from config. Enables motion blur.                                                                                                                                                                                                                                                     |
 | `--shadows`             | Command Line                                              | Enable shadow calculations (defaults to off).                                                                                                                                                                                                                                                                  |
 | `--fresnel`             | Command Line                                              | Enable Fresnel equations for realistic reflection weighting.                                                                                                                                                                                                                                                   |
+| `--normals`             | Command Line                                              | Visualise the ray intersections with objects by colouring pixels according to the normals of the hit points.                                                                                                                                                                                                   |
 | `--parallel`            | Command Line                                              | Enables multi-threading (OpenMP) for faster rendering. If OpenMP is not available, the program will run with a single thread.                                                                                                                                                                                  |
 | `--no-bvh`              | Command Line                                              | Disables the Bounding Volume Hierarchy (acceleration structure).                                                                                                                                                                                                                                               |
 | `--time <int>`          | Command Line                                              | Runs the render `<int>` times and logs performance stats.                                                                                                                                                                                                                                                      |

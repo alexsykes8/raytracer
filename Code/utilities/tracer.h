@@ -247,7 +247,11 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
             // samples the hdr image at the calculated (u, v) coordinates.
             return scene.get_hdr_background()->sample(u,v);
         }
-        return Vector3(0.5, 0.7, 1.0); // default background
+
+        double bg_r = Config::Instance().getDouble("background.r", 0.5);
+        double bg_g = Config::Instance().getDouble("background.g", 0.7);
+        double bg_b = Config::Instance().getDouble("background.b", 1.0);
+        return Vector3(bg_r, bg_g, bg_b); // default background
     }
 }
 
