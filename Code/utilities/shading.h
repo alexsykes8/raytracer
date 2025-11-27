@@ -116,7 +116,10 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
 
     // The ambient component is an approximation of light scattered throughout the scene. Uses a low-level illumination to simulate light-scattering.
     // Ambient Component
-    Vector3 global_ambient_light(0.2, 0.2, 0.2);
+    double a_r = Config::Instance().getDouble("lighting.r", 0.15);
+    double a_g = Config::Instance().getDouble("lighting.g", 0.15);
+    double a_b = Config::Instance().getDouble("lighting.b", 0.25);
+    Vector3 global_ambient_light(a_r, a_g, a_b);
     Vector3 final_colour_vec = component_wise_multiply(mat.ambient, global_ambient_light);
 
 

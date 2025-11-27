@@ -24,14 +24,15 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
   * Implementation of glossy reflection via distributed raytracing.
   * Motion blur.
   * Depth of field blur.
-* Advanced Features
+* Exceptionality
   * Fresnel effect.
   * `.jpeg`, `.jpg`, or `png` texture conversion.
   * Bump mapping.
   * Displacement mapping.
   * Metal material.
   * Multi-threading.
-  * Tone mapping 
+  * Exposure control.
+  * Tone mapping (interchangeable Reinhardt, ACES, and Filmic)
 
 # Usage
 
@@ -127,6 +128,68 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
   </tr>
 </table>
 
+### Exceptionality
+
+#### Tonemapping
+
+Tonemapping was implemented as an optional `--tonemap <algorithm>` flag. The implemented algorithms are:
+* Reinhard: this uses the function $C_d = \frac{C}{1+C}$ where $C$ is the colour vector.
+* ACES: this uses an S-shaped contrast curve. The values are calculated using
+  [Krzysztof Narkowicz's](https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/) values in the S-curve equation $\frac{x  (a  x + b)}{x  (c  x + d) + e}$ where x is the value of a colour channel.
+* Filmic: this algorithm applies the equation $\frac{(x (ax + cb) + d e) }{x(ax + b) + d f)} - \frac{e}{f}$ with values from [John Hable](http://filmicworlds.com/blog/filmic-tonemapping-operators/), where x is the value of a colour channel. 
+
+The algorithms are applied to each pixel after the colour has been calculated to map the HDR colour range to a limited range. Without the inclusion of this flag, the values are simply clamped to the range of 0.0 to 1.0.
+
+While the values of the pixels can be controlled with the `--exposure <float>` flag, this scales the values of the pixels linearly. Tonemapping adjusts the values more intelligently, for example crushing highlights or shadows more aggressively than the midtones. Exposure and tonemapping can be used in tandem to control the general brightness of the scene with artistic choices about how the light should be interpreted.  
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/output_no_tone_mapping.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>No tonemapping</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/tonemapping_reinhard.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Reinhard tonemapping</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/tonemapping_aces.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/tonemapping_filmic.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 4: </b>Filmic tonemapping</p>
+    </td>
+  </tr>
+</table>
+
+This is particularly useful for scenes with more than one light, as it prevents both being scaled relative to their impact on the scene, instead of both being clamped to 1.0. In this way, tonemapping can be used to improve realism. 
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/output_no_tone_mapping_2_lights.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>No tonemapping</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/output_reinhard_2_lights.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Reinhard tonemapping</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/output_aces_2_lights.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <img src="Report/examples/exceptionality/tonemapping/tonemapping_filmic.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 4: </b>Filmic tonemapping</p>
+    </td>
+  </tr>
+</table>
+
 # Timeliness
 
 All deadlines were met, with the corresponding features implemented in each module.
@@ -179,7 +242,7 @@ Tone mapping
 | `max_bounces`           | `config.json`                                             | Maximum recursion depth for reflections/refractions.                                                                                                                                                                                                                                                           |
 | `exposure`              | `config.json`                                             | Default brightness multiplier for the final image. This can be overridden using the `--exposure <float>` flag                                                                                                                                                                                                  |
 | `shutter_time`          | `config.json`                                             | Default duration the shutter is open (used for motion blur calculations). This can be overridden using the `--motion-blur <float>` flag                                                                                                                                                                        |
-| `shadow_samples`        | `config.json`                                             | Number of shadow rays cast per light source per hit (soft shadows).                                                                                                                                                                                                                                            |
+| `shadow_samples`        | `config.json`                                             | Number of shadow rays cast per light source per hit (soft shadows). Note that for soft shadows to exist, the light source must have a radius greater than 0.0.                                                                                                                                                 |
 | `glossy_samples`        | `config.json`                                             | Number of reflection rays scattered for rough surfaces.                                                                                                                                                                                                                                                        |
 | `epsilon`               | `config.json`                                             | Small offset value to prevent self-shadowing acne.                                                                                                                                                                                                                                                             |
 | `ray_march_steps`       | `config.json`                                             | Maximum iterations for ray marching complex shapes.                                                                                                                                                                                                                                                            |
@@ -195,6 +258,7 @@ Tone mapping
 | `--parallel`            | Command Line                                              | Enables multi-threading (OpenMP) for faster rendering. If OpenMP is not available, the program will run with a single thread.                                                                                                                                                                                  |
 | `--no-bvh`              | Command Line                                              | Disables the Bounding Volume Hierarchy (acceleration structure).                                                                                                                                                                                                                                               |
 | `--time <int>`          | Command Line                                              | Runs the render `<int>` times and logs performance stats.                                                                                                                                                                                                                                                      |
+| `--tonemap <string>`    | Command Line                                              | Applies tone mapping. The string can be `reinhard`, `aces`, or `filmic`, corresponding to the tone mapping algorithm used. If this flag is not present, the pixel values will simply be clamped to a range.                                                                                                    |
 | **Blender (Camera)**    |                                                           |                                                                                                                                                                                                                                                                                                                |
 | `Location`              | Blender → Camera → Object → Location                      | 3D position of the camera in 3D space (`x, y, z`).                                                                                                                                                                                                                                                             |
 | `Gaze Direction`        | Blender → Camera → Object → Rotation                      | 3D vector direction the camera is looking.                                                                                                                                                                                                                                                                     |

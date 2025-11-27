@@ -65,6 +65,7 @@ int main(int argc, char* argv[]) {
     bool enable_timing = false;
     bool render_normals = false;
     bool enable_bvh_testing = false;
+    int tonemap_mode = 0; // 0=None, 1=Reinhard, 2=ACES, 3=Filmic
     std::string all_args = "";
 
     // concatenate all command line arguments for logging purposes.
@@ -192,6 +193,26 @@ int main(int argc, char* argv[]) {
         std::cout << "BVH testing mode enabled." << std::endl;
     };
 
+    // handler for '--tonemap' flag.
+    arg_handlers["--tonemap"] = [&](int& i, int argc, char* argv[]) {
+        if (i + 1 < argc) {
+            std::string mode = argv[i + 1];
+            std::transform(mode.begin(), mode.end(), mode.begin(), ::tolower);
+
+            if (mode == "reinhard") tonemap_mode = 1;
+            else if (mode == "aces") tonemap_mode = 2;
+            else if (mode == "filmic") tonemap_mode = 3;
+            else {
+                std::cerr << "Unknown tonemap mode: " << mode << " (defaulting to none)" << std::endl;
+                tonemap_mode = 0;
+            }
+            i++;
+            std::cout << "Tone mapping set to: " << mode << std::endl;
+        } else {
+            std::cerr << "Error: --tonemap requires a mode (reinhard, aces, filmic)." << std::endl;
+            exit(1);
+        }
+    };
 
     // parse command-line arguments.
     for (int i = 1; i < argc; ++i) {
@@ -282,6 +303,14 @@ int main(int argc, char* argv[]) {
                 }
                 // calculate the average color from all samples for the pixel.
                 Vector3 averaged_color_vec = pixel_color_vec * (1.0 / SAMPLES_PER_PIXEL);
+                // apply tonemapping
+                if (tonemap_mode == 1) {
+                    averaged_color_vec = tonemap_reinhard(averaged_color_vec);
+                } else if (tonemap_mode == 2) {
+                    averaged_color_vec = tonemap_aces(averaged_color_vec);
+                } else if (tonemap_mode == 3) {
+                    averaged_color_vec = tonemap_filmic(averaged_color_vec);
+                }
                 // convert the final vector color to a pixel format (e.g., 8-bit rgb).
                 Pixel final_color = final_colour_to_pixel(averaged_color_vec);
                 // set the pixel color in the image buffer.

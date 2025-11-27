@@ -18,6 +18,40 @@
 #include "random_utils.h"
 #include "../config.h"
 
+// Reinhardt Tone Mapping
+// Formula: C / (1 + C)
+inline Vector3 tonemap_reinhard(const Vector3& v) {
+    return Vector3(v.x / (1.0 + v.x), v.y / (1.0 + v.y), v.z / (1.0 + v.z));
+}
+
+// ACES
+inline Vector3 tonemap_aces(const Vector3& v) {
+    auto aces = [](double x) {
+        const double a = 2.51;
+        const double b = 0.03;
+        const double c = 2.43;
+        const double d = 0.59;
+        const double e = 0.14;
+        return (x * (a * x + b)) / (x * (c * x + d) + e);
+    };
+    return Vector3(aces(v.x), aces(v.y), aces(v.z));
+}
+
+// Filmic
+inline Vector3 tonemap_filmic(const Vector3& v) {
+    auto filmic = [](double x) {
+        const double A = 0.15;
+        const double B = 0.50;
+        const double C = 0.10;
+        const double D = 0.20;
+        const double E = 0.02;
+        const double F = 0.30;
+        return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
+    };
+    const double W = 11.2; // Linear White Point Value
+    double white_scale = 1.0 / filmic(W);
+    return Vector3(filmic(v.x) * white_scale, filmic(v.y) * white_scale, filmic(v.z) * white_scale);
+}
 
 // calculates the reflection of a vector v about a normal n.
 inline Vector3 reflect(const Vector3& V, const Vector3& N) {
