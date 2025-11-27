@@ -69,7 +69,9 @@ In module 1, the `ASCII/scene.txt` contains the following information:
 An example output of `ASCII/scene.txt` for module 1 can be found at `Report/examples/M1/scene.txt`. This was tested by manually entering the values in the text file into a new object in Blender, and checking that it overlaps with the existing object.
 
 #### Camera space transformations
-The camera class and header files can be found in `Code/environment/camera.h` and `Code/environment/camera.cpp`. In module 1, the file is read by the camera class and information stored. It uses a Vector3 class for 
+The camera class and header files can be found in `Code/environment/camera.h` and `Code/environment/camera.cpp`. In module 1, the file is read by the camera class and information stored. A vector3 class and a ray class are implemented to structure the data.
+
+#### Image read and write
 
 The functionality for image reading and writing can be found in `Code/utilities/scene.h` and `Code/utilities/scene.cpp`. This was tested by reading a `.ppm` file of a generic gradient, replacing some pixels' colour values with white, and writing it back to a `.ppm`.
 <table style="width: 100%; border: none;">
@@ -106,6 +108,23 @@ Module 2 was tested by overlaying the original Blender file with the output from
 
 #### Acceleration Hierarchy
 
+A bounding volume hierarchy is implemented to improve the efficiency of intersection tests for scenes with many shapes. The speedup for the scene in [Figure 1](#figure-1) is shown in [Figure 2](#figure-2). Each test was run 5 times and averaged. As shown, the improvement in efficiency increases as the number of items in the scene increases.
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Raytraced scene</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Runtime with and without BVH</p>
+    </td>
+  </tr>
+</table>
 
 # Timeliness
 
@@ -136,6 +155,10 @@ The intensity vector for the light in this is now a 3D vector to allow coloured 
     </td>
   </tr>
 </table>
+
+The python exporter also now identifies mesh types by counting the number of polygons, which is a more robust method than relying on the name of the shape.
+
+Additionally, in module 1 the bounds for the cube intersection were +-0.5, but this is changed to +-1.0 after discovering that Blender uses a non-standard system for 
 
 
 # Parameters
