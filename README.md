@@ -129,6 +129,12 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
   </tr>
 </table>
 
+### Module 3
+
+#### Whitted-style raytracing
+
+The Blinn-Phong model was implemented early in module 2, however it was refined in module 3.
+
 ### Exceptionality
 
 #### Tonemapping
