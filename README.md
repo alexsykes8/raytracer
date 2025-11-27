@@ -244,6 +244,24 @@ This module also sees the addition of the BVH acceleration, implemented in `Code
 
 ### Module 3
 
+To account for the new depth of focus blur, soft shadows, and motion blur, `Blend/Export.py` is adjusted to read properties related to these features. `Code/utilities/scene.h` and `Code/utilities/scene.cpp` are updated to parse this information.
+
+`Code/environment/camera.h` and `Code/environment/camera.cpp` are updated to store the new information related to focus blur.
+
+`Code/environment/light.h` is updated to store information about the radius of the point light, which is used in soft shadow calculations.
+
+The intersection methods in `Code/shapes/` are updated to account for the time variable used for motion blur calculations, and the time variable is added as a property to `Code/utilities/ray.h`.
+
+A new class, `Code/utilities/vector2.h`, is added for mapping 2D texture coordinates.
+
+`Code/shapes/material.h` is updated to include information about reflectivity, transparency, refractive index and textures.
+
+`Code/utilities/shading.h` is updated to deal with textures and soft shadows.
+
+`Code/utilities/tracer.h` is added to deal with calculations related to reflective or transparent materials. This class traces a ray to a specified recursion depth, calculating the rays new direction at each intersection depending on the materials properties.
+
+### Final Raytracer
+
 This module used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
 
 ### Exceptionality
