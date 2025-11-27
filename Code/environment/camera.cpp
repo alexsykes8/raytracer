@@ -46,6 +46,14 @@ Camera::Camera(
       m_resolution_y(resolution_y),
       m_focal_distance(focal_distance)
 {
+    double aspect_ratio = static_cast<double>(m_resolution_x) / static_cast<double>(m_resolution_y);
+    double calculated_height = m_sensor_width / aspect_ratio;
+    if (std::abs(sensor_height - calculated_height) > 0.01) {
+        std::cout << "Camera Init Warning: Adjusted sensor height from " << sensor_height
+                  << "mm to " << calculated_height << "mm to match image aspect ratio." << std::endl;
+    }
+    m_sensor_height = calculated_height;
+
     // converts focal length from millimeters to meters for aperture calculation.
     // equation: focal_length_metres = m_focal_length / 1000.0
     double focal_length_metres = m_focal_length / 1000.0;

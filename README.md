@@ -31,6 +31,7 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
   * Displacement mapping.
   * Metal material.
   * Multi-threading.
+  * Tone mapping 
 
 # Usage
 
@@ -158,8 +159,16 @@ The intensity vector for the light in this is now a 3D vector to allow coloured 
 
 The python exporter also now identifies mesh types by counting the number of polygons, which is a more robust method than relying on the name of the shape.
 
-Additionally, in module 1 the bounds for the cube intersection were +-0.5, but this is changed to +-1.0 after discovering that Blender uses a non-standard system for 
+Additionally, in module 1 the bounds for the cube intersection were +-0.5, but this is changed to +-1.0 after discovering that Blender uses a non-standard system for scaling.
 
+
+### Module 3
+
+This module used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
+
+### Exceptionality
+
+Tone mapping
 
 # Parameters
 
