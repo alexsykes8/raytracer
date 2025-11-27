@@ -25,14 +25,15 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
   * Motion blur.
   * Depth of field blur.
 * Exceptionality
+  * Multi-threading.
   * Fresnel effect.
   * `.jpeg`, `.jpg`, or `png` texture conversion.
+  * HDR background images.
   * Bump mapping.
   * Displacement mapping.
   * Metal material.
-  * Multi-threading.
   * Exposure control.
-  * Tone mapping (interchangeable Reinhardt, ACES, and Filmic)
+  * Tone mapping (interchangeable Reinhard, ACES, and Filmic)
 
 # Usage
 
@@ -93,7 +94,7 @@ The functionality for image reading and writing can be found in `Code/utilities/
 
 #### Ray Intersection
 
-Module 2 was tested by overlaying the original Blender file with the output from the raytracer and checking that they match.
+Module 2 was tested by overlaying the original Blender file with the output from the raytracer and checking that they match. To generate the output, I coloured the ray intersections according to the normal of the ray with the object.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -223,6 +224,16 @@ The intensity vector for the light in this is now a 3D vector to allow coloured 
 The python exporter also now identifies mesh types by counting the number of polygons, which is a more robust method than relying on the name of the shape.
 
 Additionally, in module 1 the bounds for the cube intersection were +-0.5, but this is changed to +-1.0 after discovering that Blender uses a non-standard system for scaling.
+
+Module 2 also has an additional `Code/utilities/shading.h`, which is responsible for Blinn Phong shading (I was ahead of schedule and so implemented this in module 2 instead of 3). A corresponding material structure, `Code/shapes/material.h`, was added to store the relevant material properties. In module 2, this is just ambient diffuse specular and shininess.
+
+A class was added to represent 4x4 matrices, `Code/utilities/matrix4x4.h` and `Code/utilities/matrix4x4.cpp`, providing utilities for geometric transformations. This was also added to transform rays, as it is computationally more efficient to transform a ray and test it for an intersection against a unit shape than test the original ray against a transformed shape.
+
+A structure was added for the light, `Code/environment/light.h`, necessary for Blinn-Phong. In module 2 this structure simply holds the lights position and intensity.
+
+Classes were added for each of the shapes (circle, plane and, cube in `Code/shapes/`) to allow a different intersection method to be used for each. They inherit from the base class of `Code/shapes/hittable.h` which is contained by `Code/shapes/hittable_list.h` and `Code/shapes/hittable_list.cpp`. This simplifies the raytracer logic for intersection tests, and allows easy iteration through hittable objects.
+
+This module also sees the addition of the BVH acceleration, implemented in `Code/acceleration/bvh.h` and `Code/acceleration/bvh.cpp`. It is built using an AABB (Axis-Aligned Bounding Box) tree,`Code/acceleration/aabb.cpp` and `Code/acceleration/aabb.h`, for computational efficiency.
 
 
 ### Module 3
