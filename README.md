@@ -133,7 +133,22 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
 
 #### Whitted-style raytracing
 
-The Blinn-Phong model was implemented early in module 2, however it was refined in module 3.
+The Blinn-Phong model was implemented early in module 2, however it was refined in module 3. It responds to specular, diffuse, and ambient values in each colour channel. See `Report/examples/M3` for scene data.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/basic_whitted_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/basic_whitted_raytracer.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
+    </td>
+  </tr>
+</table>
 
 ### Exceptionality
 
