@@ -168,6 +168,25 @@ A tracer is also implemented, which tracks the path of a ray when it encounters 
 
 Note that in the above scene, the Blender uses the glass BSDF whereas the ratracer scene data has the object materials set to different transparencies, hence the less vivid colours in the raytraced scene, as the colour transmission was weaker.
 
+#### Anti-aliasing
+
+Anti-aliasing can be set with the `--aa <int>` flag where the second argument is the number of samples to take.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/anti_aliasing_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/anti_aliasing_raytracer.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
+    </td>
+  </tr>
+</table>
+
 ### Exceptionality
 
 #### Tonemapping
