@@ -172,17 +172,45 @@ Note that in the above scene, the Blender uses the glass BSDF whereas the ratrac
 
 Anti-aliasing can be set with the `--aa <int>` flag where the second argument is the number of samples to take.
 
+
+TODO replace with better examples of aa
+
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/anti_aliasing_blender.png" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
+      <img src="Report/examples/M3/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Anti-aliasing 1 sample</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/anti_aliasing_raytracer.png" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
+      <img src="Report/examples/M3/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Anti-aliasing 16 samples</p>
+    </td>
+  </tr>
+</table>
+
+#### Textures
+
+For spheres and planes, the texture is stretched to fit the surface of the object. For cubes, the uv texture is treated as a net that wraps around the object, allowing different patterns to be displayed on different faces. 
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Sphere texture</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Plane texture</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-3"></a>
+      <img src="Report/examples/M3/x" alt="Figure C" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Cube texture</p>
     </td>
   </tr>
 </table>
