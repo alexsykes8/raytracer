@@ -271,7 +271,7 @@ This is particularly useful for scenes with more than one light, as it prevents 
       <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/tonemapping_filmic.png" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/exceptionality/tonemapping/x.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 4: </b>Filmic tonemapping</p>
     </td>
   </tr>
