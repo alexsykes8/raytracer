@@ -576,9 +576,6 @@ A new class, `Code/utilities/vector2.h`, is added for mapping 2D texture coordin
 
 This module used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
 
-### Exceptionality
-
-Tone mapping
 
 # Parameters
 
