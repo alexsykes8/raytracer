@@ -28,7 +28,7 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
   * Multi-threading.
   * `.jpeg`, `.jpg`, or `png` texture conversion.
   * HDR background images.
-  * Bump mapping.
+  * Normal mapping.
   * Displacement mapping.
   * Metal material.
   * Exposure control.
@@ -347,7 +347,7 @@ As it is easier to find textures in `.png`, `.jpg`, or `.jpeg` format, the code 
 
 #### HDR Backgrounds 
 
-The raytracer can read in HDR background images in `.hdr` format. These images are sampled when a ray does not intersect with any objects in the scene, providing realistic lighting and reflections from the environment. The implementation uses a simple spherical mapping technique to map the 2D HDR image onto a virtual sphere surrounding the scene.
+The raytracer can read in HDR background images in `.hdr` format. These images are sampled when a ray does not intersect with any objects in the scene, providing realistic lighting and reflections from the environment. The implementation uses a simple spherical mapping technique to map the 2D HDR image onto a virtual sphere surrounding the scene. WHATARE THE TWO TYPES OF HDR AND WHICH CAN THIS USE
 
 
 <table style="width: 100%; border: none;">
@@ -365,9 +365,9 @@ The raytracer can read in HDR background images in `.hdr` format. These images a
   </tr>
 </table>
 
-#### Bump mapping
+#### Normal mapping
 
-Textures can be applied to shapes that 
+Textures can be applied to shapes to perturb the normal for lighting calculations without affecting the objects geometry. 
 
 
 <table style="width: 100%; border: none;">
@@ -387,7 +387,7 @@ Textures can be applied to shapes that
 
 #### Discplacement mapping
 
-This form of bump mapping actually changes the geometry of the object. Therefore, while XXX objects still have smooth sillhoeuttes that match their original shape, XXX objects have bumped outlines.
+This changes the geometry of the object. Therefore, while XXX objects still have smooth sillhoeuttes that match their original shape, XXX objects have bumped outlines.
 
 
 <table style="width: 100%; border: none;">
@@ -574,7 +574,18 @@ A new class, `Code/utilities/vector2.h`, is added for mapping 2D texture coordin
 
 ### Final Raytracer
 
-This module used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
+`Export.py` is updated to retrieve information regarding object materials, displacement map textures, HDR backgrounds, depth of field camera data, and velocity. It was also updated to deal with complex objects, which changes the way in which displacement/normal maps are applied (either by changing the geometry of the object or by perturbing the normal vector).
+
+The previous implentation used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore, since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
+
+Calculations for normal mapping are added to the basic shapes files, and new classes for their complex counterparts added with intersection methods for displacement mapping.
+
+The calculations for the final pixel colour is changed from a simple clamp to various tonemapping methods.
+
+`Code/shapes/HDRImage.cpp` and `Code/shapes/HDRImage.h` are added to allow the use of background images instead of a default colour.
+
+A significant amount of refactoring was also done across the files, for example `Code/shapes/transformed_shape.h` was added as base class for transformable shapes to avoid code duplication in the shape files. 
+
 
 
 # Parameters
