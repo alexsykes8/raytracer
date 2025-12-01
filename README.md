@@ -134,12 +134,12 @@ The Blinn-Phong model was implemented early in module 2, however it was refined 
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/basic_whitted_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Report/examples/M3/basic/basic_whitted_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/basic_whitted_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/M3/basic/basic_whitted_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
     </td>
   </tr>
@@ -151,12 +151,12 @@ A tracer is also implemented, which tracks the path of a ray when it encounters 
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/refraction_reflection_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Report/examples/M3/refraction_reflection/refraction_reflection_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/reflection_refraction_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/M3/refraction_reflection/reflection_refraction_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
     </td>
   </tr>
@@ -185,20 +185,17 @@ Finally, Fresnel equations were implemented to weight the reflection and refract
 
 Anti-aliasing can be set with the `--aa <int>` flag where the second argument is the number of samples to take.
 
-
-TODO replace with better examples of aa
-
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Anti-aliasing 1 sample</p>
+      <img src="Report/examples/M3/anti_aliasing/anti_aliasing_1.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Anti-aliasing (samples = 1)</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Anti-aliasing 16 samples</p>
+      <img src="Report/examples/M3/anti_aliasing/anti_aliasing_16.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Anti-aliasing (samples = 16)</p>
     </td>
   </tr>
 </table>
@@ -242,13 +239,13 @@ Soft shadows are implemented by casting multiple shadow rays towards a light sou
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-basic-shadow"></a>
-      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Basic shadow implementation</p>
+      <img src="Report/examples/final/soft_shadows_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender Scene</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-soft-shadow"></a>
-      <img src="Report/examples/final/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Soft shadow implementation (samples = x)</p>
+      <img src="Report/examples/final/soft" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Soft shadow implementation (samples = 4)</p>
     </td>
   </tr>
 </table>
