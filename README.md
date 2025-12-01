@@ -395,8 +395,8 @@ This changes the geometry of the object. Therefore, while XXX objects still have
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-displacement-map-B"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>A scene with an XXX mapped shape</p>
+      <img src="Textures/checker_board_gradient.jpg" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>The corresponding displacement map.</p>
     </td>
   </tr>
 </table>
