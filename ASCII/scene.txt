@@ -1,6 +1,6 @@
 POINT_LIGHT
-  location -9.878799 9.872608 5.903862
-  intensity 2000.000000 2000.000000 2000.000000
+  location 4.076245 1.005454 5.903862
+  intensity 1000.000000 1000.000000 1000.000000
   radius 0.500000
 END_POINT_LIGHT
 
@@ -17,19 +17,33 @@ CAMERA
   focal_distance 10.0
 END_CAMERA
 
-PLANE
-  corner -16.471201 3.308882 -5.441754
-  corner -3.618388 3.308882 -5.441754
-  corner -16.471201 16.161695 -5.441754
-  corner -3.618388 16.161695 -5.441754
-  ambient 0.400000 0.400000 0.400000
-  diffuse 0.400000 0.400000 0.400000
-  specular 0.300000 0.300000 0.300000
-  shininess 250.000000
-  reflectivity 0.300000
+SPHERE
+  translation 0.000000 0.000000 0.337436
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.509919 1.509919 1.509919
+  ambient 0.700000 0.500000 0.500000
+  diffuse 1.000000 1.000000 0.500000
+  specular 1.000000 1.000000 1.000000
+  shininess 500.000000
+  reflectivity 0.000000
   transparency 0.000000
   refractive_index 1.000000
   material glass
-  texture_file ../Textures/checkerboard.ppm
+END_SPHERE
+
+PLANE
+  corner -32.484604 -32.484604 -1.172483
+  corner 32.484604 -32.484604 -1.172483
+  corner -32.484604 32.484604 -1.172483
+  corner 32.484604 32.484604 -1.172483
+  ambient 0.800000 0.350000 0.350000
+  diffuse 1.000000 0.400000 0.400000
+  specular 0.300000 0.300000 0.300000
+  shininess 250.000000
+  reflectivity 0.000000
+  transparency 0.000000
+  refractive_index 1.000000
+  material glass
 END_PLANE
 

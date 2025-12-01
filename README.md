@@ -239,12 +239,12 @@ Soft shadows are implemented by casting multiple shadow rays towards a light sou
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-basic-shadow"></a>
-      <img src="Report/examples/final/soft_shadows_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Report/examples/final/soft_shadows/soft_shadows_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender Scene</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-soft-shadow"></a>
-      <img src="Report/examples/final/soft" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/final/soft_shadows/soft_shadows.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Soft shadow implementation (samples = 4)</p>
     </td>
   </tr>
