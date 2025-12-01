@@ -425,13 +425,13 @@ This flag allows finer control of the environment brightness.
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-exposure-A"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>A scene with high exposure (exposure = )</p>
+      <img src="Report/examples/exceptionality/exposure/exposure_low.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with low exposure (exposure = 0.04)</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-exposure-B"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>A scene with low exposure (exposure = )</p>
+      <img src="Report/examples/exceptionality/exposure/exposure_high.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with high exposure (exposure = 0.16)</p>
     </td>
   </tr>
 </table>
