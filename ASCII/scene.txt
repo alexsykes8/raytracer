@@ -1,6 +1,6 @@
 POINT_LIGHT
   location 4.076245 1.005454 5.903862
-  intensity 1000.000000 1000.000000 1000.000000
+  intensity 2000.000000 2000.000000 2000.000000
   radius 0.500000
 END_POINT_LIGHT
 
@@ -18,32 +18,18 @@ CAMERA
 END_CAMERA
 
 SPHERE
-  translation 0.000000 0.000000 0.337436
+  translation 0.000000 0.000000 0.303338
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 1.509919 1.509919 1.509919
-  ambient 0.300000 0.300000 0.300000
-  diffuse 1.000000 1.000000 0.500000
-  specular 1.000000 1.000000 1.000000
-  shininess 500.000000
-  reflectivity 0.000000
-  transparency 0.000000
-  refractive_index 1.000000
-  material glass
-END_SPHERE
-
-PLANE
-  corner -32.484604 -32.484604 -1.172483
-  corner 32.484604 -32.484604 -1.172483
-  corner -32.484604 32.484604 -1.172483
-  corner 32.484604 32.484604 -1.172483
-  ambient 0.800000 0.350000 0.350000
-  diffuse 1.000000 0.400000 0.400000
+  scale 2.059160 2.059160 2.059160
+  ambient 0.400000 0.400000 0.400000
+  diffuse 0.400000 0.400000 0.400000
   specular 0.300000 0.300000 0.300000
   shininess 250.000000
   reflectivity 0.300000
   transparency 0.000000
   refractive_index 1.000000
   material glass
-END_PLANE
+  texture_file ../Textures/wood.ppm
+END_SPHERE
 

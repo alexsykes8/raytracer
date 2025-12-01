@@ -208,12 +208,12 @@ For spheres and planes, the texture is stretched to fit the surface of the objec
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/x" alt="Figure A" style="width: 100%;">
+      <img src="Report/examples/M3/Textures/textures_sphere.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Sphere texture</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/x" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/M3/Textures/textures_plane.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Plane texture</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">

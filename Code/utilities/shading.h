@@ -144,8 +144,8 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
     double a_g = Config::Instance().getDouble("lighting.g", 0.15);
     double a_b = Config::Instance().getDouble("lighting.b", 0.25);
     Vector3 global_ambient_light(a_r, a_g, a_b);
-    Vector3 final_colour_vec = component_wise_multiply(mat.ambient, global_ambient_light);
-
+    Vector3 ambient_contribution = component_wise_multiply(mat.ambient, global_ambient_light);
+    Vector3 final_colour_vec = component_wise_multiply(ambient_contribution, diffuse_colour);
 
     const Vector3 P = rec.point;
     const Vector3 N = rec.normal.normalize();
