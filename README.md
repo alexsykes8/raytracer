@@ -26,10 +26,9 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
   * Depth of field blur.
 * Exceptionality
   * Multi-threading.
-  * Fresnel effect.
   * `.jpeg`, `.jpg`, or `png` texture conversion.
   * HDR background images.
-  * Bump mapping.
+  * Normal mapping.
   * Displacement mapping.
   * Metal material.
   * Exposure control.
@@ -109,6 +108,7 @@ Module 2 was tested by overlaying the original Blender file with the output from
   </tr>
 </table>
 
+
 #### Acceleration Hierarchy
 
 A bounding volume hierarchy is implemented to improve the efficiency of intersection tests for scenes with many shapes. The speedup for the scene in [Figure 1](#figure-1) is shown in [Figure 2](#figure-2). Each test was run 5 times and averaged. As shown, the improvement in efficiency increases as the number of items in the scene increases.
@@ -133,9 +133,317 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
 
 #### Whitted-style raytracing
 
-The Blinn-Phong model was implemented early in module 2, however it was refined in module 3.
+The Blinn-Phong model was implemented early in module 2, however it was refined in module 3. It responds to specular, diffuse, and ambient values in each colour channel. See `Report/examples/M3` for scene data.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/basic_whitted_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/basic_whitted_raytracer.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
+    </td>
+  </tr>
+</table>
+
+A tracer is also implemented, which tracks the path of a ray when it encounters transparent objects or moves between mediums with different refractive indices.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/refraction_reflection_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/refraction_reflection_raytracer.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
+    </td>
+  </tr>
+</table>
+
+Note that in the above scene, the Blender uses the glass BSDF whereas the ratracer scene data has the object materials set to different transparencies, hence the less vivid colours in the raytraced scene, as the colour transmission was weaker.
+
+Finally, Fresnel equations were implemented to weight the reflection and refraction contributions more realistically. This is enabled with the `--fresnel` flag.
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/x.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Transparent objects without the Fresnel effect</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/x.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Transparent objects with the Fresnel effect</p>
+    </td>
+  </tr>
+</table>
+
+#### Anti-aliasing
+
+Anti-aliasing can be set with the `--aa <int>` flag where the second argument is the number of samples to take.
+
+
+TODO replace with better examples of aa
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Anti-aliasing 1 sample</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Anti-aliasing 16 samples</p>
+    </td>
+  </tr>
+</table>
+
+#### Textures
+
+For spheres and planes, the texture is stretched to fit the surface of the object. For cubes, the uv texture is treated as a net that wraps around the object, allowing different patterns to be displayed on different faces. 
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="Report/examples/M3/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Sphere texture</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="Report/examples/M3/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Plane texture</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-3"></a>
+      <img src="Report/examples/M3/x" alt="Figure C" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Cube texture</p>
+    </td>
+  </tr>
+</table>
+
+
+### Final Raytracer
+
+#### System Integration
+
+As described in [Parameters](#parameters), features can be easily turned on and off using command line arguments.
+
+#### Distributed Raytracing
+
+Soft shadows are implemented by casting multiple shadow rays towards a light source with a radius greater than 0.0. The number of rays is controlled by the `shadow_samples` parameter in `config.json`. The final light contribution is averaged over all the shadow rays, creating a softer shadow edge. This is compatible with the existing implementation for the point lights, but does require point lights to have a radius in their custom properties.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-basic-shadow"></a>
+      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Basic shadow implementation</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-soft-shadow"></a>
+      <img src="Report/examples/final/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Soft shadow implementation (samples = x)</p>
+    </td>
+  </tr>
+</table>
+
+Glossy reflection also casts multiple rays to approximate blurred specular highlights, averaging their contributions to produce rough reflections controlled by the material's glossiness.
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-basic-shine"></a>
+      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Basic shiny surface</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-glossy"></a>
+      <img src="Report/examples/final/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Sampled glossy surface (samples = x)</p>
+    </td>
+  </tr>
+</table>
+
+#### Lens effects
+
+Each object can have a 3D velocity vector attached to it via a custom property. If used with the `--motion-blur <float>` flag, where the float is the time the shutter time, it calculates a motion blue for moving objects in the scene. As with the other examples in this documentation, information on the scene and flags used to generate this is example can be found in `Report/examples/final/`
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-motion-blue"></a>
+      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with moving objects</p>
+    </td>
+  </tr>
+</table>
+
+The raytracer also implements depth of field blur. By setting the F-Stop and Focal Distance in the Blender camera settings, the raytracer simulates a camera lens with a finite aperture size. Rays are sampled across the aperture, creating a realistic depth of field effect where objects outside the focal plane appear blurred.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-A"></a>
+      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with depth of field blur (f-stop = x, focal length = y)</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-B"></a>
+      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with depth of field blur (f-stop = x, focal length = y)</p>
+    </td>
+  </tr>
+</table>
 
 ### Exceptionality
+
+#### Multi-threading
+
+Multi-threading was implemented to allow parallel threads to process lines of the image simultaneously. This is enabled with the `--parallel` flag. If OpenMP is not available on the system, the program will run with a single thread, so the system should be portable. Speed-up for three scenes is shown in the table below.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-1"></a>
+      <img src="" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Raytraced scene 1</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-2"></a>
+      <img src="" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene 2</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-3"></a>
+      <img src="" alt="Figure C" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene 3</p>
+    </td>
+  </tr>
+<tr>
+    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-4"></a>
+      <img src="" alt="Figure D" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 4: </b>Runtime with and without multi-threading</p>
+    </td>
+  </tr>
+</table>
+
+#### Filetype conversion
+
+As it is easier to find textures in `.png`, `.jpg`, or `.jpeg` format, the code includes the ability to convert these file types to `.ppm`. This code uses `python`, and so it fails gracefully if used on a system that does not have python installed. 
+
+#### HDR Backgrounds 
+
+The raytracer can read in HDR background images in `.hdr` format. These images are sampled when a ray does not intersect with any objects in the scene, providing realistic lighting and reflections from the environment. The implementation uses a simple spherical mapping technique to map the 2D HDR image onto a virtual sphere surrounding the scene. WHATARE THE TWO TYPES OF HDR AND WHICH CAN THIS USE
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-HDR-A"></a>
+      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with an HDR background</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-HDR-B"></a>
+      <img src="Report/examples/final/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with an HDR background</p>
+    </td>
+  </tr>
+</table>
+
+#### Normal mapping
+
+Textures can be applied to shapes to perturb the normal for lighting calculations without affecting the objects geometry. 
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-bump-map-A"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with an XXX mapped shape</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-bump-map-B"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with an XXX mapped shape</p>
+    </td>
+  </tr>
+</table>
+
+#### Discplacement mapping
+
+This changes the geometry of the object. Therefore, while XXX objects still have smooth sillhoeuttes that match their original shape, XXX objects have bumped outlines.
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-displacement-map-A"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with an XXX mapped shape</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-displacement-map-B"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with an XXX mapped shape</p>
+    </td>
+  </tr>
+</table>
+
+#### Metal material
+
+While experimenting with glass objects, I discovered that it was possible to create metal objects by forcing the reflection of an object to transmit the colour of the object. 
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-metal-A"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with a glass object and a metal object</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-metal-B"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with a glass object and a metal object</p>
+    </td>
+  </tr>
+</table>
+
+#### Exposure control 
+
+This flag allows finer control of the environment brightness. 
+
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-exposure-A"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with high exposure (exposure = )</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-exposure-B"></a>
+      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with low exposure (exposure = )</p>
+    </td>
+  </tr>
+</table>
 
 #### Tonemapping
 
@@ -191,11 +499,15 @@ This is particularly useful for scenes with more than one light, as it prevents 
       <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/tonemapping_filmic.png" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/exceptionality/tonemapping/x.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 4: </b>Filmic tonemapping</p>
     </td>
   </tr>
 </table>
+
+# Further Examples
+
+This gallery features further examples of the aforementioned features. All scene and flag data can be found in `Report/examples/gallery`.
 
 # Timeliness
 
@@ -262,11 +574,19 @@ A new class, `Code/utilities/vector2.h`, is added for mapping 2D texture coordin
 
 ### Final Raytracer
 
-This module used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
+`Export.py` is updated to retrieve information regarding object materials, displacement map textures, HDR backgrounds, depth of field camera data, and velocity. It was also updated to deal with complex objects, which changes the way in which displacement/normal maps are applied (either by changing the geometry of the object or by perturbing the normal vector).
 
-### Exceptionality
+The previous implentation used a sensor size imported from Blender. I discovered that this might not necessarily be the correct aspect ratio, which was causing vertical squashing in my output images. Therefore, since the module 3 submission I have updated it to calculate sensor size according to the Blender camera aspect ratio.
 
-Tone mapping
+Calculations for normal mapping are added to the basic shapes files, and new classes for their complex counterparts added with intersection methods for displacement mapping.
+
+The calculations for the final pixel colour is changed from a simple clamp to various tonemapping methods.
+
+`Code/shapes/HDRImage.cpp` and `Code/shapes/HDRImage.h` are added to allow the use of background images instead of a default colour.
+
+A significant amount of refactoring was also done across the files, for example `Code/shapes/transformed_shape.h` was added as base class for transformable shapes to avoid code duplication in the shape files. 
+
+
 
 # Parameters
 
