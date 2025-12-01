@@ -111,20 +111,15 @@ Module 2 was tested by overlaying the original Blender file with the output from
 
 #### Acceleration Hierarchy
 
-A bounding volume hierarchy is implemented to improve the efficiency of intersection tests for scenes with many shapes. The speedup for the scene in [Figure 1](#figure-1) is shown in [Figure 2](#figure-2). Each test was run 5 times and averaged. As shown, the improvement in efficiency increases as the number of items in the scene increases.
+A bounding volume hierarchy is implemented to improve the efficiency of intersection tests for scenes with many shapes. The speedup for scenes with different numbers of objects is shown in [Figure 1](#figure-1). Scene data can be found in `Report/examples/M2/bvh_tests`. Each test was run 3 times and averaged. As shown, the gap in runtime between runs with and without bvh increases as the number of items in the scene increases.
 
 
 <table style="width: 100%; border: none;">
   <tr>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Raytraced scene</p>
-    </td>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-2"></a>
-      <img src="" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Runtime with and without BVH</p>
+      <img src="Report/examples/M2/bvh_tests/bvh_comparison_plot.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>untime with and without BVH</p>
     </td>
   </tr>
 </table>
