@@ -166,8 +166,20 @@ bool ComplexPlane::intersect(const Ray& ray, double t_min, double t_max, HitReco
     const double EPSILON = Config::Instance().getDouble("advanced.epsilon", 0.001);
     const double STEP_MULTI = Config::Instance().getDouble("advanced.step_multiplier", 0.8);
 
+
+    auto get_displacement_at = [&](double u, double v) {
+        if (!m_material.bump_map) return 0.0;
+
+        // Use Bilinear Interpolation instead of integer casting (getPixel)
+        Pixel pix = m_material.bump_map->getPixelBilinear(u, 1.0 - v);
+
+        double intensity = (pix.r + pix.g + pix.b) / (3.0 * 255.0);
+        return intensity * m_max_displacement;
+    };
+
     // performs ray marching to find the actual intersection with the displaced surface.
-    for(int i = 0; i < MAX_STEPS; ++i) {
+    for(int i = 0; i < MAX_STEPS; ++i)
+    {
         // terminates if the current ray marching step exceeds the limit.
         if (t_current > t_limit) break;
 
@@ -184,94 +196,38 @@ bool ComplexPlane::intersect(const Ray& ray, double t_min, double t_max, HitReco
         get_uv_and_normal(p, u, v, normal_dummy);
 
         // calculates displacement based on the bump map, if present.
-        double displacement = 0.0;
-        if (m_material.bump_map) {
-            // gets the dimensions of the bump map.
-            int w = m_material.bump_map->getWidth();
-            int h = m_material.bump_map->getHeight();
-            // converts uv coordinates to pixel coordinates, flipping v.
-            int x = static_cast<int>(u * (w - 1));
-            int y = static_cast<int>((1.0 - v) * (h - 1));
-
-            // clamps pixel coordinates to be within the image bounds.
-            x = std::max(0, std::min(x, w-1));
-            y = std::max(0, std::min(y, h-1));
-
-            // gets the pixel colour from the bump map.
-            Pixel pix = m_material.bump_map->getPixel(x, y);
-            // calculates intensity from the pixel's rgb components.
-            // equation: intensity = (pix.r + pix.g + pix.b) / (3.0 * 255.0)
-            double intensity = (pix.r + pix.g + pix.b) / (3.0 * 255.0);
-            // scales the intensity by the maximum displacement.
-            // equation: displacement = intensity * m_max_displacement
-            displacement = intensity * m_max_displacement;
-        }
-
-        // calculates the signed distance to the displaced surface.
-        // equation: dist_to_surface = dist_to_base - displacement
+        double displacement = get_displacement_at(u, v);
         double dist_to_surface = dist_to_base - displacement;
-
-        // if the ray is close enough to the surface, a hit is registered.
         if (dist_to_surface < EPSILON) {
-            // fills the hit record with intersection details.
             rec.t = t_current;
             rec.point = ray.point_at_parameter(t_current);
             rec.mat = m_material;
-
-            // defines a small step for calculating the gradient.
-            double d = 0.005;
-            // 'auto' is a c++ keyword that allows the compiler to deduce the type of a variable from its initialiser.
-            // deduces that 'sample_scene' is a lambda function that calculates the signed distance at a given point.
-            auto sample_scene = [&](Vector3 q) {
-                double qu, qv; Vector3 qn;
-                get_uv_and_normal(q, qu, qv, qn);
-                double q_disp = 0.0;
-                if (m_material.bump_map) {
-                    // gets bump map dimensions.
-                    int w = m_material.bump_map->getWidth();
-                    int h = m_material.bump_map->getHeight();
-                    // converts uv to pixel coordinates.
-                    int x = static_cast<int>(qu * (w - 1));
-                    int y = static_cast<int>((1.0 - qv) * (h - 1));
-                    // clamps coordinates.
-                     x = std::max(0, std::min(x, w-1));
-                     y = std::max(0, std::min(y, h-1));
-                    // gets pixel and calculates displacement.
-                    Pixel pix = m_material.bump_map->getPixel(x, y);
-                    // equation: q_disp = ((pix.r + pix.g + pix.b) / (3.0 * 255.0)) * m_max_displacement
-                    q_disp = ((pix.r + pix.g + pix.b) / (3.0 * 255.0)) * m_max_displacement;
-                }
-                // returns the signed distance to the displaced surface at point q.
-                return signed_distance_plane(q) - q_disp;
-            };
-
-            // calculates the gradient of the signed distance function to determine the local normal.
-            // equation: grad_x = sample_scene(p + (d,0,0)) - sample_scene(p - (d,0,0))
-            double grad_x = sample_scene(p + Vector3(d,0,0)) - sample_scene(p - Vector3(d,0,0));
-            // equation: grad_y = sample_scene(p + (0,d,0)) - sample_scene(p - (0,d,0))
-            double grad_y = sample_scene(p + Vector3(0,d,0)) - sample_scene(p - Vector3(0,d,0));
-            // equation: grad_z = sample_scene(p + (0,0,d)) - sample_scene(p - (0,0,d))
-            double grad_z = sample_scene(p + Vector3(0,0,d)) - sample_scene(p - Vector3(0,0,d));
-
-            // normalises the gradient vector to get the local normal in object space.
-            Vector3 local_normal = Vector3(grad_x, grad_y, grad_z).normalize();
-            // transforms the local normal to world space using the inverse transpose matrix.
-            Vector3 world_normal = (m_inverse_transpose * local_normal).normalize();
-
-            // sets the face normal in the hit record, ensuring it points against the ray.
-            rec.set_face_normal(ray, world_normal);
-            // assigns the uv coordinates to the hit record.
             rec.uv.u = u;
             rec.uv.v = v;
 
+            double d = 0.005;
+            auto sample_scene = [&](Vector3 q) {
+                double qu, qv; Vector3 qn;
+                get_uv_and_normal(q, qu, qv, qn);
+                double q_disp = get_displacement_at(qu, qv);
+                return signed_distance_plane(q) - q_disp;
+            };
+
+            // Calculate gradient (central differences)
+            double grad_x = sample_scene(p + Vector3(d,0,0)) - sample_scene(p - Vector3(d,0,0));
+            double grad_y = sample_scene(p + Vector3(0,d,0)) - sample_scene(p - Vector3(0,d,0));
+            double grad_z = sample_scene(p + Vector3(0,0,d)) - sample_scene(p - Vector3(0,0,d));
+
+            Vector3 local_normal = Vector3(grad_x, grad_y, grad_z).normalize();
+            Vector3 world_normal = (m_inverse_transpose * local_normal).normalize();
+
+            rec.set_face_normal(ray, world_normal);
             return true;
         }
-        // calculates the step size in world space, accounting for non-uniform scaling.
-        // equation: step_world = dist_to_surface / local_ray_scale
+
+        // Step Logic
         double step_world = dist_to_surface / local_ray_scale;
-        // advances the ray along its direction, ensuring it doesn't overshoot the surface and takes at least epsilon steps.
         t_current += std::max(step_world * STEP_MULTI, EPSILON);
     }
-
     return false;
 }

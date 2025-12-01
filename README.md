@@ -299,7 +299,7 @@ The raytracer also implements depth of field blur. By setting the F-Stop and Foc
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-C"></a>
       <img src="Report/examples/final/dof/dof_raytracer.png" alt="Figure C" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene with depth of field (f-stop = 2.0, focal length = 2.5)</p>
+      <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene with depth of field (f-stop = 2.0, focal length = 2.5)</p>
     </td>
   </tr>
 </table>
@@ -390,8 +390,8 @@ This changes the geometry of the object. Therefore, while XXX objects still have
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-displacement-map-A"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>A scene with an XXX mapped shape</p>
+      <img src="Report/examples/exceptionality/displacement_mapping/displacement_mapping.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene including a plane with a displacement map.</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-displacement-map-B"></a>
