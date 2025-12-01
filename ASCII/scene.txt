@@ -1,5 +1,5 @@
 POINT_LIGHT
-  location 4.076245 1.005454 5.903862
+  location -9.878799 9.872608 5.903862
   intensity 2000.000000 2000.000000 2000.000000
   radius 0.500000
 END_POINT_LIGHT
@@ -17,11 +17,11 @@ CAMERA
   focal_distance 10.0
 END_CAMERA
 
-SPHERE
-  translation 0.000000 0.000000 0.303338
-  rotation_euler_radians 0.000000 0.000000 0.000000
-  rotation_euler_degrees 0.000000 0.000000 0.000000
-  scale 2.059160 2.059160 2.059160
+PLANE
+  corner -16.471201 3.308882 -5.441754
+  corner -3.618388 3.308882 -5.441754
+  corner -16.471201 16.161695 -5.441754
+  corner -3.618388 16.161695 -5.441754
   ambient 0.400000 0.400000 0.400000
   diffuse 0.400000 0.400000 0.400000
   specular 0.300000 0.300000 0.300000
@@ -30,6 +30,6 @@ SPHERE
   transparency 0.000000
   refractive_index 1.000000
   material glass
-  texture_file ../Textures/wood.ppm
-END_SPHERE
+  texture_file ../Textures/checkerboard.ppm
+END_PLANE
 
