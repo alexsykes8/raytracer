@@ -10,7 +10,7 @@ CUBE
   reflectivity 0.990000
   transparency 0.000000
   refractive_index 1.000000
-  material glass
+  material metal
 END_CUBE
 
 POINT_LIGHT

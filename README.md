@@ -405,13 +405,13 @@ While experimenting with glass objects, I discovered that it was possible to cre
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-metal-A"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>A scene with a glass object and a metal object</p>
+      <img src="Report/examples/exceptionality/metal/glass.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with a glass mirror, which cannot be tinted with colour.</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-metal-B"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>A scene with a glass object and a metal object</p>
+      <img src="Report/examples/exceptionality/metal/metal.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with a metal mirror, capable of being tinted.</p>
     </td>
   </tr>
 </table>
