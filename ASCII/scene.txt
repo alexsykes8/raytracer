@@ -1,523 +1,154 @@
 POINT_LIGHT
   location 4.076245 1.005454 5.903862
   intensity 1000.000000 1000.000000 1000.000000
-  radius 0.700000
+  radius 0.100000
 END_POINT_LIGHT
 
 CAMERA
-  location 7.358891 -6.925791 4.958309
-  gaze_direction -0.651558 0.614170 -0.445271
-  up_vector -0.324013 0.305421 0.895396
-  rotation_euler_radians 1.109319 0.000000 0.814928
-  rotation_euler_degrees 63.559297 0.000000 46.691935
+  location 8.180061 -1.512830 3.881698
+  gaze_direction -0.862744 0.239595 -0.445271
+  up_vector -0.429034 0.119148 0.895396
+  rotation_euler_radians 1.109319 -0.000000 1.299910
+  rotation_euler_degrees 63.559297 -0.000000 74.479357
   focal_length 50.000000
-  sensor_size 36.000000 24.000000
-  resolution 1920 1080
-  f_stop 99999.0
-  focal_distance 10.0
+  sensor_size 27.000000 24.000000
+  resolution 1100 1500
+  f_stop 2.000000
+  focal_distance 2.500000
 END_CAMERA
 
+SPHERE
+  translation 0.000000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
+
 PLANE
-  corner 29.799526 -29.799526 0.000000
-  corner -29.799526 -29.799526 0.000000
-  corner 29.799526 29.799526 0.000000
-  corner -29.799526 29.799526 0.000000
+  corner -29.834890 -0.730023 0.000000
+  corner 7.718461 -6.343471 0.000000
+  corner -28.213642 20.796255 0.000000
+  corner 5.815452 2.474864 0.000000
+  ambient 0.600000 0.600000 0.600000
   diffuse 1.000000 1.000000 1.000000
+  specular 0.000000 0.000000 0.000000
+  shininess 0.000000
+  reflectivity 0.000000
+  transparency 0.000000
+  refractive_index 1.000000
 END_PLANE
 
-CUBE
-  translation -2.220445 2.454045 0.208891
-  rotation_euler_radians -4.072551 1.336038 -7.104597
-  rotation_euler_degrees -233.339984 76.549339 -407.063423
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation 2.200000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation 0.353838 1.654967 0.740778
-  rotation_euler_radians -5.412620 0.563049 -7.058008
-  rotation_euler_degrees -310.120282 32.260331 -404.394070
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation 4.400000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation 0.371150 2.493856 0.117117
-  rotation_euler_radians -2.990721 -0.153478 -4.210298
-  rotation_euler_degrees -171.355691 -8.793642 -241.232306
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation -2.200000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation 0.954794 -0.969328 0.710328
-  rotation_euler_radians -0.113859 -0.133188 -2.291048
-  rotation_euler_degrees -6.523640 -7.631110 -131.267381
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation -4.400000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation 0.052531 -2.066958 0.510451
-  rotation_euler_radians 0.979104 -0.451321 -4.029951
-  rotation_euler_degrees 56.098527 -25.858789 -230.899184
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation -6.600000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation -0.306888 -1.138112 0.719978
-  rotation_euler_radians -0.853741 0.631608 -2.641245
-  rotation_euler_degrees -48.915756 36.188473 -151.332191
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation -8.800000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation -0.276649 -0.284918 0.634563
-  rotation_euler_radians -0.802563 0.649313 -2.133039
-  rotation_euler_degrees -45.983473 37.202894 -122.214132
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
+SPHERE
+  translation -11.000000 0.000000 1.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.000000 1.000000 1.000000
+  ambient 0.600000 0.600000 0.600000
+  diffuse 0.200000 0.700000 0.800000
+  specular 1.000000 1.000000 1.000000
+  shininess 600.000000
+  reflectivity 0.990000
+  transparency 0.000000
+  refractive_index 1.000000
+  material metal
+END_SPHERE
 
-CUBE
-  translation -0.829267 -0.425017 1.008254
-  rotation_euler_radians 0.154281 -0.170167 -4.325160
-  rotation_euler_degrees 8.839650 -9.749851 -247.813414
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.772198 -0.786524 0.805772
-  rotation_euler_radians -1.152649 0.433909 -3.045743
-  rotation_euler_degrees -66.041923 24.861154 -174.508219
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.086624 -1.784338 0.656816
-  rotation_euler_radians -0.067704 0.090964 -2.050475
-  rotation_euler_degrees -3.879153 5.211853 -117.483563
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.365035 0.053023 0.481962
-  rotation_euler_radians -1.153248 -0.082376 -2.707490
-  rotation_euler_degrees -66.076243 -4.719797 -155.127750
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.661797 -0.123495 1.206404
-  rotation_euler_radians -1.828642 -0.985762 -3.148117
-  rotation_euler_degrees -104.773469 -56.480002 -180.373818
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.625435 -0.540982 0.258726
-  rotation_euler_radians -2.976871 -1.335790 -6.609111
-  rotation_euler_degrees -170.562144 -76.535129 -378.674167
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.823861 -0.045963 1.074853
-  rotation_euler_radians 1.943924 0.146269 -0.451889
-  rotation_euler_degrees 111.378641 8.380596 -25.891333
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.093022 -0.005725 1.058565
-  rotation_euler_radians -3.359632 -0.084247 -3.485453
-  rotation_euler_degrees -192.492734 -4.826998 -199.701747
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.222891 0.289887 0.673902
-  rotation_euler_radians -1.909928 0.077991 -2.912521
-  rotation_euler_degrees -109.430814 4.468555 -166.875161
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.245944 -1.470317 0.255704
-  rotation_euler_radians -2.180426 -1.627728 -2.744425
-  rotation_euler_degrees -124.929207 -93.261945 -157.243970
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 2.153443 2.144435 0.317917
-  rotation_euler_radians -0.405538 -0.050916 -0.234867
-  rotation_euler_degrees -23.235616 -2.917272 -13.456888
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.547202 -0.551835 0.652617
-  rotation_euler_radians -2.762785 0.649221 -5.103074
-  rotation_euler_degrees -158.295920 37.197623 -292.384603
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 3.020168 -0.563452 0.318758
-  rotation_euler_radians -3.708440 -1.401590 -5.567376
-  rotation_euler_degrees -212.477961 -80.305192 -318.987148
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.995117 -2.427680 0.341434
-  rotation_euler_radians -1.481205 0.980071 -2.502198
-  rotation_euler_degrees -84.866795 56.153932 -143.365385
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 3.237752 0.710381 0.291163
-  rotation_euler_radians -6.622217 -0.115567 -7.893330
-  rotation_euler_degrees -379.425085 -6.621501 -452.254495
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.664740 0.009025 0.559295
-  rotation_euler_radians -2.927153 1.173330 -4.444266
-  rotation_euler_degrees -167.713513 67.226857 -254.637685
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -2.539147 -0.053474 0.246347
-  rotation_euler_radians 5.084156 -0.927007 -2.338089
-  rotation_euler_degrees 291.300681 -53.113589 -133.962632
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.617596 0.043372 0.384937
-  rotation_euler_radians -0.983877 -0.164799 -2.825247
-  rotation_euler_degrees -56.372000 -9.442287 -161.874729
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.963472 -1.040249 0.303920
-  rotation_euler_radians -3.175548 1.330317 -5.133428
-  rotation_euler_degrees -181.945498 76.221550 -294.123759
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.162728 0.138740 0.730554
-  rotation_euler_radians -4.752407 1.698644 -6.213580
-  rotation_euler_degrees -272.292864 97.325132 -356.011910
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.695289 1.192288 0.422143
-  rotation_euler_radians -6.088113 0.639213 -7.422341
-  rotation_euler_degrees -348.823180 36.624207 -425.268813
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.855983 0.537839 0.594813
-  rotation_euler_radians 1.496400 0.949070 0.095914
-  rotation_euler_degrees 85.737404 54.377705 5.495467
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.978376 3.247804 0.343774
-  rotation_euler_radians -1.138253 -1.240586 2.003951
-  rotation_euler_degrees -65.217093 -71.080342 114.817935
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.342008 3.967250 0.422870
-  rotation_euler_radians -4.297565 0.270007 -3.766236
-  rotation_euler_degrees -246.232337 15.470262 -215.789427
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.568742 1.411728 0.322860
-  rotation_euler_radians -1.539310 1.099352 -4.133066
-  rotation_euler_degrees -88.195966 62.988230 -236.807238
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.452448 -0.655397 0.651025
-  rotation_euler_radians -0.871027 0.630527 -1.742549
-  rotation_euler_degrees -49.906171 36.126536 -99.840703
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.359239 2.660044 0.257250
-  rotation_euler_radians -0.887443 1.489870 -2.470652
-  rotation_euler_degrees -50.846738 85.363263 -141.557932
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.562619 1.858954 0.112249
-  rotation_euler_radians 1.675079 0.049430 -3.019359
-  rotation_euler_degrees 95.974957 2.832130 -172.996528
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.344863 -1.960689 0.270736
-  rotation_euler_radians -3.424716 -0.076618 -3.817610
-  rotation_euler_degrees -196.221773 -4.389888 -218.732941
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.768003 -0.085364 0.289311
-  rotation_euler_radians 0.049140 0.248722 -2.918277
-  rotation_euler_degrees 2.815515 14.250721 -167.204956
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.460443 1.227675 0.244304
-  rotation_euler_radians -3.397333 1.561215 -7.503647
-  rotation_euler_degrees -194.652843 89.451030 -429.927304
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -2.139260 -2.043352 0.316021
-  rotation_euler_radians 0.355715 3.141212 -2.686055
-  rotation_euler_degrees 20.380968 179.978190 -153.899615
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.226026 -1.312338 0.202566
-  rotation_euler_radians 1.670364 0.016692 -3.428837
-  rotation_euler_degrees 95.704807 0.956381 -196.457889
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.375438 -2.144773 0.119982
-  rotation_euler_radians 3.195331 0.101123 1.857983
-  rotation_euler_degrees 183.078980 5.793921 106.454584
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.664117 1.088007 0.317730
-  rotation_euler_radians -3.598890 -0.000889 -5.632701
-  rotation_euler_degrees -206.201208 -0.050936 -322.729995
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.033655 0.796097 0.287871
-  rotation_euler_radians -0.994320 3.082577 -2.510497
-  rotation_euler_degrees -56.970339 176.618652 -143.840883
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.514645 -0.719742 0.421700
-  rotation_euler_radians -5.509141 0.389891 -6.401982
-  rotation_euler_degrees -315.650528 22.339109 -366.806549
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 2.240093 -1.113719 0.249376
-  rotation_euler_radians -3.135992 0.019564 -4.760963
-  rotation_euler_degrees -179.679106 1.120935 -272.783086
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.090924 1.024675 0.576629
-  rotation_euler_radians -0.900294 -0.035443 -2.813159
-  rotation_euler_degrees -51.583047 -2.030734 -161.182138
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.023556 1.614920 0.208186
-  rotation_euler_radians 1.536298 0.024803 0.176778
-  rotation_euler_degrees 88.023391 1.421107 10.128633
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 2.455327 0.613524 0.320996
-  rotation_euler_radians -0.410400 3.109076 -1.521210
-  rotation_euler_degrees -23.514188 178.136933 -87.158913
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.673912 -2.139019 0.231870
-  rotation_euler_radians -3.121744 -0.003112 -5.065412
-  rotation_euler_degrees -178.862756 -0.178304 -290.226729
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 3.830184 -0.618454 0.212466
-  rotation_euler_radians 0.115087 3.214698 -1.049118
-  rotation_euler_degrees 6.593999 184.188628 -60.110034
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.152266 -0.784796 0.417368
-  rotation_euler_radians -4.241029 -0.570606 -3.291825
-  rotation_euler_degrees -242.993062 -32.693316 -188.607679
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 0.110984 0.029407 0.164208
-  rotation_euler_radians 0.074571 -0.043109 -2.971232
-  rotation_euler_degrees 4.272604 -2.469964 -170.239054
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.470501 -3.527802 0.238733
-  rotation_euler_radians -3.182383 -1.650799 -4.650880
-  rotation_euler_degrees -182.337115 -94.583816 -266.475795
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.617094 -1.407095 0.232437
-  rotation_euler_radians -6.587369 1.672521 -8.554190
-  rotation_euler_degrees -377.428442 95.828394 -490.118984
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.810065 0.779224 0.312186
-  rotation_euler_radians -0.001089 0.376533 -1.579162
-  rotation_euler_degrees -0.062395 21.573752 -90.479318
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -2.148426 0.519606 0.194610
-  rotation_euler_radians 4.925686 1.635276 2.787212
-  rotation_euler_degrees 282.221019 93.694413 159.695484
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.301723 -1.159755 0.329128
-  rotation_euler_radians 0.018052 0.903882 -1.259587
-  rotation_euler_degrees 1.034303 51.788624 -72.169019
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -0.110214 0.534378 0.187277
-  rotation_euler_radians 0.714949 1.516724 -0.681093
-  rotation_euler_degrees 40.963560 86.901884 -39.023754
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 2.266154 2.889270 0.348280
-  rotation_euler_radians -3.850981 0.003901 -4.355372
-  rotation_euler_degrees -220.644958 0.223511 -249.544434
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.181624 -0.042120 0.214532
-  rotation_euler_radians -1.088614 1.547964 -2.613352
-  rotation_euler_degrees -62.372988 88.691804 -149.734040
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation 1.124920 1.763477 0.227110
-  rotation_euler_radians 2.175776 1.543099 0.598728
-  rotation_euler_degrees 124.662782 88.413060 34.304587
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
-
-CUBE
-  translation -1.224835 2.172604 0.238602
-  rotation_euler_radians 10.533040 1.561766 8.251159
-  rotation_euler_degrees 603.498737 89.482600 472.756587
-  scale 0.250000 0.250000 0.250000
-  diffuse 1.000000 1.000000 1.000000
-END_CUBE
 

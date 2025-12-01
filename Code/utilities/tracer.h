@@ -160,9 +160,8 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
             return (rec.normal + Vector3(1, 1, 1)) * 0.5;
         }
 
-        // calculates the local color from ambient, diffuse, and specular lighting.
-        Vector3 local_colour = calculate_local_ad(rec, scene, world) +
-                               calculate_specular(rec, scene, world, r);
+        Vector3 diffuse_ambient = calculate_local_ad(rec, scene, world);
+        Vector3 specular_highlight = calculate_specular(rec, scene, world, r);
 
         // initializes reflected and refracted color components.
         Vector3 reflected_colour(0, 0, 0);
@@ -268,13 +267,15 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
         // combines local, reflected, and refracted colors for transparent materials.
         if (is_transparent) {
             // final color is a mix based on reflection and transmission probabilities.
-            return local_colour * (1.0 - reflect_prob - transmit_prob)
-                 + reflected_colour * reflect_prob
-                 + refracted_colour * transmit_prob;
+            return (reflected_colour * reflect_prob)
+                 + (refracted_colour * transmit_prob)
+                 + specular_highlight;
         } else {
-            // combines local and reflected colors for opaque materials.
-            return local_colour * (1.0 - rec.mat.reflectivity)
-                 + reflected_colour * rec.mat.reflectivity;
+            // Opaque/Metal
+            return diffuse_ambient * (1.0 - rec.mat.reflectivity)
+                 + reflected_colour * rec.mat.reflectivity
+                 + specular_highlight;
+
         }
     } else {
         // if the ray doesn't hit any object, sample the background.

@@ -286,15 +286,20 @@ The raytracer also implements depth of field blur. By setting the F-Stop and Foc
 
 <table style="width: 100%; border: none;">
   <tr>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-A"></a>
-      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>A scene with depth of field blur (f-stop = x, focal length = y)</p>
+      <img src="Report/examples/final/dof/dof_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene (f-stop = 2.0, focal length = 2.5)</p>
     </td>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-B"></a>
-      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>A scene with depth of field blur (f-stop = x, focal length = y)</p>
+      <img src="Report/examples/final/dof/no_dof_raytracer.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene without depth of field</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-C"></a>
+      <img src="Report/examples/final/dof/dof_raytracer.png" alt="Figure C" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene with depth of field (f-stop = 2.0, focal length = 2.5)</p>
     </td>
   </tr>
 </table>
