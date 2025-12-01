@@ -257,13 +257,13 @@ Glossy reflection also casts multiple rays to approximate blurred specular highl
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-basic-shine"></a>
-      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <img src="Report/examples/final/glossy/glossy_off.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Basic shiny surface</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-glossy"></a>
-      <img src="Report/examples/final/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Sampled glossy surface (samples = x)</p>
+      <img src="Report/examples/final/glossy/glossy_on.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Sampled glossy surface (samples = 4)</p>
     </td>
   </tr>
 </table>

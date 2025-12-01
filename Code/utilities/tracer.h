@@ -176,7 +176,11 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
         if (is_transparent && scene.fresnel_enabled()) has_reflection = true;
         if (has_reflection) {
             // gets the number of samples for glossy reflections.
+            // only uses glossy for a max number of bounces to reduce computation.
             int samples = scene.get_glossy_samples();
+            if (depth < scene.get_max_bounces()) {
+                samples = 1;
+            }
             // calculates roughness from shininess for glossy reflections.
             double roughness = 1.0 / sqrt(rec.mat.shininess);
 

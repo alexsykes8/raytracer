@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
     double exposure = Config::Instance().getDouble("image.exposure", 1.0);
     bool enable_shadows = false;
     // get glossy samples from config, default to 0.
-    int glossy_samples = Config::Instance().getInt("render.glossy_samples", 0);
+    int glossy_samples = 0;
     bool enable_parallel = false;
     // get shutter time from config, default to 0.0.
     double shutter_time = Config::Instance().getDouble("image.shutter_time", 0.0);
@@ -149,7 +149,8 @@ int main(int argc, char* argv[]) {
 
     // handler for '--glossy' flag.
     arg_handlers["--glossy"] = [&](int& i, int argc, char* argv[]) {
-        std::cout << "Glossy flag present: using sample count from config.json" << std::endl;
+        glossy_samples = Config::Instance().getInt("render.glossy_samples", 8);
+        std::cout << "Glossy flag present: Enabled with " << glossy_samples << " samples." << std::endl;
     };
 
     // handler for '--parallel' flag.
