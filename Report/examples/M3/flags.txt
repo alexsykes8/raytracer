@@ -2,3 +2,4 @@ basic_whitted: --exposure 0.04
 refraction_reflection: --exposure 0.04
 anti_aliasing: --exposure 0.04 --aa 1
 anti_aliasing_16: --exposure 0.04 --aa 16
+fresnel: --exposure 0.04 --fresnel

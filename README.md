@@ -119,7 +119,7 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
     <td style="width: 100%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
       <img src="Report/examples/M2/bvh_tests/bvh_comparison_plot.png" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>untime with and without BVH</p>
+      <p style="text-align: center;"><b>Figure 1: </b>Runtime with and without BVH</p>
     </td>
   </tr>
 </table>
@@ -156,16 +156,15 @@ A tracer is also implemented, which tracks the path of a ray when it encounters 
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/refraction_reflection_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Report/examples/M3/reflection_refraction_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
     </td>
   </tr>
 </table>
 
-Note that in the above scene, the Blender uses the glass BSDF whereas the ratracer scene data has the object materials set to different transparencies, hence the less vivid colours in the raytraced scene, as the colour transmission was weaker.
+Note that in the above scene, the Blender uses the glass BSDF.
 
 Finally, Fresnel equations were implemented to weight the reflection and refraction contributions more realistically. This is enabled with the `--fresnel` flag.
-
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -177,7 +176,7 @@ Finally, Fresnel equations were implemented to weight the reflection and refract
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
       <img src="Report/examples/M3/x.png" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Transparent objects with the Fresnel effect</p>
+      <p style="text-align: center;"><b>Figure 2: </b>Transparent objects with the Fresnel effect and basic shadows</p>
     </td>
   </tr>
 </table>

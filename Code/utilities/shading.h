@@ -21,6 +21,12 @@
 
 
 
+inline double shadow_schlick(double cos_i, double n1, double n2) {
+    double r0 = ((n1 - n2) / (n1 + n2));
+    r0 = r0 * r0;
+    return r0 + (1.0 - r0) * std::pow((1.0 - cos_i), 5);
+}
+
 
 inline Vector3 random_point_on_light(const PointLight& light) {
     if (light.radius == 0.0) {
@@ -38,8 +44,26 @@ inline Vector3 trace_shadow_transmission(const Ray& shadow_ray, double dist_to_l
     HitRecord rec;
     if (world.intersect(shadow_ray, 0.001, dist_to_light - 0.001, rec)) {
         if (rec.mat.transparency > 0.0) {
-            Vector3 tint = rec.mat.diffuse * rec.mat.transparency;
-            transmission = component_wise_multiply(transmission, tint);
+            double n1, n2;
+            if (rec.front_face) {
+                n1 = 1.0;
+                n2 = rec.mat.refractive_index;
+            } else {
+                n1 = rec.mat.refractive_index;
+                n2 = 1.0;
+            }
+            double eta_ratio = n1 / n2;
+            double cos_i = -shadow_ray.direction.dot(rec.normal);
+            double sin_t_squared = eta_ratio * eta_ratio * (1.0 - cos_i * cos_i);
+            if (sin_t_squared > 1.0) {
+                return Vector3(0, 0, 0);
+            }
+            double reflection_prob = shadow_schlick(cos_i, n1, n2);
+            double transmission_factor = 1.0 - reflection_prob;
+            Vector3 glass_tint = rec.mat.diffuse;
+
+            transmission = component_wise_multiply(transmission, glass_tint) * transmission_factor;
+
             if (transmission.length() < 0.001) return Vector3(0, 0, 0);
             Ray new_ray(rec.point + shadow_ray.direction * 0.001, shadow_ray.direction);
             return component_wise_multiply(transmission, trace_shadow_transmission(new_ray, dist_to_light - rec.t, world));
@@ -141,7 +165,7 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
 
             // Calculate diffuse: (MaterialColor * LightIntensity) * Lambert * ShadowColor
             Vector3 diffuse_part = component_wise_multiply(diffuse_colour, light_intensity) * L_dot_N;
-
+            diffuse_part = diffuse_part * (1.0 - mat.transparency);
             // Apply the coloured shadow here using component-wise multiplication
             Vector3 final_diffuse = component_wise_multiply(diffuse_part, shadow_factor);
 

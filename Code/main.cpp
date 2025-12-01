@@ -260,6 +260,8 @@ int main(int argc, char* argv[]) {
         }
         // get the number of threads that will be used.
         num_threads = omp_get_max_threads();
+        std::cout << "Number of threads: " << num_threads << std::endl;
+
         #else
                     if (enable_parallel) {
                         std::cout << "Warning: --parallel flag ignored. Program was not compiled with OpenMP." << std::endl;
