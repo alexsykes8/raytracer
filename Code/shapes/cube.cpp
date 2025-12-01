@@ -9,9 +9,9 @@
 #include "../utilities/Image.h"
 
 // constructor for a cube.
-Cube::Cube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
+Cube::Cube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time)
     // initialises the base class 'transformedshape' with the provided parameters.
-    : TransformedShape(transform, inv_transform, mat, velocity)
+    : TransformedShape(transform, inv_transform, mat, velocity, shutter_time)
 {}
 
 // calculates the axis-aligned bounding box (aabb) for the transformed cube.

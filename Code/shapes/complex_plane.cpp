@@ -10,7 +10,7 @@
 #include "../config.h"
 
 // constructor for a complex plane.
-ComplexPlane::ComplexPlane(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
+ComplexPlane::ComplexPlane(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time)
     // initialises member variables with the provided parameters.
     : m_transform(transform), m_inverse_transform(inv_transform), m_material(mat), m_velocity(velocity)
 {
@@ -49,7 +49,7 @@ bool ComplexPlane::getTransformedBoundingBox(AABB& output_box, const Vector3& mi
             Vector3 p0 = world_pt;
             // calculates the end position (t=1).
             // equation: p1 = world_pt + m_velocity
-            Vector3 p1 = world_pt + m_velocity;
+            Vector3 p1 = world_pt + (m_velocity * m_shutter_time);
             // expands the world-space bounding box to include both start and end positions.
             AABB::updateBounds(p0, world_min, world_max);
             AABB::updateBounds(p1, world_min, world_max);

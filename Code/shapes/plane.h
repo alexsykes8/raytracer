@@ -13,7 +13,7 @@ public:
     // constructor for the plane, defined by four corner vertices.
     // 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
     // '&' declares a reference variable. a reference is an alias for an already existing variable.
-    Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity);
+    Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity, double shutter_time);
 
     // 'virtual' indicates a member function can be overridden in a derived class.
     // overrides the base class method to test for ray-plane intersection.
@@ -49,6 +49,8 @@ private:
 
     // the velocity of the plane for motion blur.
     Vector3 m_velocity;
+
+    double m_shutter_time;
 
     // a private helper function implementing the möller-trumbore ray-triangle intersection algorithm.
     bool rayTriangleIntersect(

@@ -13,7 +13,7 @@
 class Sphere : public TransformedShape {
 public:
     // constructor for the sphere.
-    Sphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity);
+    Sphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time);
 
     virtual bool intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const override;
     virtual bool getBoundingBox(AABB &output_box) const override;

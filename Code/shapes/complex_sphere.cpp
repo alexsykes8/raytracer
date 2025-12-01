@@ -11,8 +11,8 @@
 
 // constructor for a complex sphere.
 // initialises the base sphere class and sets the maximum displacement for the bump map.
-ComplexSphere::ComplexSphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
-    : Sphere(transform, inv_transform, mat, velocity) {
+ComplexSphere::ComplexSphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time)
+    : Sphere(transform, inv_transform, mat, velocity, shutter_time) {
     // retrieves the maximum displacement value from the configuration, defaulting to 0.15 if not found.
     m_max_displacement = Config::Instance().getDouble("advanced.displacement_strength", 0.15);
 }

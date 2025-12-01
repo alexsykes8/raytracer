@@ -13,7 +13,7 @@
 class ComplexPlane : public Shape {
 public:
     // constructor for the complex plane.
-    ComplexPlane(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity);
+    ComplexPlane(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time);
 
     // overrides the intersect method to handle ray marching and displacement mapping.
     virtual bool intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const override;
@@ -33,6 +33,7 @@ private:
     Vector3 m_velocity;
     // the maximum displacement value for the bump map.
     double m_max_displacement;
+    double m_shutter_time;
 
     // calculates the uv coordinates and base normal for a given point on the plane.
     void get_uv_and_normal(const Vector3& p, double& u, double& v, Vector3& normal) const;

@@ -6,7 +6,7 @@
 class ComplexSphere : public Sphere {
 public:
     // constructor for the complex sphere, inheriting from the base sphere class.
-    ComplexSphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity);
+    ComplexSphere(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time);
 
     // overrides the intersect method to handle ray marching and displacement mapping.
     virtual bool intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec) const override;

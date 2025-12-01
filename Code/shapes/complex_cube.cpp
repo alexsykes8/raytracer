@@ -13,9 +13,9 @@
 // initialises the base cube class and sets the maximum displacement for the bump map.
 // 'const' specifies that a variable's value is constant and tells the compiler to prevent anything from modifying it.
 // '&' declares a reference variable. a reference is an alias for an already existing variable.
-ComplexCube::ComplexCube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity)
+ComplexCube::ComplexCube(const Matrix4x4& transform, const Matrix4x4& inv_transform, const Material& mat, const Vector3& velocity, double shutter_time)
     // initialises the base class 'cube' with the provided parameters.
-    : Cube(transform, inv_transform, mat, velocity)
+    : Cube(transform, inv_transform, mat, velocity, shutter_time)
 {
     // retrieves the maximum displacement value from the configuration, defaulting to 0.2 if not found.
     m_max_displacement = Config::Instance().getDouble("advanced.displacement_strength", 0.2);

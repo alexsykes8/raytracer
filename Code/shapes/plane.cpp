@@ -1,5 +1,7 @@
 #include "../shapes/plane.h"
 #include <limits>
+#include <random>
+
 #include "material.h"
 #include "../utilities/Image.h"
 #include "../config.h"
@@ -36,12 +38,15 @@ bool Plane::getBoundingBox(AABB& output_box) const {
     min_p.z -= epsilon; max_p.z += epsilon;
 
     // creates the final aabb from the calculated min and max points.
-    output_box = AABB(min_p, max_p);
+    AABB box_t0(min_p, max_p);
+    Vector3 displacement = m_velocity * m_shutter_time;
+    AABB box_t1(min_p + displacement, max_p + displacement);
+    output_box = AABB::combine(box_t0, box_t1);
     return true;
 }
 
 // constructor for a plane, defined by four corner vertices.
-Plane::Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity) : m_material(mat), m_velocity(velocity)
+Plane::Plane(const Vector3& c0, const Vector3& c1, const Vector3& c2, const Vector3& c3, const Material& mat, const Vector3& velocity, double shutter_time) : m_material(mat), m_velocity(velocity), m_shutter_time(shutter_time)
 {
     // pre-calculates data for the first triangle (c0, c1, c2) to optimise intersection tests.
     // sets the origin vertex of the first triangle.

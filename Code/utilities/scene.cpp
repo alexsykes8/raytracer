@@ -287,7 +287,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 inv_transform = transform.inverse();
 
             // Add the completed shape
-            m_world.add(std::make_shared<Sphere>(transform, inv_transform, temp_mat, temp_velocity));
+            m_world.add(std::make_shared<Sphere>(transform, inv_transform, temp_mat, temp_velocity, m_shutter_time));
             current_block_type = "NONE";
             continue;
         }
@@ -313,7 +313,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 inv_transform = transform.inverse();
 
             // Add the completed shape
-            m_world.add(std::make_shared<ComplexSphere>(transform, inv_transform, temp_mat, temp_velocity));
+            m_world.add(std::make_shared<ComplexSphere>(transform, inv_transform, temp_mat, temp_velocity, m_shutter_time));
             current_block_type = "NONE";
             continue;
         }
@@ -340,7 +340,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 inv_transform = transform.inverse();
 
             // Add the object to the world.
-            m_world.add(std::make_shared<Cube>(transform, inv_transform, temp_mat, temp_velocity));
+            m_world.add(std::make_shared<Cube>(transform, inv_transform, temp_mat, temp_velocity, m_shutter_time));
             current_block_type = "NONE";
             continue;
         }
@@ -364,7 +364,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 inv_transform = transform.inverse();
 
             // Instantiate ComplexCube here
-            m_world.add(std::make_shared<ComplexCube>(transform, inv_transform, temp_mat, temp_velocity));
+            m_world.add(std::make_shared<ComplexCube>(transform, inv_transform, temp_mat, temp_velocity, m_shutter_time));
             current_block_type = "NONE";
             continue;
         }
@@ -378,7 +378,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
                 temp_mat.bump_map = load_texture_from_file("../" + temp_mat.bump_map_filename);
             }
             if (temp_corners.size() == 4) {
-                m_world.add(std::make_shared<Plane>(temp_corners[0], temp_corners[1], temp_corners[2], temp_corners[3], temp_mat, temp_velocity));
+                m_world.add(std::make_shared<Plane>(temp_corners[0], temp_corners[1], temp_corners[2], temp_corners[3], temp_mat, temp_velocity, m_shutter_time));
             } else {
                 std::cerr << "Warning: Plane block ended with " << temp_corners.size() << " corners, expected 4." << std::endl;
             }
@@ -404,7 +404,7 @@ void Scene::parseSceneFile(const std::string& filepath) {
             Matrix4x4 transform = mat_t * mat_rz * mat_ry * mat_rx * mat_s;
             Matrix4x4 inv_transform = transform.inverse();
 
-            m_world.add(std::make_shared<ComplexPlane>(transform, inv_transform, temp_mat, temp_velocity));
+            m_world.add(std::make_shared<ComplexPlane>(transform, inv_transform, temp_mat, temp_velocity, m_shutter_time));
             current_block_type = "NONE";
             continue;
         }

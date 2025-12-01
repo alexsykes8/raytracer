@@ -13,14 +13,15 @@
 class TransformedShape : public Shape {
 public:
     TransformedShape(const Matrix4x4& transform, const Matrix4x4& inv_transform,
-                     const Material& mat, const Vector3& velocity)
+                     const Material& mat, const Vector3& velocity, double shutter_time)
         // initialises member variables with the provided parameters.
         : m_transform(transform),
           m_inverse_transform(inv_transform),
           // pre-calculates the inverse transpose matrix, used for transforming normals correctly.
           m_inverse_transpose(inv_transform.transpose()),
           m_material(mat),
-          m_velocity(velocity)
+          m_velocity(velocity),
+          m_shutter_time(shutter_time)
     {}
 
 protected:
@@ -34,6 +35,8 @@ protected:
     Material m_material;
     // the velocity of the shape for motion blur.
     Vector3 m_velocity;
+    // shutter time for motion blur
+    double m_shutter_time;
 
     // calculates the world-space axis-aligned bounding box (aabb) for a given local-space box.
     bool getTransformedBoundingBox(AABB& output_box, const Vector3& local_min, const Vector3& local_max) const {
@@ -60,8 +63,16 @@ protected:
             }
         }
 
-        // creates the final aabb from the calculated min and max world-space points.
-        output_box = AABB(min_p, max_p);
+        AABB box_t0(min_p, max_p);
+
+        // Calculate the displacement over the shutter time
+        Vector3 displacement = m_velocity * m_shutter_time;
+
+        // Create a box for the end position (t=shutter_time)
+        AABB box_t1(min_p + displacement, max_p + displacement);
+
+        // creates the final aabb from the calculated min and max world-space points, accounting for shutter time.
+        output_box = AABB::combine(box_t0, box_t1);
         return true;
     }
 };
