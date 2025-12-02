@@ -355,15 +355,10 @@ The raytracer can read in HDR background images in `.pfm` format. These images a
 
 <table style="width: 100%; border: none;">
   <tr>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
       <a id="figure-HDR-A"></a>
-      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
+      <img src="Report/examples/exceptionality/backgrounds/background.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>A scene with an HDR background</p>
-    </td>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-HDR-B"></a>
-      <img src="Report/examples/final/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>A scene with an HDR background</p>
     </td>
   </tr>
 </table>

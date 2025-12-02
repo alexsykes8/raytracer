@@ -212,25 +212,25 @@ bool Plane::intersect(const Ray& ray, double t_min, double t_max, HitRecord& rec
 
         // 'auto' means that the compiler deduces the type of a variable from its initialiser.
         // deduces that 'get_val' is a lambda function that samples the bump map intensity at a given pixel.
-        auto get_val = [&](int px, int py) {
-            // clamps pixel coordinates to be within the image bounds.
-            px = std::min(std::max(px, 0), w - 1);
-            py = std::min(std::max(py, 0), h - 1);
-            // gets the pixel colour from the bump map.
-            Pixel pix = rec.mat.bump_map->getPixel(px, py);
-            // calculates intensity from the pixel's rgb components.
-            // equation: intensity = (pix.r + pix.g + pix.b) / (3.0 * 255.0)
+        auto get_val = [&](double u, double v) {
+            // getPixelBilinear handles clamping internally
+            Pixel pix = rec.mat.bump_map->getPixelBilinear(u, v);
             return (pix.r + pix.g + pix.b) / (3.0 * 255.0);
         };
+        double step_x = 1.0 / w;
+        double step_y = 1.0 / h;
 
         // samples the height at the current point and its neighbours in u and v directions.
-        double height_c = get_val(x, y);
-        double height_u = get_val(x + 1, y);
-        double height_v = get_val(x, y + 1);
+        double height_c = get_val(rec.uv.u, rec.uv.v);
+        double height_u = get_val(rec.uv.u + step_x, rec.uv.v);
+        double height_v = get_val(rec.uv.u, rec.uv.v + step_y);
 
         // calculates the gradients in the u and v directions (finite differences).
         double bu = (height_u - height_c) * w;
         double bv = (height_v - height_c) * h;
+
+        bu = std::max(-100.0, std::min(100.0, bu));
+        bv = std::max(-100.0, std::min(100.0, bv));
 
         // perturbs the original normal using the gradients and tangent space vectors.
         double bump_scale = 0.0075;

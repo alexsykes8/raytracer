@@ -1,1 +1,0 @@
-scene7.blend
