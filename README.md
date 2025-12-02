@@ -277,7 +277,7 @@ Each object can have a 3D velocity vector attached to it via a custom property. 
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-motion-blur-blender"></a>
       <img src="Report/examples/final/motion_blur/motion_blur_blender.png" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Original blender with moving objects</p>
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene with moving objects</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-motion-blur"></a>
