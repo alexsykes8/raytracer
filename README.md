@@ -170,16 +170,18 @@ Finally, Fresnel equations were implemented to weight the reflection and refract
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/x.png" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Transparent objects without the Fresnel effect</p>
+      <img src="Report/examples/M3/fresnel/fresnel_sphere.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Transparent sphere with the Fresnel effect.</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/x.png" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Transparent objects with the Fresnel effect and basic shadows</p>
+      <img src="Report/examples/M3/fresnel/fresnel_cube.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Transparent cube with the Fresnel effect.</p>
     </td>
   </tr>
 </table>
+
+Note that for both of these images a background and soft shadows was used in the scene.
 
 #### Anti-aliasing
 

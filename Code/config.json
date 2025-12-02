@@ -3,7 +3,7 @@
     // Number of rays per pixel for antialiasing default
     "samples_per_pixel": 1,
     // Maximum number of light bounces (reflections/refractions)
-    "max_bounces": 8
+    "max_bounces": 10
   },
   "image": {
     // Brightness multiplier
