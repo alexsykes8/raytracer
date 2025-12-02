@@ -1,2 +1,0 @@
-exposure_low: --exposure 0.04 --parallel --shadows 2 --aa 2
-exposure_high: --exposure 0.16 --parallel --shadows 2 --aa 2

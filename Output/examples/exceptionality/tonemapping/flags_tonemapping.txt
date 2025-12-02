@@ -1,0 +1,1 @@
+--parallel --shadows --aa 16

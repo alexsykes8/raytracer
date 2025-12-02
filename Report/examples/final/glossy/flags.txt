@@ -1,2 +1,0 @@
-glossy off: --exposure 0.04 --parallel
-glossy on: --exposure 0.04 --parallel --glossy 4

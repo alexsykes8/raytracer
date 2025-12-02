@@ -1,0 +1,35 @@
+POINT_LIGHT
+  location 4.699185 -2.222839 3.088729
+  intensity 700.000000
+END_POINT_LIGHT
+
+CAMERA
+  location 6.882855 -1.591780 0.758483
+  gaze_direction -0.934892 0.354908 0.004200
+  up_vector 0.003927 -0.001491 0.999991
+  rotation_euler_radians 1.574996 0.000000 1.207978
+  rotation_euler_degrees 90.240624 0.000000 69.212041
+  focal_length 50.000000
+  sensor_size 36.000000 24.000000
+  resolution 900 1080
+END_CAMERA
+
+PLANE
+  corner -6.136588 7.712211 -0.041089
+  corner 7.615450 7.712211 -2.332263
+  corner -5.976913 -3.393196 0.917304
+  corner 7.775125 -3.393196 -1.373870
+END_PLANE
+
+CUBE
+  translation -1.353442 1.185901 0.570931
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.345762
+END_CUBE
+
+SPHERE
+  location 1.560505 1.755559 0.568188
+  radius 0.456922
+END_SPHERE
+

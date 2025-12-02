@@ -1,0 +1,1 @@
+--exposure 0.04 --parallel --fresnel --shadows 2 --aa 8
