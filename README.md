@@ -495,7 +495,7 @@ This gallery features further examples of the aforementioned features. All scene
 
 In 3D modelling, mesh topology is typically constructed using quadrilateral faces, as they lead to cleaner edge loops which improves the results of animation. However, the points of a quad are not guaranteed to be coplanar, so before being rendered the quads are triangulated. This is because by definition, all points of a triangle must lie on the same plane. This prevents all sorts of geometry related nonsense.
 
-Although my raytracer works with quadrilateral planes, I argue that a triangle is a quadrilateral where one side is of negligable length, thus my raytracer can render triangles, thus it can render any triangulated object. This opens up the opportunity to render any 3D object, by treating each of the objects triangle faces as a quadrilateral plane. This is demonstrated below, using a scanned model of the Bust of Paris, (Antonio Canova, 1809, Marble, Art Institute of Chicago) from MattMSI@thingiverse.
+Although my raytracer works with quadrilateral planes, I argue that, for the purposes of this project, a triangle is a quadrilateral where one side is of negligible length, thus my raytracer can render triangles, thus it can render any triangulated object. This opens up the opportunity to render any 3D object, by treating each of the objects triangle faces as a quadrilateral plane. This is demonstrated below, using a scanned model of the Bust of Paris, (Antonio Canova, 1809, Marble, Art Institute of Chicago) from MattMSI@thingiverse.
 
 <table style="width: 100%; border: none;">
   <tr>
