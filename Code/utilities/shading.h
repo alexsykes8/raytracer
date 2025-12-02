@@ -65,7 +65,7 @@ inline Vector3 trace_shadow_transmission(const Ray& shadow_ray, double dist_to_l
             transmission = component_wise_multiply(transmission, glass_tint) * transmission_factor;
 
             if (transmission.length() < 0.001) return Vector3(0, 0, 0);
-            Ray new_ray(rec.point + shadow_ray.direction * 0.001, shadow_ray.direction);
+            Ray new_ray(rec.point + shadow_ray.direction * 0.001, shadow_ray.direction, shadow_ray.time);
             return component_wise_multiply(transmission, trace_shadow_transmission(new_ray, dist_to_light - rec.t, world));
         } else {
             return Vector3(0, 0, 0);
@@ -76,7 +76,7 @@ inline Vector3 trace_shadow_transmission(const Ray& shadow_ray, double dist_to_l
 
 
 
-inline Vector3 compute_light_visibility(const Scene& scene, const HittableList& world, const PointLight& light, const Vector3& P, const Vector3& N) {
+inline Vector3 compute_light_visibility(const Scene& scene, const HittableList& world, const PointLight& light, const Vector3& P, const Vector3& N, double time) {
     if (!scene.shadows_enabled()) return Vector3(1.0, 1.0, 1.0); // Return full white if shadows disabled
 
     int samples = scene.get_shadow_samples();
@@ -91,7 +91,7 @@ inline Vector3 compute_light_visibility(const Scene& scene, const HittableList& 
         shadow_ray_dir = shadow_ray_dir.normalize();
 
         Vector3 shadow_origin = P + N * epsilon;
-        Ray shadow_ray(shadow_origin, shadow_ray_dir);
+        Ray shadow_ray(shadow_origin, shadow_ray_dir, time);
 
         // Add the colour returned by the new trace_shadow_transmission
         shadow_accumulator = shadow_accumulator + trace_shadow_transmission(shadow_ray, dist_to_light, world);
@@ -101,8 +101,7 @@ inline Vector3 compute_light_visibility(const Scene& scene, const HittableList& 
 }
 
 // calculates the local ambient diffuse. It computes the direct illumination component of the surface colour at the ray-hit point.
-inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, const HittableList& world) {
-
+inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, const HittableList& world, double time) {
     const Material& mat = rec.mat;
 
     // first the base diffuse colour is found.
@@ -152,7 +151,7 @@ inline Vector3 calculate_local_ad(const HitRecord& rec, const Scene& scene, cons
     double exposure = scene.getExposure();
 
     for (const auto& light : scene.getLights()) {
-        Vector3 shadow_factor = compute_light_visibility(scene, world, light, P, N);
+        Vector3 shadow_factor = compute_light_visibility(scene, world, light, P, N, time);
 
         if (shadow_factor.x > 0 || shadow_factor.y > 0 || shadow_factor.z > 0) {
             Vector3 L_raw = light.position - P;
@@ -190,7 +189,7 @@ inline Vector3 calculate_specular(const HitRecord& rec, const Scene& scene, cons
 
     for (const auto& light : scene.getLights()) {
 
-        Vector3 shadow_factor = compute_light_visibility(scene, world, light, P, N);
+        Vector3 shadow_factor = compute_light_visibility(scene, world, light, P, N, view_ray.time);
 
         if (shadow_factor.length() > 0) { // Check if not black
             Vector3 L_raw = light.position - P;

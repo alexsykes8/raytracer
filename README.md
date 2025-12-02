@@ -218,7 +218,7 @@ For spheres and planes, the texture is stretched to fit the surface of the objec
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-3"></a>
-      <img src="Report/examples/M3/x" alt="Figure C" style="width: 100%;">
+      <img src="Report/examples/M3/Textures/textures_cube.png" alt="Figure C" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Cube texture</p>
     </td>
   </tr>
@@ -274,10 +274,15 @@ Each object can have a 3D velocity vector attached to it via a custom property. 
 
 <table style="width: 100%; border: none;">
   <tr>
-    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-motion-blue"></a>
-      <img src="Report/examples/final/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>A scene with moving objects</p>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-motion-blur-blender"></a>
+      <img src="Report/examples/final/motion_blur/motion_blur_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original blender with moving objects</p>
+    </td>
+    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-motion-blur"></a>
+      <img src="Report/examples/final/motion_blur/motion_blur_raytracer.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with objects travelling at different velocities.</p>
     </td>
   </tr>
 </table>

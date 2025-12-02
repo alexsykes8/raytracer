@@ -160,7 +160,7 @@ inline Vector3 ray_colour(const Ray& r, const Scene& scene, const HittableList& 
             return (rec.normal + Vector3(1, 1, 1)) * 0.5;
         }
 
-        Vector3 diffuse_ambient = calculate_local_ad(rec, scene, world);
+        Vector3 diffuse_ambient = calculate_local_ad(rec, scene, world, r.time);
         Vector3 specular_highlight = calculate_specular(rec, scene, world, r);
 
         // initializes reflected and refracted color components.
