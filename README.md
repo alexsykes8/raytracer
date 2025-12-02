@@ -1,3 +1,14 @@
+# Contents
+
+* Requirements
+* Features: List of implemented features.
+* Usage: Basic information on usage.
+* Example usage: Description and examples of features.
+* Further Examples
+* Timeliness: Information on deviations between modules.
+* Prompts: Example prompts for each feature.
+* Coding Assistant Assessment
+* Parameters: Detailed information on how to use the raytracer.
 
 # Requirements
 
@@ -33,6 +44,10 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
   * Metal material.
   * Exposure control.
   * Tone mapping (interchangeable Reinhard, ACES, and Filmic)
+
+![img.png](img.png)
+
+100% of the features listed above were completed.
 
 # Usage
 
@@ -79,11 +94,11 @@ The functionality for image reading and writing can be found in `Code/utilities/
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/M1/gradient.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M1/gradient.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1:</b> Read file</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/M1/modified.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M1/modified.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2:</b> Write file</p>
     </td>
   </tr>
@@ -98,11 +113,11 @@ Module 2 was tested by overlaying the original Blender file with the output from
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/M2/scene_test_white.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M2/scene_test_white.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Generated image</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/M2/blender_white.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M2/blender_white.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Original Blender scene</p>
     </td>
   </tr>
@@ -118,7 +133,7 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
   <tr>
     <td style="width: 100%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M2/bvh_tests/bvh_comparison_plot.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M2/bvh_tests/bvh_comparison_plot.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Runtime with and without BVH</p>
     </td>
   </tr>
@@ -134,12 +149,12 @@ The Blinn-Phong model was implemented early in module 2, however it was refined 
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/basic/basic_whitted_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M3/basic/basic_whitted_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/basic/basic_whitted_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M3/basic/basic_whitted_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
     </td>
   </tr>
@@ -151,12 +166,12 @@ A tracer is also implemented, which tracks the path of a ray when it encounters 
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/refraction_reflection/refraction_reflection_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M3/refraction_reflection/refraction_reflection_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/refraction_reflection/reflection_refraction_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M3/refraction_reflection/reflection_refraction_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene</p>
     </td>
   </tr>
@@ -170,12 +185,12 @@ Finally, Fresnel equations were implemented to weight the reflection and refract
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/fresnel/fresnel_sphere.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M3/fresnel/fresnel_sphere.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Transparent sphere with the Fresnel effect.</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/fresnel/fresnel_cube.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M3/fresnel/fresnel_cube.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Transparent cube with the Fresnel effect.</p>
     </td>
   </tr>
@@ -191,12 +206,12 @@ Anti-aliasing can be set with the `--aa <int>` flag where the second argument is
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/anti_aliasing/anti_aliasing_1.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M3/anti_aliasing/anti_aliasing_1.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Anti-aliasing (samples = 1)</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/anti_aliasing/anti_aliasing_16.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M3/anti_aliasing/anti_aliasing_16.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Anti-aliasing (samples = 16)</p>
     </td>
   </tr>
@@ -210,17 +225,17 @@ For spheres and planes, the texture is stretched to fit the surface of the objec
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-1"></a>
-      <img src="Report/examples/M3/Textures/textures_sphere.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M3/Textures/textures_sphere.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Sphere texture</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-2"></a>
-      <img src="Report/examples/M3/Textures/textures_plane.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M3/Textures/textures_plane.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Plane texture</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-3"></a>
-      <img src="Report/examples/M3/Textures/textures_cube.png" alt="Figure C" style="width: 100%;">
+      <img src="Output/examples/M3/Textures/textures_cube.png" alt="Figure C" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Cube texture</p>
     </td>
   </tr>
@@ -241,12 +256,12 @@ Soft shadows are implemented by casting multiple shadow rays towards a light sou
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-basic-shadow"></a>
-      <img src="Report/examples/final/soft_shadows/soft_shadows_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/final/soft_shadows/soft_shadows_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender Scene</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-soft-shadow"></a>
-      <img src="Report/examples/final/soft_shadows/soft_shadows.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/final/soft_shadows/soft_shadows.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Soft shadow implementation (samples = 4)</p>
     </td>
   </tr>
@@ -259,12 +274,12 @@ Glossy reflection also casts multiple rays to approximate blurred specular highl
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-basic-shine"></a>
-      <img src="Report/examples/final/glossy/glossy_off.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/final/glossy/glossy_off.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Basic shiny surface</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-glossy"></a>
-      <img src="Report/examples/final/glossy/glossy_on.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/final/glossy/glossy_on.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Sampled glossy surface (samples = 4)</p>
     </td>
   </tr>
@@ -278,12 +293,12 @@ Each object can have a 3D velocity vector attached to it via a custom property. 
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-motion-blur-blender"></a>
-      <img src="Report/examples/final/motion_blur/motion_blur_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/final/motion_blur/motion_blur_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene with moving objects</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-motion-blur"></a>
-      <img src="Report/examples/final/motion_blur/motion_blur_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/final/motion_blur/motion_blur_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>A scene with objects travelling at different velocities.</p>
     </td>
   </tr>
@@ -295,17 +310,17 @@ The raytracer also implements depth of field blur. By setting the F-Stop and Foc
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-A"></a>
-      <img src="Report/examples/final/dof/dof_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/final/dof/dof_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene (f-stop = 2.0, focal length = 2.5)</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-B"></a>
-      <img src="Report/examples/final/dof/no_dof_raytracer.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/final/dof/no_dof_raytracer.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene without depth of field</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-C"></a>
-      <img src="Report/examples/final/dof/dof_raytracer.png" alt="Figure C" style="width: 100%;">
+      <img src="Output/examples/final/dof/dof_raytracer.png" alt="Figure C" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene with depth of field (f-stop = 2.0, focal length = 2.5)</p>
     </td>
   </tr>
@@ -315,7 +330,7 @@ The raytracer also implements depth of field blur. By setting the F-Stop and Foc
 
 #### Multi-threading
 
-Multi-threading was implemented to allow parallel threads to process lines of the image simultaneously. This is enabled with the `--parallel` flag. If OpenMP is not available on the system, the program will run with a single thread, so the system should be portable. 
+Multi-threading was implemented to allow parallel threads to process lines of the image simultaneously. This is enabled with the `--parallel` flag. If OpenMP is not available on the system, the program will run with a single thread, so the system should be portable. As an example of the speed-up achievable with this feature, the image in the `HDR Backgrounds` section took 80.6859 seconds to render with multi-threading, and 698.221 seconds without.
 
 #### Filetype conversion
 
@@ -330,7 +345,7 @@ The raytracer can read in HDR background images in `.pfm` format. These images a
   <tr>
     <td style="width: 100%; padding: 10px; text-align: center; border: none;">
       <a id="figure-HDR-A"></a>
-      <img src="Report/examples/exceptionality/backgrounds/background.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/backgrounds/background.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>A scene with an HDR background</p>
     </td>
   </tr>
@@ -345,12 +360,12 @@ Textures can be applied to shapes to perturb the normal for lighting calculation
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-bump-map-A"></a>
-      <img src="Report/examples/exceptionality/normal_mapping/normal_mapping_1.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/normal_mapping/normal_mapping_1.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>A scene with a normal mapped shape</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-bump-map-B"></a>
-      <img src="Report/examples/exceptionality/normal_mapping/normal_mapping_2.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/exceptionality/normal_mapping/normal_mapping_2.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>A scene with a normal mapped shape</p>
     </td>
   </tr>
@@ -365,7 +380,7 @@ This changes the geometry of the object. Therefore, while XXX objects still have
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-displacement-map-A"></a>
-      <img src="Report/examples/exceptionality/displacement_mapping/displacement_mapping.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/displacement_mapping/displacement_mapping.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>A scene including a plane with a displacement map.</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
@@ -385,12 +400,12 @@ While experimenting with glass objects, I discovered that it was possible to cre
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-metal-A"></a>
-      <img src="Report/examples/exceptionality/metal/glass.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/metal/glass.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>A scene with a glass mirror, which cannot be tinted with colour.</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-metal-B"></a>
-      <img src="Report/examples/exceptionality/metal/metal.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/exceptionality/metal/metal.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>A scene with a metal mirror, capable of being tinted.</p>
     </td>
   </tr>
@@ -405,12 +420,12 @@ This flag allows finer control of the environment brightness.
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-exposure-A"></a>
-      <img src="Report/examples/exceptionality/exposure/exposure_low.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/exposure/exposure_low.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>A scene with low exposure (exposure = 0.04)</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-exposure-B"></a>
-      <img src="Report/examples/exceptionality/exposure/exposure_high.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/exceptionality/exposure/exposure_high.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>A scene with high exposure (exposure = 0.16)</p>
     </td>
   </tr>
@@ -431,21 +446,21 @@ While the values of the pixels can be controlled with the `--exposure <float>` f
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/output_no_tone_mapping.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/output_no_tone_mapping.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>No tonemapping</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/tonemapping_reinhard.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/tonemapping_reinhard.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Reinhard tonemapping</p>
     </td>
   </tr>
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/tonemapping_aces.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/tonemapping_aces.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/tonemapping_filmic.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/tonemapping_filmic.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 4: </b>Filmic tonemapping</p>
     </td>
   </tr>
@@ -456,17 +471,17 @@ This is particularly useful for scenes with more than one light, as it prevents 
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/output_no_tone_mapping_2_lights.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/output_no_tone_mapping_2_lights.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>No tonemapping</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/output_reinhard_2_lights.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/output_reinhard_2_lights.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Reinhard tonemapping</p>
     </td>
   </tr>
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/output_aces_2_lights.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/exceptionality/tonemapping/output_aces_2_lights.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
     </td>
   </tr>
@@ -486,17 +501,17 @@ Although my raytracer works with quadrilateral planes, I argue that a triangle i
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-A"></a>
-      <img src="Report/examples/gallery/paris/35000_blender.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/gallery/paris/35000_blender.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene.</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-B"></a>
-      <img src="Report/examples/gallery/paris/35000_normals.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/gallery/paris/35000_normals.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Normal visualisation of scene.</p>
     </td>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-C"></a>
-      <img src="Report/examples/gallery/paris/35000.png" alt="Figure C" style="width: 100%;">
+      <img src="Output/examples/gallery/paris/35000.png" alt="Figure C" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene.</p>
     </td>
   </tr>
@@ -522,11 +537,11 @@ The intensity vector for the light in this is now a 3D vector to allow coloured 
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/M2/scene_test.png" alt="Figure A" style="width: 100%;">
+      <img src="Output/examples/M2/scene_test.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 1: </b>Generated image</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/M2/blender_green.png" alt="Figure B" style="width: 100%;">
+      <img src="Output/examples/M2/blender_green.png" alt="Figure B" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 2: </b>Original Blender scene</p>
     </td>
   </tr>
@@ -579,7 +594,141 @@ The calculations for the final pixel colour is changed from a simple clamp to va
 
 A significant amount of refactoring was also done across the files, for example `Code/shapes/transformed_shape.h` was added as base class for transformable shapes to avoid code duplication in the shape files. 
 
+# Prompts
 
+
+Examples of prompts used.
+
+## Module 1
+-----------------------------------------------------------------------
+### Blender exporter:
+```update the export.py to check for a custom property called 'velocity' on the active material. if present, write this 3d vector to the scene file to be used for motion blur.```
+
+I changed the way the generated export python file identifies mesh types. Instead of using the name of the mesh, I changed it to use a more robust method of counting polygons.
+
+### Raytracing from a camera:
+
+```Explain the benefits of using the U V W coordinate system over the yaw, pitch, roll system.```
+
+### Image read and write in `.ppm` format:
+``` Update this function to include P6 files.```
+
+## Module 2
+-----------------------------------------------------------------------
+### Ray intersection for sphere, plane and cube objects:
+```Adjust the plane intersection method to account for planes that do not have right angled corners by splitting into triangles and checking for intersection with each triangle.```
+
+```Write a corresponding intersection function for a cube.```
+
+Edits had to be made to account for the Blender system using +-1.0 instead of +-0.5 for cubes
+
+The assistant advised on the use of a matrix for defining a basic cube and then creating a transformation matrix to define its location, rotation and scale in the world.
+
+### Acceleration hierarchy using the bounding volume hierarchy:
+```Explain the term AABB tree in the context of bvh acceleration.```
+
+```Correct the implementation based on this error.```
+
+```Adjust this function to switch between the x and y axis for efficiency.```
+
+## Module 3
+-----------------------------------------------------------------------
+### Whitted-Style ray tracing, shading intersections according to the Blinn-Phong model:
+``` implement the blinn-phong shading model in a class called shading.h. calculate the diffuse component using the dot product of the surface normal and the light direction. ```
+
+``` update the shading logic in shading to include an ambient term. read the ambient coefficient from the material properties and multiply it by the object's base color.```
+### Traced refracted/reflected rays:
+
+The generated code did not include the fresnel effect, so I made changes to add this.
+
+``` add a refraction helper function in tracer.h using snell's law. calculate the transmitted ray direction based on the ratio of refractive indices.```
+
+### Antialiasing using average contributions of samples:
+``` explain alternative methods of anti-aliasing ```
+
+``` modify the pixel loop in main.cpp to support multiple samples. generate random offsets within the pixel square and average the resulting colors.```
+
+``` Look for sources of inefficiency within this class ```
+### UV textures mapped to shapes:
+``` create a vector2 struct vector2.h to hold u and v texture coordinates. add basic operator overloading for addition and scalar multiplication.```
+
+``` implement a spherical mapping function in this file. convert the intersection point on the unit sphere into normalized u and v coordinates using atan2 and acos.```
+
+I made changes to the generated code so that for cubes, instead of tiling the same pattern onto all sides, the texture is a net that folds around the cube.
+
+## Final Raytracer
+
+-----------------------------------------------------------------------
+### Soft shadows
+
+
+``` What is causing hard shadows even after impplementing shadow sampling? ```
+
+``` modify the light struct in the light file to include a floating point radius. update the parsing logic in the scene file to read this value from the scene description file.```
+
+I modified the generated code such that shadows from a transparent object transmit colour.
+
+### Implementation of glossy reflection via distributed raytracing:
+``` Explain what is meant by 'glossy reflection' in the context of raytracing ```
+
+### Motion blur:
+
+``` Check for places that are missing the time parameter. ```
+
+I made changes to the generated code as it was missing motion blur in reflections and shadows.
+
+### Depth of field blur:
+
+``` Do i need to use sampling for depth of field blur in the same way i used it for motion blur? ```
+
+``` modify the ray generation in camera.cpp. calculate the focal point at the focus distance and cast the ray from the sampled aperture point to this focal point.```
+## Exceptionality
+-----------------------------------------------------------------------
+### Multi-threading:
+
+``` I'd like to add multi-threading, is this a non-trivial problem? ```
+
+``` What do I add to my cmakelists.txt so that it fails gracefully if the system it is run on doesnt have OpenMP.```
+### `.jpeg`, `.jpg`, or `png` texture conversion:
+
+``` Is it possible to convert from .jpeg, .jpg, .png to .ppm with just the standard C++ library? ```
+
+``` Adjust this conversion so that it fails gracefully on a system that is missing python. ```
+### HDR background images:
+
+``` Explain the difference between equirectangular background images and cube maps. ```
+
+``` Using this UV coordinate code as a base, update the background for .pfm images. ``` 
+### Normal mapping:
+
+``` If normal mapping is making values darker or lighter based on the corresponding texture file,m why doesn't this code work? ```
+### Displacement mapping:
+
+```update complex_sphere.cpp to adjust the radius at a given point based on the displacement map value. recalculate the geometry based on the local gradient of the map.```
+### Metal material:
+
+``` Artistically I like the look of the tinted glass. help me add it as a new material so that i can toggle it on and off. ```
+### Exposure control:
+
+``` Add a simple flag to let me control exposure via command line ```
+### Tone mapping (interchangeable Reinhard, ACES, and Filmic):
+
+``` how can i know what values to use for the S-curve in reinhard? ```
+
+``` Describe a blender scene to demonstrate the differences between these tonemapping modes.```
+
+
+# Coding Assistant Assessment
+
+The coding assistant was an invaluable tool that helped overcome the challenges of using an unfamiliar language, C++. I used it to explain C++ keywords and convert code from Python.
+
+Beyond the core coursework, the assistant helped generate Blender scripts (like Decompose_scene.py) and plotting files to quickly set up scenes and analyze data. This significantly saved time on non-core tasks, adding a layer of polish.
+
+The assistant was also highly effective for debugging, quickly identifying issues like incorrect material property settings (e.g., shininess causing white noise). Finally, it proved essential for refactoring and optimisation, making these complex tasks manageable given my limited C++ experience.
+
+Some notable downsides were that as the project grew, it became harder to get desirable outputs from the assistant. As there is a limit on how many files I could provide it, I had to abandon the idea of providing it with full context, and either be very careful to request tasks that could be completed in total isolation, or spend considerable time adjusting the output to integrate it into the wider context.
+
+Another downside is that I had to be very aware of the potential to be misled by the assistant, and firm on what I wanted from it. It was prone to fixate on a particular solution regardless of resulting logical errors, and so if it was a problem I couldn't debug on my own I had to switch to a different model for advice. It was necessary to know the theory well to avoid being misled on the correct approach. I believe this confusion largely came from its lack of context on the task and existing implementation, although I was able to provide some files.
 
 # Parameters
 
@@ -637,6 +786,3 @@ A significant amount of refactoring was also done across the files, for example 
 | `Material`              | Blender → Material → Custom Properties → material         | This property can be `glass` or `metal`. Reflective metal objects will tint their reflection with the colour of the metal.                                                                                                                                                                                     |
 | `Texture File`          | Blender → Material → Custom Properties → texture_file     | Filename of the texture map to apply. If python is installed, then texture files can be `.ppm`, `.jpeg`, `.jpg`, or `png`. Otherwise, texture files must be `.ppm`.                                                                                                                                            |
 | `Bump Map File`         | Blender → Material → Custom Properties → bump_map_file    | Filename of the bump map for surface detail. The addition of the `complex_` keyword to a shapes name will result in this map being used to displace the geometry of the shape. If python is installed, then bump map files can be `.ppm`, `.jpeg`, `.jpg`, or `png`. Otherwise, bump map files must be `.ppm`. |
-
-
-# Theory

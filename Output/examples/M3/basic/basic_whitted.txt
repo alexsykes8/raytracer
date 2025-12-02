@@ -1,0 +1,59 @@
+CUBE
+  translation -1.668711 -1.384738 0.531810
+  rotation_euler_radians -0.747990 0.384666 -0.590537
+  rotation_euler_degrees -42.856670 22.039738 -33.835278
+  scale 0.743897 0.743897 0.743897
+END_CUBE
+
+POINT_LIGHT
+  location 4.076245 1.005454 5.903862
+  intensity 1000.000000 1000.000000 1000.000000
+  radius 0.000000
+END_POINT_LIGHT
+
+CAMERA
+  location 7.358891 -6.925791 4.958309
+  gaze_direction -0.651558 0.614170 -0.445271
+  up_vector -0.324013 0.305421 0.895396
+  rotation_euler_radians 1.109319 0.000000 0.814928
+  rotation_euler_degrees 63.559297 0.000000 46.691935
+  focal_length 50.000000
+  sensor_size 36.000000 24.000000
+  resolution 1920 1080
+END_CAMERA
+
+SPHERE
+  translation 1.151544 1.652815 0.594708
+  rotation_euler_radians 0.414035 -0.483931 0.219711
+  rotation_euler_degrees 23.722458 -27.727204 12.588513
+  scale 1.000000 1.000000 1.373245
+END_SPHERE
+
+PLANE
+  corner -1.002180 -0.460600 -0.560400
+  corner 0.352175 -2.203686 -0.560400
+  corner -0.075455 1.311738 -0.560400
+  corner 2.957820 0.583671 -0.560400
+  ambient 0.400000 0.400000 0.400000
+  diffuse 0.500000 1.000000 0.700000
+  specular 0.300000 0.300000 0.300000
+  shininess 250.000000
+  reflectivity 0.000000
+  transparency 0.000000
+  refractive_index 1.000000
+END_PLANE
+
+SPHERE
+  translation -1.257555 -0.459284 0.952053
+  rotation_euler_radians -0.436669 0.294854 -0.332052
+  rotation_euler_degrees -25.019291 16.893890 -19.025178
+  scale 0.374295 0.374295 0.188807
+  ambient 0.400000 0.400000 0.400000
+  diffuse 1.000000 0.500000 1.000000
+  specular 0.300000 0.300000 0.300000
+  shininess 250.000000
+  reflectivity 0.000000
+  transparency 0.000000
+  refractive_index 1.000000
+END_SPHERE
+

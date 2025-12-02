@@ -1,0 +1,71 @@
+/* * Custom CSS for VS Code Markdown PDF Export 
+ * This file should be referenced in your VS Code settings.json 
+ * via the "markdown-pdf.styles" setting.
+ */
+
+/* --------------------------------------------------------
+   1. INLINE CODE (`code`)
+   This targets code wrapped in single backticks.
+   -------------------------------------------------------- */
+:not(pre) > code {
+    /* Sets the text color to a dark, deep blue */
+    color: #282828 !important; 
+
+    /* Adds a slight gray background to make inline code distinct */
+    background-color: #d2d2d2; 
+    
+    /* Optional: Add padding and rounded corners for aesthetics */
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    
+    /* Ensures the font is monospace for code legibility */
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* --------------------------------------------------------
+   2. FENCED CODE BLOCKS (```language) 
+   This targets the entire code block container (`pre`).
+   -------------------------------------------------------- */
+pre {
+    /* Sets a light, neutral background for the entire block */
+    background-color: #f7f7f7 !important;
+    border: 1px solid #e0e0e0;
+    border-left: 5px solid #000080; /* Blue accent bar on the left */
+    padding: 10px 15px;
+    border-radius: 6px;
+    overflow-x: auto; /* Ensures long lines can be scrolled */
+}
+
+/* * 3. CODE HIGHLIGHTER (targets the syntax-highlighted text inside the block)
+ * This targets the default color of the code text within the block.
+ */
+.hljs, 
+pre code {
+    /* Sets the default text color to the dark blue */
+    color: #000080 !important; 
+    
+    /* Ensures background from pre is respected, important for dark background code */
+    background: inherit !important; 
+}
+
+/* * 4. Specific Syntax Coloring Overrides (Optional refinement)
+ * This is how you change the color of keywords, strings, etc.
+ * Change these hex codes to match your desired color scheme.
+ */
+
+/* Keywords (e.g., 'if', 'for', 'class') */
+.hljs-keyword, .hljs-tag {
+    color: #0055AA !important; /* A brighter blue */
+    font-weight: bold;
+}
+
+/* Strings (e.g., "Hello World") */
+.hljs-string {
+    color: #338833 !important; /* A shade of green */
+}
+
+/* Comments */
+.hljs-comment {
+    color: #999999 !important; /* Standard gray */
+    font-style: italic;
+}
