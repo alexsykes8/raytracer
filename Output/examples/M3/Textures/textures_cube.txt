@@ -1,0 +1,27 @@
+CUBE
+  translation 0.000000 0.000000 0.000000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 1.325995 1.325995 1.325995
+  texture_file ../Textures/minecraft.jpg
+END_CUBE
+
+POINT_LIGHT
+  location 6.143651 -2.107270 5.903862
+  intensity 1000.000000 1000.000000 1000.000000
+  radius 0.000000
+END_POINT_LIGHT
+
+CAMERA
+  location 7.358891 -6.925791 4.958309
+  gaze_direction -0.651558 0.614170 -0.445271
+  up_vector -0.324013 0.305421 0.895396
+  rotation_euler_radians 1.109319 0.000000 0.814928
+  rotation_euler_degrees 63.559297 0.000000 46.691935
+  focal_length 50.000000
+  sensor_size 36.000000 24.000000
+  resolution 1920 1080
+  f_stop 99999.0
+  focal_distance 10.0
+END_CAMERA
+
