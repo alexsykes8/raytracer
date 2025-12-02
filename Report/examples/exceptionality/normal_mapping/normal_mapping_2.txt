@@ -36,7 +36,5 @@ PLANE
   corner -1.223507 41.542904 -1.859807
   corner 41.542904 1.223507 -1.859807
   diffuse 1.000000 1.000000 1.000000
-  reflectivity 0.1
-  ambient 0.6 0.6 0.6
 END_PLANE
 

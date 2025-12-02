@@ -348,7 +348,7 @@ As it is easier to find textures in `.png`, `.jpg`, or `.jpeg` format, the code 
 
 #### HDR Backgrounds 
 
-The raytracer can read in HDR background images in `.hdr` format. These images are sampled when a ray does not intersect with any objects in the scene, providing realistic lighting and reflections from the environment. The implementation uses a simple spherical mapping technique to map the 2D HDR image onto a virtual sphere surrounding the scene. WHATARE THE TWO TYPES OF HDR AND WHICH CAN THIS USE
+The raytracer can read in HDR background images in `.pfm` format. These images are sampled when a ray does not intersect with any objects in the scene, providing realistic lighting and reflections from the environment. The implementation uses a simple spherical mapping technique to map the 2D HDR image onto a virtual sphere surrounding the scene. This raytracer works with equirectangular maps and is not compatible with cube maps.
 
 
 <table style="width: 100%; border: none;">
@@ -375,18 +375,18 @@ Textures can be applied to shapes to perturb the normal for lighting calculation
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-bump-map-A"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>A scene with an XXX mapped shape</p>
+      <img src="Report/examples/exceptionality/normal_mapping/normal_mapping_1.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>A scene with a normal mapped shape</p>
     </td>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <a id="figure-bump-map-B"></a>
-      <img src="Report/examples/exceptionality/x" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>A scene with an XXX mapped shape</p>
+      <img src="Report/examples/exceptionality/normal_mapping/normal_mapping_2.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>A scene with a normal mapped shape</p>
     </td>
   </tr>
 </table>
 
-#### Discplacement mapping
+#### Displacement mapping
 
 This changes the geometry of the object. Therefore, while XXX objects still have smooth sillhoeuttes that match their original shape, XXX objects have bumped outlines.
 
@@ -498,10 +498,6 @@ This is particularly useful for scenes with more than one light, as it prevents 
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
       <img src="Report/examples/exceptionality/tonemapping/output_aces_2_lights.png" alt="Figure A" style="width: 100%;">
       <p style="text-align: center;"><b>Figure 3: </b>ACES tonemapping</p>
-    </td>
-    <td style="width: 50%; padding: 10px; text-align: center; border: none;">
-      <img src="Report/examples/exceptionality/tonemapping/x.png" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 4: </b>Filmic tonemapping</p>
     </td>
   </tr>
 </table>
@@ -628,6 +624,8 @@ A significant amount of refactoring was also done across the files, for example 
 | `Location`              | Blender → Light → Object → Location                       | Position of the point light.                                                                                                                                                                                                                                                                                   |
 | `Intensity`             | Blender → Light → Data → Colour x Power                   | RGB color/strength of the light.                                                                                                                                                                                                                                                                               |
 | `Radius`                | Blender → Data → Custom Properties → light_radius         | Physical size of the light (affects shadow softness).                                                                                                                                                                                                                                                          |
+| **Blender (World)**     |                                                           |                                                                                                                                                                                                                                                                                                                |
+| `HDR_BACKGROUND`        | Blender → World → Custom Properties → HDR_BACKGROUND      | Allows a `.pfm` background file to be added. Must be an equirectangular map.                                                                                                                                                                                                                                   |
 | **Blender (Shapes)**    |                                                           |                                                                                                                                                                                                                                                                                                                |
 | `Translation`           | Blender → Object → Location                               | Position offset of the object.                                                                                                                                                                                                                                                                                 |
 | `Rotation`              | Blender → Object → Rotation                               | Euler rotation (radians) of the object.                                                                                                                                                                                                                                                                        |

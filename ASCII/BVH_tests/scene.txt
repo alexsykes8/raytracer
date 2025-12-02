@@ -6,7 +6,7 @@ CUBE
   rotation_euler_degrees 0.000000 0.000000 0.000000
   scale 1.325995 1.325995 1.325995
   specular 0.600000 0.600000 0.600000
-  reflectivity 0.300000
+  reflectivity 0.600000
   texture_file ../Textures/minecraft.jpg
   bump_map_file ../Textures/minecraft.jpg
 END_CUBE
@@ -14,7 +14,7 @@ END_CUBE
 POINT_LIGHT
   location 6.143651 -2.107270 5.903862
   intensity 1000.000000 1000.000000 1000.000000
-  radius 0.600000
+  radius 0.000000
 END_POINT_LIGHT
 
 CAMERA
@@ -36,7 +36,5 @@ PLANE
   corner -1.223507 41.542904 -1.859807
   corner 41.542904 1.223507 -1.859807
   diffuse 1.000000 1.000000 1.000000
-  reflectivity 0.1
-  ambient 0.6 0.6 0.6
 END_PLANE
 

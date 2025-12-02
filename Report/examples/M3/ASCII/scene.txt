@@ -1,20 +1,15 @@
-HDR_BACKGROUND ../Textures/clouds.pfm
-
 CUBE
   translation 0.000000 0.000000 0.000000
   rotation_euler_radians 0.000000 0.000000 0.000000
   rotation_euler_degrees 0.000000 0.000000 0.000000
   scale 1.325995 1.325995 1.325995
-  specular 0.600000 0.600000 0.600000
-  reflectivity 0.300000
   texture_file ../Textures/minecraft.jpg
-  bump_map_file ../Textures/minecraft.jpg
 END_CUBE
 
 POINT_LIGHT
   location 6.143651 -2.107270 5.903862
   intensity 1000.000000 1000.000000 1000.000000
-  radius 0.600000
+  radius 0.000000
 END_POINT_LIGHT
 
 CAMERA
@@ -29,14 +24,4 @@ CAMERA
   f_stop 99999.0
   focal_distance 10.0
 END_CAMERA
-
-PLANE
-  corner -41.542904 -1.223507 -1.859807
-  corner 1.223507 -41.542904 -1.859807
-  corner -1.223507 41.542904 -1.859807
-  corner 41.542904 1.223507 -1.859807
-  diffuse 1.000000 1.000000 1.000000
-  reflectivity 0.1
-  ambient 0.6 0.6 0.6
-END_PLANE
 
