@@ -315,34 +315,7 @@ The raytracer also implements depth of field blur. By setting the F-Stop and Foc
 
 #### Multi-threading
 
-Multi-threading was implemented to allow parallel threads to process lines of the image simultaneously. This is enabled with the `--parallel` flag. If OpenMP is not available on the system, the program will run with a single thread, so the system should be portable. Speed-up for three scenes is shown in the table below.
-
-<table style="width: 100%; border: none;">
-  <tr>
-    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-1"></a>
-      <img src="" alt="Figure A" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 1: </b>Raytraced scene 1</p>
-    </td>
-    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-2"></a>
-      <img src="" alt="Figure B" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 2: </b>Raytraced scene 2</p>
-    </td>
-    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-3"></a>
-      <img src="" alt="Figure C" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene 3</p>
-    </td>
-  </tr>
-<tr>
-    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
-      <a id="figure-4"></a>
-      <img src="" alt="Figure D" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 4: </b>Runtime with and without multi-threading</p>
-    </td>
-  </tr>
-</table>
+Multi-threading was implemented to allow parallel threads to process lines of the image simultaneously. This is enabled with the `--parallel` flag. If OpenMP is not available on the system, the program will run with a single thread, so the system should be portable. 
 
 #### Filetype conversion
 
@@ -502,6 +475,32 @@ This is particularly useful for scenes with more than one light, as it prevents 
 # Further Examples
 
 This gallery features further examples of the aforementioned features. All scene and flag data can be found in `Report/examples/gallery`.
+
+## Paris Bust
+
+In 3D modelling, mesh topology is typically constructed using quadrilateral faces, as they lead to cleaner edge loops which improves the results of animation. However, the points of a quad are not guaranteed to be coplanar, so before being rendered the quads are triangulated. This is because by definition, all points of a triangle must lie on the same plane. This prevents all sorts of geometry related nonsense.
+
+Although my raytracer works with quadrilateral planes, I argue that a triangle is a quadrilateral where one side is of negligable length, thus my raytracer can render triangles, thus it can render any triangulated object. This opens up the opportunity to render any 3D object, by treating each of the objects triangle faces as a quadrilateral plane. This is demonstrated below, using a scanned model of the Bust of Paris, (Antonio Canova, 1809, Marble, Art Institute of Chicago) from MattMSI@thingiverse.
+
+<table style="width: 100%; border: none;">
+  <tr>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-A"></a>
+      <img src="Report/examples/gallery/paris/35000_blender.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Original Blender scene.</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-B"></a>
+      <img src="Report/examples/gallery/paris/35000_normals.png" alt="Figure B" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 2: </b>Normal visualisation of scene.</p>
+    </td>
+    <td style="width: 33%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-C"></a>
+      <img src="Report/examples/gallery/paris/35000.png" alt="Figure C" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene.</p>
+    </td>
+  </tr>
+</table>
 
 # Timeliness
 

@@ -36,8 +36,8 @@
 
   // Ambient Colour. The ambient light provided by the environment.
   "lighting": {
-    "r": 0.5,
-    "g": 0.4,
-    "b": 0.4
+    "r": 0.3,
+    "g": 0.25,
+    "b": 0.25
   }
 }

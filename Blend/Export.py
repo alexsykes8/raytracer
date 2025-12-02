@@ -250,10 +250,16 @@ def export_scene_data(filepath):
                         # Ensure the object has vertices
                         if obj.data.vertices:
                             f.write("PLANE\n")
-                            # Get world coordinates for each vertex
+                            # Collect all world coordinates
+                            corners = []
                             for vertex in obj.data.vertices:
                                 world_coord = obj.matrix_world @ vertex.co
-                                f.write(f"  corner {format_vector(world_coord)}\n")
+                                corners.append(world_coord)
+                            if "Face" in obj.name and len(corners) == 4:
+                                corners = [corners[0], corners[2], corners[3], corners[1]]
+                            for corner in corners:
+                                f.write(f"  corner {format_vector(corner)}\n")
+
                             write_material_properties(f, obj)
                             f.write("END_PLANE\n\n")
 
