@@ -57,6 +57,8 @@ Once the `scene.txt` has been generated, the code can be executed. By default it
 
 The resulting image is saved as a `.ppm` file in `Output/scene_test.ppm`.
 
+IMPORTANT: To use an example ASCII it MUST be moved from `Output/examples/` or `ASCII/examples` into `ASCII/`. 
+
 ## Example Outputs
 
 ### Module 1

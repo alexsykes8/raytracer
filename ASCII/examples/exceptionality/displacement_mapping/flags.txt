@@ -1,0 +1,1 @@
+--exposure 0.04 --parallel --shadows 4 --aa 16

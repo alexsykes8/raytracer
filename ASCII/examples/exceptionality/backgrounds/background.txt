@@ -1,0 +1,52 @@
+HDR_BACKGROUND ../Textures/clouds.pfm
+
+POINT_LIGHT
+  location 4.076245 1.005454 5.903862
+  intensity 700.000000 700.000000 700.000000
+  radius 0.600000
+END_POINT_LIGHT
+
+CAMERA
+  location 7.349617 -6.917048 0.963338
+  gaze_direction -0.727676 0.685921 -0.000394
+  up_vector -0.000287 0.000270 1.000000
+  rotation_euler_radians 1.570402 -0.000000 0.814928
+  rotation_euler_degrees 89.977407 -0.000000 46.691935
+  focal_length 50.000000
+  sensor_size 36.000000 24.000000
+  resolution 1920 1080
+  f_stop 99999.0
+  focal_distance 10.0
+END_CAMERA
+
+COMPLEX_PLANE
+  translation 0.000000 0.000000 -0.142382
+  rotation_euler_radians 0.000000 -0.000000 -0.807154
+  rotation_euler_degrees 0.000000 -0.000000 -46.246518
+  scale 18.052895 18.052895 18.052895
+  ambient 0.400000 0.400000 0.300000
+  diffuse 1.000000 1.000000 0.900000
+  specular 0.000000 0.000000 0.000000
+  shininess 30.000000
+  reflectivity 0.000000
+  transparency 0.000000
+  refractive_index 1.000000
+  material glass
+  bump_map_file ../Textures/sand.jpg
+END_COMPLEX_PLANE
+
+CUBE
+  translation 1.051274 -1.491132 0.635894
+  rotation_euler_radians 0.576809 -2.341782 0.964130
+  rotation_euler_degrees 33.048721 -134.174225 55.240580
+  scale 0.635894 0.635894 1.000000
+  ambient 0.600000 0.600000 0.300000
+  diffuse 0.900000 0.200000 0.200000
+  specular 0.700000 0.700000 0.700000
+  shininess 2000.000000
+  reflectivity 0.000000
+  transparency 0.800000
+  refractive_index 1.520000
+  material glass
+END_CUBE
+
