@@ -512,7 +512,33 @@ Although my raytracer works with quadrilateral planes, I argue that, for the pur
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
       <a id="figure-dof-C"></a>
       <img src="Output/examples/gallery/paris/35000.png" alt="Figure C" style="width: 100%;">
-      <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene.</p>
+      <p style="text-align: center;"><b>Figure 3: </b>Raytraced scene, 35000 faces.</p>
+    </td>
+  </tr>
+</table>
+
+Naturally it is also possible to colour the planes individually. In future, an extension would be to unwrap the faces for painting, and then use the inverted unwrapping algorithm to map the UV texture back onto the faces. Bicycle model from wasabicats@Sketchfab.
+
+
+<table style="width: 33%; border: none;">
+  <tr>
+    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-A"></a>
+      <img src="Output/examples/gallery/bike/bike.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Bicycle, 7000 faces.</p>
+    </td>
+  </tr>
+</table>
+
+Material properties applicable to the basic shapes are also applicable to the complex shapes.
+
+
+<table style="width: 50%; border: none;">
+  <tr>
+    <td style="width: 100%; padding: 10px; text-align: center; border: none;">
+      <a id="figure-dof-A"></a>
+      <img src="Output/examples/gallery/shapes/shapes.png" alt="Figure A" style="width: 100%;">
+      <p style="text-align: center;"><b>Figure 1: </b>Shapes, 5000 faces.</p>
     </td>
   </tr>
 </table>
@@ -520,6 +546,7 @@ Although my raytracer works with quadrilateral planes, I argue that, for the pur
 # Timeliness
 
 All deadlines were met, with the corresponding features implemented in each module.
+
 
 ## Deviations
 ### Module 1
