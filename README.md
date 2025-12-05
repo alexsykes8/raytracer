@@ -12,7 +12,7 @@
 
 # Requirements
 
-The base of this project exclusively uses the standard C++ library. You should be able to run it with just this. However, some extended features have additional requirements. Firstly, in order to enable `.jpeg`, `.jpg`, or `png` texture or bump map files, `Python` with `Pillow (PIL)` must be installed on your system. Secondly, to enable multi-threading you must have `OpenMP` installed. 
+The base of this project exclusively uses the standard C++ library. You should be able to run it with just this. However, some extended features have additional requirements. Firstly, in order to enable `.jpeg`, `.jpg`, or `png` texture files, `Python` with `Pillow (PIL)` must be installed on your system. Secondly, to enable multi-threading you must have `OpenMP` installed. 
 
 The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard compiler.
 
@@ -50,14 +50,17 @@ The system requires a minimum `CMake` version of `3.20`, and a `C++20` standard 
 100% of the features listed above were completed.
 
 # Usage
+The makefile for this project is in `Code/cmake-build-debug`. To build and execute, move to this folder and run `make` followed by `./B216602`. 
 
-The raytracer parses `ASCII/scene.txt` which contains the objects and object data exported from Blender. To export this data from Blender, load and run the `Blend/Export.py` in the `Blend/scene.py` file. Details on structuring the scene for parsing can be found in [Parameters](#parameters).
+The raytracer parses `ASCII/scene.txt` which contains the objects and object data exported from Blender. To export this data from Blender, load and run the `Blend/Export.py` in the `Blend/scene.py` file. Blender files can be found in `Output/examples/` and must be moved to `Blend/` before exporting the ASCII. Details on structuring the scene for parsing can be found in [Parameters](#parameters).
 
 Once the `scene.txt` has been generated, the code can be executed. By default it will run without any command line arguments, however it can be tuned using the `Code/config.json` parameters and the command line arguments described in [Parameters](#parameters).   
 
 The resulting image is saved as a `.ppm` file in `Output/scene_test.ppm`.
 
-IMPORTANT: To use an example ASCII it MUST be moved from `Output/examples/` or `ASCII/examples` into `ASCII/`. 
+IMPORTANT: To use an example ASCII it MUST be moved from `Output/examples/` or `ASCII/examples` into `ASCII/` and renamed `scene.txt`. Likewise Blender files can be found in `Output/examples/` and must be moved to `Blend/` before exporting the ASCII. `ASCII/examples` is a copy of `Output/examples/`, with the Blender files and output images removed.
+
+In most of the examples in `Output/examples/` and `ASCII/examples` I've tried to include the config I used, however, the config file was added during refactoring and so in some cases I've just included my best approximation of the exact config used if the image was generated before refactoring. Likewise you can find a file containing the exact flags used.
 
 ## Example Outputs
 
@@ -85,7 +88,7 @@ In module 1, the `ASCII/scene.txt` contains the following information:
 * Planes
   * 3D coordinates of its four corners
 
-An example output of `ASCII/scene.txt` for module 1 can be found at `Report/examples/M1/scene.txt`. This was tested by manually entering the values in the text file into a new object in Blender, and checking that it overlaps with the existing object.
+An example output of `ASCII/scene.txt` for module 1 can be found at `/examples/M1/scene.txt`. This was tested by manually entering the values in the text file into a new object in Blender, and checking that it overlaps with the existing object.
 
 #### Camera space transformations
 The camera class and header files can be found in `Code/environment/camera.h` and `Code/environment/camera.cpp`. In module 1, the file is read by the camera class and information stored. A vector3 class and a ray class are implemented to structure the data.
@@ -110,7 +113,9 @@ The functionality for image reading and writing can be found in `Code/utilities/
 
 #### Ray Intersection
 
-Module 2 was tested by overlaying the original Blender file with the output from the raytracer and checking that they match. To generate the output, I coloured the ray intersections according to the normal of the ray with the object.
+Module 2 was tested by overlaying the original Blender file with the output from the raytracer and checking that they match. To generate the output, I coloured the ray intersections according to the normal of the ray with the object. 
+
+Generated with `/examples/M2/scene_white.txt`.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -128,7 +133,7 @@ Module 2 was tested by overlaying the original Blender file with the output from
 
 #### Acceleration Hierarchy
 
-A bounding volume hierarchy is implemented to improve the efficiency of intersection tests for scenes with many shapes. The speedup for scenes with different numbers of objects is shown in [Figure 1](#figure-1). Scene data can be found in `Report/examples/M2/bvh_tests`. Each test was run 3 times and averaged. As shown, the gap in runtime between runs with and without bvh increases as the number of items in the scene increases.
+A bounding volume hierarchy is implemented to improve the efficiency of intersection tests for scenes with many shapes. The speedup for scenes with different numbers of objects is shown in [Figure 1](#figure-1). Scene data can be found in `/examples/M2/bvh_tests`. Each test was run 3 times and averaged. As shown, the gap in runtime between runs with and without bvh increases as the number of items in the scene increases.
 
 
 <table style="width: 100%; border: none;">
@@ -145,7 +150,9 @@ A bounding volume hierarchy is implemented to improve the efficiency of intersec
 
 #### Whitted-style raytracing
 
-The Blinn-Phong model was implemented early in module 2, however it was refined in module 3. It responds to specular, diffuse, and ambient values in each colour channel. See `Report/examples/M3` for scene data.
+The Blinn-Phong model was implemented early in module 2, however it was refined in module 3. It responds to specular, diffuse, and ambient values in each colour channel. 
+
+Generated with `/examples/M3/basic/basic.txt`
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -163,6 +170,8 @@ The Blinn-Phong model was implemented early in module 2, however it was refined 
 </table>
 
 A tracer is also implemented, which tracks the path of a ray when it encounters transparent objects or moves between mediums with different refractive indices.
+
+Generated with `/examples/M3/refraction_reflection/reflection_refraction.txt`
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -182,6 +191,8 @@ A tracer is also implemented, which tracks the path of a ray when it encounters 
 Note that in the above scene, the Blender uses the glass BSDF.
 
 Finally, Fresnel equations were implemented to weight the reflection and refraction contributions more realistically. This is enabled with the `--fresnel` flag.
+
+Generated with `/examples/M3/fresnel/fresnel_sphere.txt` and `/examples/M3/fresnel/fresnel_cube.txt`
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -204,6 +215,8 @@ Note that for both of these images a background and soft shadows was used in the
 
 Anti-aliasing can be set with the `--aa <int>` flag where the second argument is the number of samples to take.
 
+Generated with `/examples/M3/anit_aliasing/anit_aliasing.txt`
+
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 50%; padding: 10px; text-align: center; border: none;">
@@ -222,6 +235,8 @@ Anti-aliasing can be set with the `--aa <int>` flag where the second argument is
 #### Textures
 
 For spheres and planes, the texture is stretched to fit the surface of the object. For cubes, the uv texture is treated as a net that wraps around the object, allowing different patterns to be displayed on different faces. 
+
+Generated with `/examples/M3/Textures/textures_sphere.txt`, `/examples/M3/Textures/textures_plane.txt` and `/examples/M3/Textures/textures_cube.txt`
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -254,6 +269,8 @@ As described in [Parameters](#parameters), features can be easily turned on and 
 
 Soft shadows are implemented by casting multiple shadow rays towards a light source with a radius greater than 0.0. The number of rays is controlled by the `shadow_samples` parameter in `config.json`. The final light contribution is averaged over all the shadow rays, creating a softer shadow edge. This is compatible with the existing implementation for the point lights, but does require point lights to have a radius in their custom properties.
 
+Generated with `/examples/final/soft_shadows/soft_shadows.txt`.
+
 <table style="width: 100%; border: none;">
   <tr>
     <td style="width: 33%; padding: 10px; text-align: center; border: none;">
@@ -271,6 +288,7 @@ Soft shadows are implemented by casting multiple shadow rays towards a light sou
 
 Glossy reflection also casts multiple rays to approximate blurred specular highlights, averaging their contributions to produce rough reflections controlled by the material's glossiness.
 
+Generated with `/examples/final/glossy/glossy.txt`.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -289,7 +307,9 @@ Glossy reflection also casts multiple rays to approximate blurred specular highl
 
 #### Lens effects
 
-Each object can have a 3D velocity vector attached to it via a custom property. If used with the `--motion-blur <float>` flag, where the float is the time the shutter time, it calculates a motion blue for moving objects in the scene. As with the other examples in this documentation, information on the scene and flags used to generate this is example can be found in `Report/examples/final/`
+Each object can have a 3D velocity vector attached to it via a custom property. If used with the `--motion-blur <float>` flag, where the float is the time the shutter time, it calculates a motion blue for moving objects in the scene. As with the other examples in this documentation, information on the scene and flags used to generate this is example can be found in `/examples/final/`
+
+Generated with `/examples/final/motion_blur/motion_blur.txt`.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -307,6 +327,8 @@ Each object can have a 3D velocity vector attached to it via a custom property. 
 </table>
 
 The raytracer also implements depth of field blur. By setting the F-Stop and Focal Distance in the Blender camera settings, the raytracer simulates a camera lens with a finite aperture size. Rays are sampled across the aperture, creating a realistic depth of field effect where objects outside the focal plane appear blurred.
+
+Generated with `/examples/final/dof/no_dof.txt` and `/examples/final/dof/dof.txt`.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -332,6 +354,7 @@ The raytracer also implements depth of field blur. By setting the F-Stop and Foc
 
 #### Multi-threading
 
+
 Multi-threading was implemented to allow parallel threads to process lines of the image simultaneously. This is enabled with the `--parallel` flag. If OpenMP is not available on the system, the program will run with a single thread, so the system should be portable. As an example of the speed-up achievable with this feature, the image in the `HDR Backgrounds` section took 80.6859 seconds to render with multi-threading, and 698.221 seconds without.
 
 #### Filetype conversion
@@ -341,6 +364,9 @@ As it is easier to find textures in `.png`, `.jpg`, or `.jpeg` format, the code 
 #### HDR Backgrounds 
 
 The raytracer can read in HDR background images in `.pfm` format. These images are sampled when a ray does not intersect with any objects in the scene, providing realistic lighting and reflections from the environment. The implementation uses a simple spherical mapping technique to map the 2D HDR image onto a virtual sphere surrounding the scene. This raytracer works with equirectangular maps and is not compatible with cube maps.
+
+Generated with `/examples/exceptionality/backgrounds/background.txt`.
+
 
 
 <table style="width: 100%; border: none;">
@@ -356,6 +382,9 @@ The raytracer can read in HDR background images in `.pfm` format. These images a
 #### Normal mapping
 
 Textures can be applied to shapes to perturb the normal for lighting calculations without affecting the objects geometry. 
+
+Generated with `/examples/exceptionality/normal_mapping/normal_mapping_1.txt` and `/examples/exceptionality/normal_mapping/normal_mapping_2.txt`.
+
 
 
 <table style="width: 100%; border: none;">
@@ -375,8 +404,9 @@ Textures can be applied to shapes to perturb the normal for lighting calculation
 
 #### Displacement mapping
 
-This changes the geometry of the object. Therefore, while XXX objects still have smooth sillhoeuttes that match their original shape, XXX objects have bumped outlines.
+This changes the geometry of the object. Therefore, while normal mapped objects still have smooth silhouettes that match their original shape, displacement mapped objects have bumped outlines.
 
+Generated with `/examples/exceptionality/displacement_mapping/displacement_mapping.txt`
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -397,6 +427,7 @@ This changes the geometry of the object. Therefore, while XXX objects still have
 
 While experimenting with glass objects, I discovered that it was possible to create metal objects by forcing the reflection of an object to transmit the colour of the object. 
 
+Generated with `/examples/exceptionality/metal/glass.txt` and `/examples/exceptionality/metal/metal.txt`.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -417,6 +448,7 @@ While experimenting with glass objects, I discovered that it was possible to cre
 
 This flag allows finer control of the environment brightness. 
 
+Generated with `/examples/exceptionality/exposure/exposure.txt`.
 
 <table style="width: 100%; border: none;">
   <tr>
@@ -491,7 +523,7 @@ This is particularly useful for scenes with more than one light, as it prevents 
 
 # Further Examples
 
-This gallery features further examples of the aforementioned features. All scene and flag data can be found in `Report/examples/gallery`.
+This gallery features further examples of the aforementioned features. All scene and flag data can be found in `/examples/gallery`.
 
 ## Paris Bust
 

@@ -1,0 +1,2 @@
+1 sample: --exposure 0.04 --aa 1
+16 samples: --exposure 0.04 --aa 16

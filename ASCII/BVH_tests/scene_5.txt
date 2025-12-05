@@ -1,0 +1,54 @@
+SPHERE
+  translation 0.500000 0.333333 0.200000
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.145914 0.053752 0.091254
+END_SPHERE
+
+CAMERA
+  location 2.500000 -2.500000 1.500000
+  gaze_direction -0.506798 0.760196 -0.406519
+  up_vector -0.225496 0.338244 0.913642
+  rotation_euler_radians 1.152155 -0.000000 0.588003
+  rotation_euler_degrees 66.013619 -0.000000 33.690090
+  focal_length 50.000000
+  sensor_size 36.000000 24.000000
+  resolution 1920 1880
+  f_stop 99999.0
+  focal_distance 10.0
+END_CAMERA
+
+POINT_LIGHT
+  location 0.233330 0.717368 1.959181
+  intensity 10.000000 10.000000 10.000000
+  radius 0.000000
+END_POINT_LIGHT
+
+SPHERE
+  translation 1.273073 0.931831 0.330789
+  rotation_euler_radians 0.000000 -0.000000 -0.422190
+  rotation_euler_degrees 0.000000 -0.000000 -24.189705
+  scale 0.145914 0.053752 0.091254
+END_SPHERE
+
+SPHERE
+  translation -0.471597 -0.252209 0.268010
+  rotation_euler_radians 0.000000 -0.000000 -0.422190
+  rotation_euler_degrees 0.000000 -0.000000 -24.189705
+  scale 0.145914 0.053752 0.091254
+END_SPHERE
+
+SPHERE
+  translation 0.706913 0.065172 -1.018309
+  rotation_euler_radians 0.000000 0.000000 0.000000
+  rotation_euler_degrees 0.000000 0.000000 0.000000
+  scale 0.145914 0.053752 0.091254
+END_SPHERE
+
+SPHERE
+  translation 1.479986 0.663670 -0.887520
+  rotation_euler_radians 0.000000 -0.000000 -0.422190
+  rotation_euler_degrees 0.000000 -0.000000 -24.189705
+  scale 0.145914 0.053752 0.091254
+END_SPHERE
+
